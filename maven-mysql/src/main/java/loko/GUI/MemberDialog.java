@@ -37,7 +37,13 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import java.awt.Font;
 import javax.swing.JCheckBox;
-
+import javax.swing.JComboBox;
+/**
+ * 
+ * @author Dave
+ *
+ *Dialogové okno pro editaci èlena
+ */
 public class MemberDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -56,15 +62,19 @@ public class MemberDialog extends JDialog {
 	private JTable tableMails;
 	private JTable tablePhone;
 	private int id_member;
+	private final String[] role = {"Hráè", "Hráè Bèka", " Hráè-souzenci" , "Èinnovník", "LimitkaD", "LimitkaV", "Rodiè"};
 	private JTextField textFieldRC;
 	private JTextField textFieldTrvaleBydliste;
 	private JTextField textFieldCHFReg;
 	private JCheckBox chckbxAktivni;
+	//clipce nechce podporovat zobrazeni private JComboBox<String> comboBoxRole;
+	private JComboBox comboBoxRole;
 
 	/**
 	 * Create the dialog.
 	 */
 	public MemberDialog(int id_member, MembersDAO membersDAO, IFMailsDAO mailsDAO,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
+		setTitle("Editace \u010Dlena");
 		this.id_member = id_member;
 		this.membersDAO = membersDAO;
 		this.mailsDAO = mailsDAO;
@@ -181,6 +191,13 @@ public class MemberDialog extends JDialog {
 				lblRegu.setFont(new Font("Times New Roman", Font.PLAIN, 11));
 				lblRegu.setBounds(263, 177, 89, 14);
 				panel_1.add(lblRegu);
+			
+				//comboBoxRole = new JComboBox<String>(role);
+				comboBoxRole = new JComboBox(role);
+				
+				comboBoxRole.setBounds(139, 208, 177, 20);
+				panel_1.add(comboBoxRole);
+				comboBoxRole.setSelectedIndex(memberFull.getId_odd_kategorie()-1);
 				
 			}
 			{
@@ -321,6 +338,7 @@ public class MemberDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
+						// nadètení z formuláøe  get date from form
 						String firstName = textFieldFirstName.getText();
 						String lastName = textFieldLastName.getText();
 						
@@ -331,6 +349,7 @@ public class MemberDialog extends JDialog {
 						String rodneCislo = textFieldRC.getText();
 						String trvaleBydliste = textFieldTrvaleBydliste.getText();
 						String chfRegistrace = textFieldCHFReg.getText();
+						int id_kategorie_odd = comboBoxRole.getSelectedIndex() + 1;
 						int active = 0;
 						if (chckbxAktivni.isSelected()) {
 							active = 1;
@@ -345,6 +364,8 @@ public class MemberDialog extends JDialog {
 						memberFull.setTrvaleBydliste(trvaleBydliste);
 						memberFull.setChfRegistrace(chfRegistrace);
 						memberFull.setActive(active);
+						System.out.println("id role : " + id_kategorie_odd);
+						memberFull.setId_odd_kategorie(id_kategorie_odd);
 						
 						membersDAO.updateMember(memberFull, memberFull.getId());
 						// zavrit dialogove okno
@@ -396,5 +417,4 @@ public class MemberDialog extends JDialog {
 		}
 
 	}
-	
 }

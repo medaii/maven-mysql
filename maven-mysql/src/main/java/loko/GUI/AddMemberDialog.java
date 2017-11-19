@@ -31,6 +31,8 @@ import java.awt.event.ActionEvent;
 
 import com.sun.xml.internal.messaging.saaj.util.TeeInputStream;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.JComboBox;
+import javax.swing.JTextPane;
 /**
  * 
  * @author Erik Markoviè
@@ -43,6 +45,9 @@ public class AddMemberDialog extends JDialog {
 	private MembersSearchApp membersSearchApp;
 	private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
+	private final String[] role = {"Hráè", "Hráè Bèka", " Hráè-souzenci" , "Èinnovník", "LimitkaD", "LimitkaV", "Rodiè"};
+	
+	
 	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldFirstName;
@@ -56,10 +61,9 @@ public class AddMemberDialog extends JDialog {
 	private JTextField textFieldTel1;
 	private JTextField textFieldOdTel2;
 	private JTextField textFieldTel2;
-	private JTextField textFieldTrvaleBydliste;
 	private JDateChooser dateChooser;
 	private JTextField textFieldRegC;
-	
+	private JComboBox comboBox;
 
 	/**
 	 * Create the dialog.
@@ -222,11 +226,6 @@ public class AddMemberDialog extends JDialog {
 		lblTrvalBydlit.setBounds(24, 235, 113, 14);
 		contentPanel.add(lblTrvalBydlit);
 		
-		textFieldTrvaleBydliste = new JTextField();
-		textFieldTrvaleBydliste.setBounds(144, 233, 164, 102);
-		contentPanel.add(textFieldTrvaleBydliste);
-		textFieldTrvaleBydliste.setColumns(10);
-		
 		dateChooser = new JDateChooser();
 		dateChooser.setBounds(147, 144, 161, 20);
 		contentPanel.add(dateChooser);
@@ -241,6 +240,31 @@ public class AddMemberDialog extends JDialog {
 		textFieldRegC.setBounds(144, 356, 164, 24);
 		contentPanel.add(textFieldRegC);
 		textFieldRegC.setColumns(10);
+		
+		JLabel lblZaazen = new JLabel("Za\u0159azen\u00ED:");
+		lblZaazen.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		lblZaazen.setBounds(24, 400, 113, 14);
+		contentPanel.add(lblZaazen);
+		
+		
+		comboBox = new JComboBox(role);
+		comboBox.setBounds(144, 394, 164, 24);
+		contentPanel.add(comboBox);
+		
+		JLabel lblPoznmka = new JLabel("Pozn\u00E1mka:");
+		lblPoznmka.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		lblPoznmka.setBounds(24, 446, 113, 14);
+		contentPanel.add(lblPoznmka);
+		
+		JTextPane textPaneNote = new JTextPane();
+		textPaneNote.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		textPaneNote.setBounds(143, 440, 165, 75);
+		contentPanel.add(textPaneNote);
+		
+		JTextPane textPaneTrvaleBydliste = new JTextPane();
+		textPaneTrvaleBydliste.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		textPaneTrvaleBydliste.setBounds(144, 235, 161, 101);
+		contentPanel.add(textPaneTrvaleBydliste);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -257,16 +281,16 @@ public class AddMemberDialog extends JDialog {
 							String date = sdf.format(dateChooser.getDate());
 							Date birthDay = Date.valueOf(date);
 							
-							String note = "";
+							String note = textPaneNote.getText();
 							int active = 1;
-							int id_odd_kategorie = 1;
+							int id_odd_kategorie = comboBox.getSelectedIndex() + 1;
 							
 							Calendar cal = Calendar.getInstance();
 							date = sdf.format(cal.getTime());
 							Date enterDate = Date.valueOf(date);
 							
 							String rodneCislo = textFieldRC.getText();
-							String trvaleBydliste = textFieldTrvaleBydliste.getText();
+							String trvaleBydliste = textPaneTrvaleBydliste.getText();
 							String chfRegistrace = textFieldRegC.getText();
 							
 							memberFull = new MemberFull(firstName, lastName, birthDay, note, active, id_odd_kategorie, enterDate,

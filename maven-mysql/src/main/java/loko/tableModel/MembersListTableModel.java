@@ -1,11 +1,15 @@
 package loko.tableModel;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import loko.core.Mail;
 import loko.core.Member;
 import loko.core.MemberList;
+import loko.core.Phone;
+import loko.core.User;
 /**
  * 
  * @author Erik Markoviè
@@ -65,17 +69,26 @@ public class MembersListTableModel extends AbstractTableModel {
 			return tempMembers.getLastName();
 		}
 	}
-	public Class getColumnClass(int c) {
-		try {
-			Class resume = getValueAt(0, c).getClass();
-			
-			return resume;
-		} catch (NullPointerException e) {
-			int row  = getRowCount();
-			System.out.println(e);
-			return this.getClass();
-			
+	//vracení typ hodnot v tabulce dle sloupce
+	public Class getClassCol(int col) {
+		switch (col) {
+			case NAME:
+				return String.class;
+			case BIRTH_DAY:
+				return Date.class;
+			case MAILS:
+				return Mail.class;
+			case PHONES:
+				return Phone.class;
+			case OBJECT_COL:
+				return MemberList.class;
+			default:
+				return String.class;
 		}
+	}
+	// dotaz na typ hodnoty ve sloupci
+	public Class getColumnClass(int c) {
+		return getClassCol(c);
 	}
 	
 }

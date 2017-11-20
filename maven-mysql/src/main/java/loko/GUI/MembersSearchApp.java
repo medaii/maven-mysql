@@ -11,6 +11,7 @@ import loko.DAO.*;
 import loko.core.MemberList;
 import loko.core.User;
 import loko.tableModel.MembersListTableModel;
+import loko.tableModel.UsersTableModel;
 
 import java.awt.BorderLayout;
 import javax.swing.JTabbedPane;
@@ -32,7 +33,20 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
-
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import java.awt.FlowLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import java.awt.GridLayout;
+/**
+ * 
+ * @author Erik Markoviè
+ * 
+ * Aplikace pro editaci kartoteky 
+ *
+ */
 public class MembersSearchApp  extends JFrame{
 
 	private MembersDAO membersDAO;
@@ -45,6 +59,7 @@ public class MembersSearchApp  extends JFrame{
 	private JLabel lblUser;
 	private JTable tableMembers;
 	private JTextField textFieldSearchName;
+	private JTable tableUser;
 
 	/**
 	 * Launch the application.
@@ -268,8 +283,31 @@ public class MembersSearchApp  extends JFrame{
 		scrollPane.setViewportView(tableMembers);
 		tableMembers.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		
+		JPanel User = new JPanel();
+		tabbedPane.addTab("User", null, User, null);
+		User.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		User.add(scrollPane_1, BorderLayout.CENTER);
+		
+		tableUser = new JTable();
+		scrollPane_1.setViewportView(tableUser);
+		
 		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("User", null, panel_1, null);
+		User.add(panel_1, BorderLayout.SOUTH);
+		
+		JButton btnPidanUivatele = new JButton("P\u0159idan\u00ED u\u017Eivatele");
+		btnPidanUivatele.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		panel_1.add(btnPidanUivatele);
+		
+		JButton btnEditaceUdaj = new JButton("Editace udaj\u016F");
+		btnEditaceUdaj.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		panel_1.add(btnEditaceUdaj);
+		
+		JButton btnZmnaHesla = new JButton("Zm\u011Bna hesla");
+		btnZmnaHesla.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		panel_1.add(btnZmnaHesla);
+		refreshUsersView();
 		initialize();
 	}
 
@@ -280,6 +318,7 @@ public class MembersSearchApp  extends JFrame{
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 	}
 	
 	/**
@@ -304,6 +343,23 @@ public class MembersSearchApp  extends JFrame{
 			tableMembers.setModel(model);
 		} catch (Exception exc) {
 			System.out.println("Chyba vytvoreni modelu - " + exc);
+			JOptionPane.showMessageDialog(this, "Error: " + exc, "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+		
+	}
+	//naètení uživatelu
+	public void refreshUsersView() {
+
+		try {
+			List<User> users = userDAO.getUsers(admin, userId);
+
+			// Vytvoøení tabulky s uživately
+			UsersTableModel model = new UsersTableModel(users);
+
+			tableUser.setModel(model);
+			
+		} catch (Exception exc) {
 			JOptionPane.showMessageDialog(this, "Error: " + exc, "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}

@@ -218,7 +218,7 @@ public class MemberDialog extends JDialog {
 				JButton btnNovTelefon = new JButton("Nov\u00FD Telefon");
 				btnNovTelefon.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						AddPhoneDialog dialog = new AddPhoneDialog(id_member, phoneDAO, MemberDialog.this);
+						AddPhoneDialog dialog = new AddPhoneDialog(id_member,true, phoneDAO, MemberDialog.this, null);
 						dialog.setVisible(true);
 					}
 				});
@@ -308,6 +308,21 @@ public class MemberDialog extends JDialog {
 				scrollPane_1.setViewportView(tablePhone);
 				
 				JButton btnEditTel = new JButton("Edit tel.");
+				btnEditTel.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+					// vrat vybraný øádek
+						int row  = tablePhone.getSelectedRow();
+						
+						// kontrola, že je vybrany øádek
+						if(row < 0) {
+							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							return;
+						}
+						Phone tempPhone =  (Phone) tablePhone.getValueAt(row, PhonesTableModel.OBJECT_COL);
+						AddPhoneDialog dialog = new AddPhoneDialog(id_member,false, phoneDAO, MemberDialog.this, tempPhone);
+						dialog.setVisible(true);
+					}
+				});
 				btnEditTel.setBounds(485, 262, 89, 23);
 				kontakty.add(btnEditTel);
 				

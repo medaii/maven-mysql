@@ -63,12 +63,17 @@ public class AddMailDialog extends JDialog {
 		textFieldOdMail.setBounds(123, 23, 183, 21);
 		contentPanel.add(textFieldOdMail);
 		textFieldOdMail.setColumns(10);
-		textFieldOdMail.setText(mail.getName());
+		if (!newMail) {
+			textFieldOdMail.setText(mail.getName());
+		}
+		
 		
 		textFieldMail = new JTextField();
 		textFieldMail.setBounds(122, 55, 184, 21);
 		contentPanel.add(textFieldMail);
-		textFieldMail.setText(mail.getMail());
+		if (!newMail) {
+			textFieldMail.setText(mail.getMail());
+		}
 		textFieldMail.setColumns(10);
 		{
 			JPanel buttonPane = new JPanel();

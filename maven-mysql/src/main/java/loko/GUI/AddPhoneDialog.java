@@ -30,13 +30,22 @@ public class AddPhoneDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldJmeno;
 	private JTextField textFieldTelefon;
-
-
+	private Phone phone = null;
+	private Boolean newPhone;
 
 	/**
 	 * Create the dialog.
 	 */
-	public AddPhoneDialog(int id_member,IFPhoneDAO phoneDAO, MemberDialog memberDialog) {
+	public AddPhoneDialog(int id_member,Boolean newPhone,IFPhoneDAO phoneDAO, MemberDialog memberDialog, Phone phone) {
+		this.phone = phone;
+		this.newPhone = newPhone;
+		if (newPhone && (phone!=null)) {
+			setTitle("P\u0159id\u00E1n\u00ED telefonu");
+		} else {
+			this.phone = phone;
+			setTitle("Editace telefonu");
+			
+		}
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -59,6 +68,9 @@ public class AddPhoneDialog extends JDialog {
 			textFieldJmeno.setBounds(85, 24, 153, 20);
 			contentPanel.add(textFieldJmeno);
 			textFieldJmeno.setColumns(10);
+			if (!newPhone) {
+				textFieldJmeno.setText(phone.getName());
+			}
 		}
 		{
 			textFieldTelefon = new JTextField();
@@ -77,6 +89,9 @@ public class AddPhoneDialog extends JDialog {
 			textFieldTelefon.setBounds(83, 49, 155, 20);
 			contentPanel.add(textFieldTelefon);
 			textFieldTelefon.setColumns(10);
+			if (!newPhone) {
+				textFieldTelefon.setText(phone.getPhone());
+			}
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -91,8 +106,19 @@ public class AddPhoneDialog extends JDialog {
 						}
 						else {
 							//uložit telefon
-							Phone phone = new Phone(id_member, textFieldJmeno.getText(), textFieldTelefon.getText());
-							System.out.println(phoneDAO.addPhone(phone));
+							if (newPhone) {
+								Phone phone = new Phone(id_member, textFieldJmeno.getText(), textFieldTelefon.getText());
+								System.out.println(phoneDAO.addPhone(phone));
+							}
+							else {
+								phone.setName(textFieldJmeno.getText());
+								phone.setPhone(textFieldTelefon.getText());
+							 // kontrola uložení
+								if(phoneDAO.updatePhone(phone, phone.getId()) < 1) {
+										JOptionPane.showMessageDialog(null, "Chyba zápisu nezmìnìno!");
+									return;
+								}
+							}
 							
 							//zavreni okna a otevreni editace
 							setVisible(false);
@@ -102,7 +128,8 @@ public class AddPhoneDialog extends JDialog {
 							memberDialog.obnovitNahledPhone();
 							memberDialog.setVisible(true);
 						//potvrdit uložení
-							JOptionPane.showMessageDialog(null, "Uspìšnì pøidáno");
+							String zprava = newPhone? "Uspìšnì pøidáno":"Uspìšnì zmìnìno";
+							JOptionPane.showMessageDialog(null, zprava);
 							
 						}
 					}

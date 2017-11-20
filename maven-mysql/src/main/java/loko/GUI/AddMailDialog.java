@@ -28,14 +28,21 @@ public class AddMailDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldOdMail;
 	private JTextField textFieldMail;
+	private Mail mail = null;
 
 
 	/**
 	 * Create the dialog.
 	 */
-	public AddMailDialog(int id_member,IFMailsDAO mailsDAO, MemberDialog memberDialog) {
+	public AddMailDialog(int id_member,Boolean newMail,IFMailsDAO mailsDAO, MemberDialog memberDialog,Mail mail) {
 		memberDialog.setVisible(false);
-		setTitle("P\u0159id\u00E1n\u00ED mailu");
+		if (newMail && (mail!=null)) {
+			setTitle("P\u0159id\u00E1n\u00ED mailu");
+		} else {
+			this.mail = mail;
+			setTitle("Editace mailu");
+			
+		}
 		setBounds(100, 100, 450, 171);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -56,10 +63,12 @@ public class AddMailDialog extends JDialog {
 		textFieldOdMail.setBounds(123, 23, 183, 21);
 		contentPanel.add(textFieldOdMail);
 		textFieldOdMail.setColumns(10);
+		textFieldOdMail.setText(mail.getName());
 		
 		textFieldMail = new JTextField();
 		textFieldMail.setBounds(122, 55, 184, 21);
 		contentPanel.add(textFieldMail);
+		textFieldMail.setText(mail.getMail());
 		textFieldMail.setColumns(10);
 		{
 			JPanel buttonPane = new JPanel();
@@ -74,8 +83,19 @@ public class AddMailDialog extends JDialog {
 						}
 						else {
 							//uložit mail
-							Mail mail = new Mail(id_member, textFieldOdMail.getText(), textFieldMail.getText());
-							System.out.println(mailsDAO.addMail(mail));
+							if (newMail) {
+								Mail mail = new Mail(id_member, textFieldOdMail.getText(), textFieldMail.getText());								
+								System.out.println(mailsDAO.addMail(mail));
+							} else {
+								mail.setName(textFieldOdMail.getText());
+								mail.setMail(textFieldMail.getText());
+								
+								// kontrola uložení
+								if(mailsDAO.updateMail(mail, mail.getId()) < 1) {
+										JOptionPane.showMessageDialog(null, "Nezmìnìno!");
+									return;
+								}
+							}
 							
 							//zavreni okna a otevreni editace
 							setVisible(false);
@@ -85,7 +105,8 @@ public class AddMailDialog extends JDialog {
 							memberDialog.obnovitNahledMail();
 							memberDialog.setVisible(true);
 						//potvrdit uložení
-							JOptionPane.showMessageDialog(null, "Uspìšnì pøidáno");
+							String zprava = newMail? "Uspìšnì pøidáno":"Uspìšnì zmìnìno";
+							JOptionPane.showMessageDialog(null, zprava);
 							
 						}
 							

@@ -201,19 +201,19 @@ public class MemberDialog extends JDialog {
 				
 			}
 			{
-				JPanel panel = new JPanel();
-				tabbedPane.addTab("Kontakty", null, panel, null);
-				panel.setLayout(null);
+				JPanel kontakty = new JPanel();
+				tabbedPane.addTab("Kontakty", null, kontakty, null);
+				kontakty.setLayout(null);
 				
 				JButton btnNovMail = new JButton("Nov\u00FD mail");
 				btnNovMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						AddMailDialog dialog = new AddMailDialog(id_member, mailsDAO, MemberDialog.this);
+						AddMailDialog dialog = new AddMailDialog(id_member,true, mailsDAO, MemberDialog.this, null);
 						dialog.setVisible(true);
 					}
 				});
 				btnNovMail.setBounds(10, 262, 89, 23);
-				panel.add(btnNovMail);
+				kontakty.add(btnNovMail);
 				
 				JButton btnNovTelefon = new JButton("Nov\u00FD Telefon");
 				btnNovTelefon.addActionListener(new ActionListener() {
@@ -223,11 +223,11 @@ public class MemberDialog extends JDialog {
 					}
 				});
 				btnNovTelefon.setBounds(352, 262, 114, 23);
-				panel.add(btnNovTelefon);
+				kontakty.add(btnNovTelefon);
 				
 				JScrollPane scrollPane = new JScrollPane();
 				scrollPane.setBounds(10, 33, 303, 202);
-				panel.add(scrollPane);
+				kontakty.add(scrollPane);
 				
 				tableMails = new JTable();
 				
@@ -238,11 +238,27 @@ public class MemberDialog extends JDialog {
 				
 				JLabel lblMail = new JLabel("Mail:");
 				lblMail.setBounds(10, 11, 46, 14);
-				panel.add(lblMail);
+				kontakty.add(lblMail);
 				
 				JButton btnEditMailu = new JButton("Edit mailu");
+				btnEditMailu.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// vrat vybraný øádek
+						int row  = tableMails.getSelectedRow();
+						
+						// kontrola, že je vybrany øádek
+						if(row < 0) {
+							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							return;
+						}
+						Mail tempMail =  (Mail) tableMails.getValueAt(row, MailsTableModel.OBJECT_COL);
+						
+						AddMailDialog dialog = new AddMailDialog(id_member,false,mailsDAO, MemberDialog.this, tempMail );
+						dialog.setVisible(true);
+					}
+				});
 				btnEditMailu.setBounds(109, 262, 105, 23);
-				panel.add(btnEditMailu);
+				kontakty.add(btnEditMailu);
 				
 				JButton btnSmazatMail = new JButton("Smazat mail");
 				btnSmazatMail.setFont(new Font("Times New Roman", Font.PLAIN, 9));
@@ -280,11 +296,11 @@ public class MemberDialog extends JDialog {
 					}
 				});
 				btnSmazatMail.setBounds(224, 262, 89, 23);
-				panel.add(btnSmazatMail);
+				kontakty.add(btnSmazatMail);
 				
 				JScrollPane scrollPane_1 = new JScrollPane();
 				scrollPane_1.setBounds(352, 33, 339, 202);
-				panel.add(scrollPane_1);
+				kontakty.add(scrollPane_1);
 				
 				tablePhone = new JTable();
 				PhonesTableModel modelP = new PhonesTableModel(phones.getPhones());
@@ -293,7 +309,7 @@ public class MemberDialog extends JDialog {
 				
 				JButton btnEditTel = new JButton("Edit tel.");
 				btnEditTel.setBounds(485, 262, 89, 23);
-				panel.add(btnEditTel);
+				kontakty.add(btnEditTel);
 				
 				JButton btnSmazatTel = new JButton("Smazat tel.");
 				btnSmazatTel.addActionListener(new ActionListener() {
@@ -326,7 +342,7 @@ public class MemberDialog extends JDialog {
 					}
 				});
 				btnSmazatTel.setBounds(585, 262, 106, 23);
-				panel.add(btnSmazatTel);
+				kontakty.add(btnSmazatTel);
 			}
 		}
 		{

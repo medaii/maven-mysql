@@ -1,10 +1,12 @@
 package loko.tableModel;
 
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import loko.core.Mail;
 import loko.core.Member;
 
 public class MembersTableModel extends AbstractTableModel {
@@ -58,7 +60,24 @@ public class MembersTableModel extends AbstractTableModel {
 				return tempMembers.getLastName();
 			}
 		}
-
+		public Class getClassCol(int col) {
+			
+			switch (col) {
+				case LAST_NAME_COL:
+					return String.class;
+				case FIRST_NAME_COL:
+					return String.class;
+				case BIRTH_DAY:
+					return Date.class;
+				case ACTIVE:
+					return Integer.class;
+				case OBJECT_COL:
+					return Member.class;
+				default:
+					return String.class;
+				}
+		}
+		//vraceni typ hodnoty ve sloupci
 		@Override
 		public Class getColumnClass(int c) {
 			return getValueAt(0, c).getClass();

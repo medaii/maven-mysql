@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-
+import loko.core.Mail;
 import loko.core.Phone;
 /**
  * 
@@ -56,9 +56,22 @@ public class PhonesTableModel extends AbstractTableModel {
 			return tempPhone.getName();
 		}
 	}
-	
+	public Class getClassCol(int col) {
+		
+		switch (col) {
+			case NAME:
+				return String.class;
+			case PHONE:
+				return String.class;
+			case OBJECT_COL:
+				return Phone.class;
+			default:
+				return String.class;
+			}
+	}
+	//vraceni typ hodnoty ve sloupci
 	public Class getColumnClass(int c) {		
-			return getValueAt(0, c).getClass();
+			return getClassCol(c);
 	}
 
 }

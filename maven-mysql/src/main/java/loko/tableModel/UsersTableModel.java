@@ -71,7 +71,7 @@ public class UsersTableModel extends AbstractTableModel {
 				return String.class;
 		}
 	}
-
+	
 	// vráøí øádek
 	public Class getColumnClass(int c) {
 		return getClassCol(c);

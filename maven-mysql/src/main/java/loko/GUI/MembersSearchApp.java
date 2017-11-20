@@ -60,6 +60,7 @@ public class MembersSearchApp  extends JFrame{
 	private JTable tableMembers;
 	private JTextField textFieldSearchName;
 	private JTable tableUser;
+	private JButton btnPidanUivatele;
 
 	/**
 	 * Launch the application.
@@ -296,7 +297,12 @@ public class MembersSearchApp  extends JFrame{
 		JPanel panel_1 = new JPanel();
 		User.add(panel_1, BorderLayout.SOUTH);
 		
-		JButton btnPidanUivatele = new JButton("P\u0159idan\u00ED u\u017Eivatele");
+		btnPidanUivatele = new JButton("P\u0159idan\u00ED u\u017Eivatele");
+		btnPidanUivatele.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		btnPidanUivatele.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		panel_1.add(btnPidanUivatele);
 		
@@ -308,6 +314,7 @@ public class MembersSearchApp  extends JFrame{
 		btnZmnaHesla.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		panel_1.add(btnZmnaHesla);
 		refreshUsersView();
+		btnPidanUivatele.setEnabled(admin);
 		initialize();
 	}
 

@@ -28,7 +28,7 @@ public class DBConnectionSimpleManager implements IFDBConectionManager{
 		else {
 			//kontrolo timeout connection
 			try {
-				if (con.isClosed()) {
+				if (con.isValid(2)) {
 					createConnection();
 					LOGGER.info("Obnovené pøipojení");
 				}

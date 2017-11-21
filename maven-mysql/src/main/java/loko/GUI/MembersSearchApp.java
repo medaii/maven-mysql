@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import loko.DAO.*;
 import loko.core.MemberList;
 import loko.core.User;
+import loko.loger.LoggerLoko;
 import loko.tableModel.MembersListTableModel;
 import loko.tableModel.UsersTableModel;
 
@@ -31,15 +32,11 @@ import javax.swing.JTextField;
 
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import java.awt.FlowLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import java.awt.GridLayout;
+
+
 /**
  * 
  * @author Erik Markoviè
@@ -70,7 +67,14 @@ public class MembersSearchApp  extends JFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-
+					
+					try {
+            LoggerLoko.setup();
+					} catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Problems s vytvoreni logger souboru.");
+					}
+					
 					MembersDAO membersDAO = new MembersDAO();
 					UserDAO userDAO = new UserDAO();
 					

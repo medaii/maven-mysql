@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 //import javax.swing.JOptionPane;
 
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 public class DBSqlExecutor {
 	private static DBSqlExecutor instance = null;
 	private DBConnectionSimpleManager dbConnectionSimpleManager;
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	
 	private DBSqlExecutor() {
 			
 		String url, user, password;

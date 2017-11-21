@@ -9,10 +9,12 @@ C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\GUI\UserLoginDialog
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\DAO\IFMember.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\DB\DBSqlExecutor.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\DAO\MailsDAOImpl.java
+C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\loger\LoggerLoko.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\DAO\IFPhoneDAO.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\DAO\UserDAO.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\DAO\PasswordUtils.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\GUI\AddMailDialog.java
+C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\tableModel\UsersTableModel.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\GUI\AddPhoneDialog.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\tableModel\MembersListTableModel.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\core\Mail.java
@@ -26,6 +28,7 @@ C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\DAO\IFMailsDAO.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\GUI\AddMemberDialog.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\DAO\PhonesDAOImpl.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\tableModel\MailsTableModel.java
+C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\loger\MyHtmlFormatter.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\core\MemberList.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\core\MailsMember.java
 C:\Users\Dave\git\maven-mysql\maven-mysql\src\main\java\loko\GUI\MemberDialog.java

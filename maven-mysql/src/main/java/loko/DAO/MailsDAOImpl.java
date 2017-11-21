@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import loko.DB.DBSqlExecutor;
 import loko.core.Mail;
 import loko.core.MailsMember;
 
+/**
+ * 
+ * @author Erik Markoviè
+ *
+ */
 public class MailsDAOImpl implements IFMailsDAO {
 	private DBSqlExecutor sqlExecutor = null;
-
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	
 	/*public MailsDAO() {
 		con = DBconn.getConn();
 	}*/
@@ -76,7 +83,7 @@ public class MailsDAOImpl implements IFMailsDAO {
 		for (String[] a : r) {
 			Mail temp = convertRowToMail(a);
 			if (temp == null) {
-				System.out.println("chyba pole");
+				LOGGER.warning("Chyba pole!");
 			} else {
 				if (id_meber == temp.getId_member()) {
 					mails.setMails(temp);

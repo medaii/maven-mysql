@@ -2,6 +2,8 @@ package loko.GUI;
 
 import java.awt.EventQueue;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -29,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.omg.PortableInterceptor.LOCATION_FORWARD;
 
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
@@ -58,6 +61,7 @@ public class MembersSearchApp  extends JFrame{
 	private JTextField textFieldSearchName;
 	private JTable tableUser;
 	private JButton btnPidanUivatele;
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	/**
 	 * Launch the application.
@@ -70,6 +74,7 @@ public class MembersSearchApp  extends JFrame{
 					
 					try {
             LoggerLoko.setup();
+            LOGGER.setLevel(Level.WARNING);
 					} catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Problems s vytvoreni logger souboru.");
@@ -214,7 +219,7 @@ public class MembersSearchApp  extends JFrame{
 						membersList = membersDAO.getAllMemberList(true);
 					}
 					for (MemberList temp : membersList) {
-						System.out.println(temp);
+						LOGGER.info("Vyhledavani:\r\n" + temp.toString());
 					}
 					//vytvoøení modelu pro naplnìní tabulky
 					MembersListTableModel model = new MembersListTableModel(membersList);
@@ -353,7 +358,7 @@ public class MembersSearchApp  extends JFrame{
 
 			tableMembers.setModel(model);
 		} catch (Exception exc) {
-			System.out.println("Chyba vytvoreni modelu - " + exc);
+			LOGGER.warning("Chyba vytvoreni modelu - " + exc);
 			JOptionPane.showMessageDialog(this, "Error: " + exc, "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}

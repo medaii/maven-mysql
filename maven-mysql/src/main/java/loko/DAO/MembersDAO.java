@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import loko.DB.DBSqlExecutor;
 import loko.core.Mail;
@@ -24,6 +25,7 @@ import loko.core.PhonesMeber;
 
 public class MembersDAO {
 	private DBSqlExecutor con;
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	// vytvoøení konstruktoru
 	public MembersDAO() {
@@ -136,7 +138,7 @@ public class MembersDAO {
 		for (String[] a : r) {			
 			Member temp = convertRowToMember(a);
 			if(temp == null) {
-				System.out.println("chybne pole");
+				LOGGER.warning("Chybné pole");
 			}
 			else {
 				list.add(temp);
@@ -172,7 +174,7 @@ public class MembersDAO {
 			Member member = convertRowToMember(a);
 			
 			if(member == null) {
-				System.out.println("chybne pole");
+				LOGGER.warning("Chybné pole");
 			}
 			else {
 				
@@ -222,14 +224,14 @@ public class MembersDAO {
 					+ " where kjmeno like '"+ word + "' OR pjmeno like '" + word + "' " ;
 			
 		}
-		System.out.println(dotaz);
+		
 		con.getData(dotaz,r);
 		
 		for (String[] a : r) {
 			Member member = convertRowToMember(a);
 			
 			if(member == null) {
-				System.out.println("chybne pole");
+				LOGGER.warning("Chybné pole");
 			}
 			else {				
 				List<Mail> mails = new ArrayList<>();
@@ -248,8 +250,7 @@ public class MembersDAO {
 				} else {
 					phones = null;
 				}
-				System.out.println("p5e "+ mails);
-				
+				LOGGER.fine("Mail" + mails);
 				
 				MemberList memberList = new MemberList(member, mails, phones);
 				list.add(memberList);
@@ -292,7 +293,6 @@ public class MembersDAO {
 										+ "AND clen_seznam.id = clen_trvala_adresa.id_osoby AND clen_seznam.id = cshRegC.id_osoby "
 										+ "AND clen_seznam.id = " + id  ;
 		con.getData(dotaz,r);
-		System.out.println(dotaz);
 		for (String[] a : r) {			
 			memberFull = convertRowToMemberFull(a);
 		}

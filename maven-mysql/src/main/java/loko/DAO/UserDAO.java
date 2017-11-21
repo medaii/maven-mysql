@@ -2,17 +2,20 @@ package loko.DAO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import loko.DB.DBSqlExecutor;
 import loko.core.User;
 
-/*
- *Prostredník mezi gui user a db user
+/**
  * 
-*/
+ * @author Erik Markoviè
+ *Prostredník mezi gui user a db user
+ */
 
 public class UserDAO {
 	private DBSqlExecutor conn;
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	// konstruktor
 	public UserDAO() {
@@ -32,20 +35,16 @@ public class UserDAO {
 				boolean admin = temp[5].equals("1") ? true : false;
 				
 				//vytvoreni user
-				//System.out.println(" "+temp[0] +" "+ lastName +" "+ firstName +" "+ email +" "+ admin);
 				tempUser = new User(id, lastName, firstName, email, admin);
 			}
 			else {
 				tempUser = null;			
 			}
 		} catch (Exception e) {
-			System.out.println("COvertROw user - " + e);
+			LOGGER.warning("Chyba pøevodu øádku z DB do typu USER - " + e);
 			tempUser = null;
 		}
-		
-		
 		return tempUser;
-		
 	}
 	public List<User> getUsers(boolean admin, int userId){
 		List<User> list = new ArrayList<User>();
@@ -67,7 +66,7 @@ public class UserDAO {
 			for (String[] a : r) {			
 				User tempUser = convertRowToUser(a);
 				if(tempUser == null) {
-					System.out.println("chybne pole");
+					LOGGER.warning("Chyba pole!");
 				}
 				else {
 					list.add(tempUser);
@@ -92,8 +91,7 @@ public class UserDAO {
 		
 		// porovnání zadaného hesla a zakodovaného hesla v DB
 		result = PasswordUtils.checkPassword(plainTextPassword, encryptedPasswordFromDatabase);
-		
-		System.out.println("vysledek kontroly hesla - " + result);
+		LOGGER.info("Výsledek kontroly hesla - " + (result?"Správené heslo":"Nesprávné heslo"));
 		return result;
 	}
 	private String getEncrpytedPassword(int id) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import loko.DB.DBSqlExecutor;
 
@@ -17,6 +18,7 @@ import loko.core.PhonesMeber;
 
 public class PhonesDAOImpl implements IFPhoneDAO {
 	private DBSqlExecutor sqlExecutor = null;
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	public PhonesDAOImpl(DBSqlExecutor sqlExecutor) {
 		this.sqlExecutor = sqlExecutor;
@@ -81,7 +83,7 @@ public class PhonesDAOImpl implements IFPhoneDAO {
 		for (String[] a : r) {
 			Phone temp = convertRowToPhone(a);
 			if (temp == null) {
-				System.out.println("chyba pole");
+				LOGGER.warning("Chyba pole!");
 			} else {
 				if (id_meber == temp.getId_member()) {
 					phones.setPhones(temp);
@@ -160,6 +162,7 @@ public class PhonesDAOImpl implements IFPhoneDAO {
 			tempPhone = new Phone(id, id_member, name, phone);
 
 		} else {
+			LOGGER.warning("Chyba pøi pøevodu øádky z DB do typu Phone");
 			tempPhone = null;
 		}
 

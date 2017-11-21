@@ -18,6 +18,7 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.logging.Logger;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 /**
@@ -32,7 +33,7 @@ public class AddPhoneDialog extends JDialog {
 	private JTextField textFieldTelefon;
 	private Phone phone = null;
 	private Boolean newPhone;
-
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	/**
 	 * Create the dialog.
 	 */
@@ -108,13 +109,15 @@ public class AddPhoneDialog extends JDialog {
 							//uložit telefon
 							if (newPhone) {
 								Phone phone = new Phone(id_member, textFieldJmeno.getText(), textFieldTelefon.getText());
-								System.out.println(phoneDAO.addPhone(phone));
+								int id_newphone = phoneDAO.addPhone(phone);
+								LOGGER.info("Èíslo bylo uloženo pod id: " + id_newphone);
 							}
 							else {
 								phone.setName(textFieldJmeno.getText());
 								phone.setPhone(textFieldTelefon.getText());
 							 // kontrola uložení
 								if(phoneDAO.updatePhone(phone, phone.getId()) < 1) {
+										LOGGER.warning("Chyba zpisu v DB a záznam telefonu nezmìnìn!");
 										JOptionPane.showMessageDialog(null, "Chyba zápisu nezmìnìno!");
 									return;
 								}
@@ -129,6 +132,7 @@ public class AddPhoneDialog extends JDialog {
 							memberDialog.setVisible(true);
 						//potvrdit uložení
 							String zprava = newPhone? "Uspìšnì pøidáno":"Uspìšnì zmìnìno";
+							LOGGER.info(zprava + " telefoní èíslo.");
 							JOptionPane.showMessageDialog(null, zprava);
 							
 						}

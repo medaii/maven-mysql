@@ -51,7 +51,7 @@ public class DBSqlExecutor {
 			ResultSet rs = st.executeQuery(query);
 			
 			// text do konzole
-			System.out.println("Read form DB - " + sql);
+			LOGGER.info("Ètení z DB " + sql);
 			
 			ResultSetMetaData metaData = rs.getMetaData(); // metadata
 			int pocetSloupcu = metaData.getColumnCount(); //pocet sloupcu
@@ -73,8 +73,8 @@ public class DBSqlExecutor {
 				}
 				a.add(b);
 			}
-		} catch (Exception e) {
-			System.out.println("Chyba - " + e);
+		} catch (SQLException e) {
+			LOGGER.warning("Chyba pøi ètení z DB - " + sql +  e);
 		}
 	}
 	//smazaní záznamu v DB
@@ -88,10 +88,11 @@ public class DBSqlExecutor {
 			// set param
 			myStmt.setInt(1, id);
 			// execute SQL
+			LOGGER.info("Smazání øádku z DB " + dotaz + " id: " + id);
 			return myStmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println("SQL delete error- " + e);
+			LOGGER.warning("Chyba pøi mazání øádku " + dotaz + " id: " + id + "chyba " + e);
 			return -1;
 		}
 	}
@@ -101,7 +102,7 @@ public class DBSqlExecutor {
 	 * hodonoty - parametry do dotazu
 	 */
 	public int getCountRow(String dotaz, String[] hodnoty) {
-			  System.out.println("update " + dotaz); // protisk do terminalu
+			  
 			  int pocetRadku = 0;
 			  // pøipojení k DB
 			  try(PreparedStatement rs = dbConnectionSimpleManager.getConnection().prepareStatement(dotaz)) {
@@ -116,17 +117,17 @@ public class DBSqlExecutor {
 					//naètení poøadí posledního øádku
 					pocetRadku = r.getRow();			
 					
-					System.out.println("Dotaz na poèet øádku - " + pocetRadku);// protisk do terminalu
+					LOGGER.info("Poèet øádku " + dotaz + " poèet: " + pocetRadku);
 					
 					// pro tisk do terminalu
 					r.beforeFirst();
 					while (r.next()) {
-						System.out.println("ucet: " + r.getString(1));
+						LOGGER.fine("pocet: " + r.getString(1));
 					}
 					
 					return pocetRadku;  
 			} catch (SQLException e) {
-				System.out.println(e);
+				LOGGER.warning("Chyba pøi mazání øádku " + e);
 				return -1;
 			}
 			    
@@ -138,18 +139,17 @@ public class DBSqlExecutor {
 	 */
 	
 	public int setDotaz(String dotaz, String[] hodnoty) {
-		  //System.out.println("update " + dotaz);
 		  try(PreparedStatement rs = dbConnectionSimpleManager.getConnection().prepareStatement(dotaz)) {
 			  //doplnìní hodnot
 			  for (int i = 0; i < hodnoty.length; i++) {
 				  rs.setString(i+1, hodnoty[i]);
 			}
+				LOGGER.info("Nastavení øádku " + dotaz);
 			 //provedení pøíkazu 
 			return rs.executeUpdate();
 			  
 		} catch (SQLException e) {
-			
-			System.out.println(e);
+			LOGGER.warning("Chyba pøi obnovì øádku " + e);
 			return -1;
 		}
 		  
@@ -175,10 +175,11 @@ public class DBSqlExecutor {
 			if (res.next()) {
 			   id = res.getInt(1);
 			}
+			LOGGER.info("Vložení øádku " + dotaz + " id: " + id);
 			return id;
 		} catch (SQLException e) {
 			
-			System.out.println(e);
+			LOGGER.warning("Chyba pøi vkladaní øádku " + e);
 			return -1;
 		}
 		  

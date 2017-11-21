@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 
 import com.sun.xml.internal.messaging.saaj.util.TeeInputStream;
@@ -46,7 +47,7 @@ public class AddMemberDialog extends JDialog {
 	private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
 	private final String[] role = {"Hráè", "Hráè Bèka", " Hráè-souzenci" , "Èinnovník", "LimitkaD", "LimitkaV", "Rodiè"};
-	
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	
 	private final JPanel contentPanel = new JPanel();
@@ -332,7 +333,6 @@ public class AddMemberDialog extends JDialog {
 								phoneDAO.addPhone(phone);
 							}
 							
-							System.out.println(id_member);
 							
 							//zavreni okna a otevreni editace
 							setVisible(false);
@@ -342,6 +342,7 @@ public class AddMemberDialog extends JDialog {
 							membersSearchApp.refreshMembersView();
 							
 						//potvrdit uložení
+							LOGGER.info("Uspìšnì pøidaný èlen.");
 							JOptionPane.showMessageDialog(null, "Uspìšmì pøidáno");
 							// otevreni editace
 													

@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 /**
  * 
@@ -29,7 +30,7 @@ public class AddMailDialog extends JDialog {
 	private JTextField textFieldOdMail;
 	private JTextField textFieldMail;
 	private Mail mail = null;
-
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	/**
 	 * Create the dialog.
@@ -89,14 +90,17 @@ public class AddMailDialog extends JDialog {
 						else {
 							//uložit mail
 							if (newMail) {
-								Mail mail = new Mail(id_member, textFieldOdMail.getText(), textFieldMail.getText());								
-								System.out.println(mailsDAO.addMail(mail));
+								Mail mail = new Mail(id_member, textFieldOdMail.getText(), textFieldMail.getText());
+								int id_newmail = mailsDAO.addMail(mail);
+								LOGGER.info("Vytvoøené nový mail pod id = " + id_newmail);
+								
 							} else {
 								mail.setName(textFieldOdMail.getText());
 								mail.setMail(textFieldMail.getText());
 								
 								// kontrola uložení
 								if(mailsDAO.updateMail(mail, mail.getId()) < 1) {
+										LOGGER.warning("Chyba zápisu do DB a mail nezmìnìn!");
 										JOptionPane.showMessageDialog(null, "Nezmìnìno!");
 									return;
 								}
@@ -111,6 +115,7 @@ public class AddMailDialog extends JDialog {
 							memberDialog.setVisible(true);
 						//potvrdit uložení
 							String zprava = newMail? "Uspìšnì pøidáno":"Uspìšnì zmìnìno";
+							LOGGER.info(zprava); 
 							JOptionPane.showMessageDialog(null, zprava);
 							
 						}

@@ -6,7 +6,11 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
-
+/**
+ * 
+ * @author Erik Markoviè
+ *
+ */
 public class DBConnectionSimpleManager implements IFDBConectionManager{
 	private Connection con;
 	private String url, user, password;
@@ -28,7 +32,7 @@ public class DBConnectionSimpleManager implements IFDBConectionManager{
 		else {
 			//kontrolo timeout connection
 			try {
-				if (con.isValid(2)) {
+				if (!con.isValid(1)) {
 					createConnection();
 					LOGGER.info("Obnovené pøipojení");
 				}
@@ -47,7 +51,7 @@ public class DBConnectionSimpleManager implements IFDBConectionManager{
 	private void createConnection() {
 		try {
 			con = DriverManager.getConnection(url,user,password);
-			LOGGER.info("Pøipojeno k DB.");
+			LOGGER.warning("Pøipojeno k DB.");
 		} catch (SQLException e) {
 				LOGGER.severe("Chyba pøi vytvoøení pøipojení - " + e);
 				JOptionPane.showMessageDialog(null, "Error connection");

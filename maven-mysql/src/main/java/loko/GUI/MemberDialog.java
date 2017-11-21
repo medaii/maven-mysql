@@ -32,6 +32,7 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -50,7 +51,7 @@ public class MemberDialog extends JDialog {
 	private JTextField textFieldFirstName;
 	private JTextField textFieldLastName;
 	private JDateChooser dateChooser;
-
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	private MembersDAO membersDAO;
 	private MembersSearchApp membersSearchApp;
@@ -82,7 +83,6 @@ public class MemberDialog extends JDialog {
 		this.phones = phoneDAO.getPhonesMember(id_member);
 		
 		this.memberFull = membersDAO.getMemberFull(id_member);
-		System.out.println(memberFull);
 		this.mails = mailsDAO.getMailsMember(id_member);
 		this.membersSearchApp =  membersSearchApp;
 		
@@ -282,13 +282,13 @@ public class MemberDialog extends JDialog {
 						}
 						Mail tempMail =  (Mail) tableMails.getValueAt(row, MailsTableModel.OBJECT_COL);
 						
-						System.out.println(id_member);
-						
+						LOGGER.info("Maže se member id = " + id_member);
 					//smazat zaznam
 						mailsDAO.deleteMail(tempMail.getId());
 					//refresh tabulkz
 						obnovitNahledMail();
 						// show success message
+						LOGGER.info("Mail uspìšnì smazán.");
 						JOptionPane.showMessageDialog(null,
 								"Mail uspìšnì smazán.", "Mail smazán",
 								JOptionPane.INFORMATION_MESSAGE);
@@ -337,7 +337,7 @@ public class MemberDialog extends JDialog {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
 							return;
 						}
-					//potvrzeni že opravdu chcete smazat
+						//potvrzeni že opravdu chcete smazat
 						int response = JOptionPane.showConfirmDialog(
 								null, "Opravdu chcete smazat tento telefon?", "Confirm", 
 								JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -346,11 +346,12 @@ public class MemberDialog extends JDialog {
 						}
 						Phone tempPhone =  (Phone) tablePhone.getValueAt(row, PhonesTableModel.OBJECT_COL);
 						
-					//smazat zaznam
+						//smazat zaznam
 						phoneDAO.deletePhone(tempPhone.getId());
-					//refresh tabulkz
+						//refresh tabulkz
 						obnovitNahledPhone();
 						// show success message
+						LOGGER.info("Telefoní èíslo smazáno.");
 						JOptionPane.showMessageDialog(null,
 								"Telefon uspìšnì smazán.", "Telefon smazán",
 								JOptionPane.INFORMATION_MESSAGE);
@@ -385,7 +386,7 @@ public class MemberDialog extends JDialog {
 						if (chckbxAktivni.isSelected()) {
 							active = 1;
 						} 
-						System.out.println(dateChooser.getDateFormatString() + "  "+ dateChooser.getDate());
+						//System.out.println(dateChooser.getDateFormatString() + "  "+ dateChooser.getDate());
 						
 						memberFull.setFirstName(firstName);
 						memberFull.setLastName(lastName);
@@ -395,7 +396,6 @@ public class MemberDialog extends JDialog {
 						memberFull.setTrvaleBydliste(trvaleBydliste);
 						memberFull.setChfRegistrace(chfRegistrace);
 						memberFull.setActive(active);
-						System.out.println("id role : " + id_kategorie_odd);
 						memberFull.setId_odd_kategorie(id_kategorie_odd);
 						
 						membersDAO.updateMember(memberFull, memberFull.getId());

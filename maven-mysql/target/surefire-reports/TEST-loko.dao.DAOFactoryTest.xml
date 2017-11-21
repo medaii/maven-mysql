@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="2" failures="0" name="loko.dao.DAOFactoryTest" time="0.028" errors="0" skipped="0">
+<testsuite tests="2" failures="0" name="loko.dao.DAOFactoryTest" time="0.038" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_144\jre\bin"/>
@@ -27,7 +27,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="user.variant" value=""/>
     <property name="os.name" value="Windows 8"/>
-    <property name="classworlds.conf" value="C:\Users\Dave\eclipse-workspace\.metadata\.plugins\org.eclipse.m2e.launching\launches\m2conf333505493481509393.tmp"/>
+    <property name="classworlds.conf" value="C:\Users\Dave\eclipse-workspace\.metadata\.plugins\org.eclipse.m2e.launching\launches\m2conf2743227267328952217.tmp"/>
     <property name="sun.jnu.encoding" value="Cp1250"/>
     <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_144\jre\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:/Program Files/Java/jre1.8.0_144/bin/server;C:/Program Files/Java/jre1.8.0_144/bin;C:/Program Files/Java/jre1.8.0_144/lib/amd64;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Programy\apache-maven-3.0.4\bin;C:\Python27;C:\Programy\mongodb-2.4;C:\Program Files (x86)\GNU\GnuPG\pub;C:\Program Files\Java\jdk1.7.0_17\bin;C:\Program Files (x86)\AMD\ATI.ACE\Core-Static;E:\NET\CMS_client\;E:\NET\CMS_client\cs-CZ\;C:\Program Files\Git\cmd;C:\Users\Dave\Desktop;;."/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
@@ -44,7 +44,7 @@
     <property name="java.vm.specification.version" value="1.8"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_144\jre"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -B test"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -B package"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="user.language" value="cs"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
@@ -61,6 +61,6 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="loko.dao.DAOFactoryTest" name="testCreateNotExistedDAO" time="0.021"/>
-  <testcase classname="loko.dao.DAOFactoryTest" name="testCreateMailDAO" time="0.007"/>
+  <testcase classname="loko.dao.DAOFactoryTest" name="testCreateNotExistedDAO" time="0.026"/>
+  <testcase classname="loko.dao.DAOFactoryTest" name="testCreateMailDAO" time="0.012"/>
 </testsuite>

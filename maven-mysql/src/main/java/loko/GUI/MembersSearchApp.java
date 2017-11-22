@@ -329,7 +329,9 @@ public class MembersSearchApp  extends JFrame{
 			}
 		});
 		btnSmazatlena.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		panel_3.add(btnSmazatlena);
+		if(theAdmin) {
+			panel_3.add(btnSmazatlena);			
+		}
 		
 		JScrollPane scrollPane = new JScrollPane();
 		membersPanel.add(scrollPane, BorderLayout.CENTER);

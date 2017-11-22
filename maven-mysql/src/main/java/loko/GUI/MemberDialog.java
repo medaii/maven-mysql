@@ -39,6 +39,8 @@ import javax.swing.JScrollPane;
 import java.awt.Font;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 /**
  * 
  * @author Dave
@@ -162,6 +164,18 @@ public class MemberDialog extends JDialog {
 				panel_1.add(lblRegsh);
 				
 				textFieldCHFReg = new JTextField();
+				textFieldCHFReg.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyTyped(KeyEvent e) {
+						char c = e.getKeyChar();
+			      if (!((c >= '0') && (c <= '9') ||
+			         (c == KeyEvent.VK_BACK_SPACE) ||
+			         (c == KeyEvent.VK_DELETE))) {
+			        getToolkit().beep();
+			        e.consume();
+			      }
+					}
+				});
 				textFieldCHFReg.setBounds(139, 177, 114, 20);
 				panel_1.add(textFieldCHFReg);
 				textFieldCHFReg.setColumns(10);

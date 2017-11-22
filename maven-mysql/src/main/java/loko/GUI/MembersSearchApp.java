@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.JButton;
@@ -38,6 +39,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 /**
@@ -281,11 +284,8 @@ public class MembersSearchApp  extends JFrame{
 					JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
 					return;
 				}
-				MemberList tempmemberList =  (MemberList) tableMembers.getValueAt(row, MembersListTableModel.OBJECT_COL);
-				int id_member = tempmemberList.getId();
 				
-				MemberDialog dialog = new MemberDialog(id_member,membersDAO,mailsDAO, phoneDAO, MembersSearchApp.this);
-				dialog.setVisible(true);
+				editaceMember(row);
 			}
 		});
 		panel_3.add(btnEditovatlena);
@@ -337,6 +337,18 @@ public class MembersSearchApp  extends JFrame{
 		membersPanel.add(scrollPane, BorderLayout.CENTER);
 		
 		tableMembers = new JTable();
+		tableMembers.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent mouseEvent) {
+        JTable table =(JTable) mouseEvent.getSource();
+        Point point = mouseEvent.getPoint();
+        int row = table.rowAtPoint(point);
+        if (mouseEvent.getClickCount() == 2) {
+            LOGGER.fine("doubleCLick na radek " + row);
+            editaceMember(row);
+        }
+			}
+		});
 		scrollPane.setViewportView(tableMembers);
 		tableMembers.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		
@@ -373,7 +385,17 @@ public class MembersSearchApp  extends JFrame{
 		btnPidanUivatele.setEnabled(admin);
 		initialize();
 	}
-
+	
+	/**
+	 * pøechod na editaci èlena
+	 */
+	public void editaceMember(int row) {
+		MemberList tempmemberList =  (MemberList) tableMembers.getValueAt(row, MembersListTableModel.OBJECT_COL);
+		int id_member = tempmemberList.getId();
+		
+		MemberDialog dialog = new MemberDialog(id_member,membersDAO,mailsDAO, phoneDAO, MembersSearchApp.this);
+		dialog.setVisible(true);
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */

@@ -200,6 +200,7 @@ public class MembersSearchApp  extends JFrame{
 		textFieldSearchName.setColumns(10);
 		
 		JButton btnHledat = new JButton("Hledat");
+		btnHledat.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnHledat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// zislat vyhledavane slovo
@@ -240,6 +241,7 @@ public class MembersSearchApp  extends JFrame{
 		panel.add(btnHledat, gbc_btnHledat);
 		
 		JLabel lblKategorie = new JLabel("Dle kategorie:");
+		lblKategorie.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblKategorie = new GridBagConstraints();
 		gbc_lblKategorie.insets = new Insets(0, 0, 0, 5);
 		gbc_lblKategorie.anchor = GridBagConstraints.EAST;
@@ -258,6 +260,7 @@ public class MembersSearchApp  extends JFrame{
 		membersPanel.add(panel_3, BorderLayout.SOUTH);
 		
 		JButton btnAddMember = new JButton("P\u0159idat \u010Dlena");
+		btnAddMember.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnAddMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AddMemberDialog dialog = new AddMemberDialog(membersDAO,mailsDAO, phoneDAO, MembersSearchApp.this);
@@ -267,6 +270,7 @@ public class MembersSearchApp  extends JFrame{
 		panel_3.add(btnAddMember);
 		
 		JButton btnEditovatlena = new JButton("Editovat \u010Dlena");
+		btnEditovatlena.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnEditovatlena.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// vrat vybraný øádek
@@ -285,6 +289,47 @@ public class MembersSearchApp  extends JFrame{
 			}
 		});
 		panel_3.add(btnEditovatlena);
+		
+		JButton btnSmazatlena = new JButton("Smazat \u010Dlena");
+		btnSmazatlena.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// vrat vybraný øádek
+				int row  = tableMembers.getSelectedRow();
+				
+				// kontrola, že je vybrany øádek
+				if(row < 0) {
+					JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+					return;
+				}
+				//potvrzeni že opravdu chcete smazat
+				int response = JOptionPane.showConfirmDialog(
+						null, "Opravdu chcete smazat mail?", "Confirm", 
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (response != JOptionPane.YES_OPTION) {
+					return;
+				}
+				//nadèteni z vypisu member
+				MemberList tempmemberList =  (MemberList) tableMembers.getValueAt(row, MembersListTableModel.OBJECT_COL);
+				int id_member = tempmemberList.getId();
+				// smazaní zaznamu
+				String zprava = "id: " + id_member;
+				if(membersDAO.deleteMember(id_member) > 0) {
+					LOGGER.warning("Smazán záznam èlena id:" + id_member);
+					zprava += " byl smazán.";
+					//refresh tabulky
+					refreshMembersView();
+				}
+				else {
+						LOGGER.warning("záznam nebyl úspìšnì smazán");
+						zprava += " se nepodaøilo smazat";
+				}
+				JOptionPane.showMessageDialog(null,
+						zprava,"Member smazán",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+		btnSmazatlena.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		panel_3.add(btnSmazatlena);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		membersPanel.add(scrollPane, BorderLayout.CENTER);
@@ -381,4 +426,5 @@ public class MembersSearchApp  extends JFrame{
 		}
 		
 	}
+	
 }

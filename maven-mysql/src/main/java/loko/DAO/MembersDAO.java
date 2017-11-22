@@ -24,17 +24,71 @@ import loko.core.PhonesMeber;
  */
 
 public class MembersDAO {
-	private DBSqlExecutor con;
+	private DBSqlExecutor sqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	// vytvoøení konstruktoru
 	public MembersDAO() {
-		con = DBSqlExecutor.getInstance();
+		sqlExecutor = DBSqlExecutor.getInstance();
 	}
-	
+	/**
+	 * 
+	 * metoda maže záznam o èlenovy a jeho další udaje jako telefon, mail, trvale bydlištì, rodné èíslo, cshreg
+	 * @param id -  èlena
+	 * @return
+	 */
 	public int deleteMember(int id) {
+		// vytvoreni pøistupu k mailùm a telefonum
+		IFMailsDAO mailsDao = DAOFactory.createDAO(IFMailsDAO.class);
+		IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
+		MailsMember mails = mailsDao.getMailsMember(id);
+		PhonesMeber phones = phoneDAO.getPhonesMember(id);
 		
-		return -1;
+		if (mails != null) {
+			for (Mail mail : mails.getMails()) {
+				if(mailsDao.deleteMail(mail.getId()) > 0) {
+					LOGGER.warning("Mail id - " + mail.getId() + " smazán.");
+				}
+				else {
+
+					LOGGER.warning("CHYBA. Mail id - " + mail.getId() + " není smazán.");
+				}
+			}
+		}
+		if (phones != null) {
+			for (Phone phone : phones.getPhones()) {
+				if(phoneDAO.deletePhone(phone.getId()) > 0) {
+					LOGGER.warning("Telefon id - " + phone.getId() + " smazán.");
+				}
+				else {
+
+					LOGGER.warning("CHYBA. Telefon id - " + phone.getId() + " není smazán.");
+				}
+			}
+		}
+		//smazání trvalého bydlištì
+		String dotaz = "DELETE FROM clen_trvala_adresa " + "WHERE id_osoby = ?";
+		String zprava;
+		zprava = (sqlExecutor.deleteRow(dotaz, id)> 0)?"Trvale byslištì smazáno. id èlena:" + id :
+																										"Trvalé bydlištì nesmazáno id èlena:" + id;
+		LOGGER.warning(zprava);
+		
+		//smazaní rodného èísla
+		dotaz = "DELETE FROM clen_rodne_cislo " + "WHERE id_osoby = ?";
+		zprava = (sqlExecutor.deleteRow(dotaz, id)> 0)?"Rodné èíslo smazáno. id èlena:" + id:
+																									"Rodné èíslo bydlištì nesmazáno id èlena:" + id;
+		LOGGER.warning(zprava);
+		
+		//smazaní èísla registrace
+		dotaz = "DELETE FROM cshRegC " + "WHERE id_osoby = ?";
+		zprava = (sqlExecutor.deleteRow(dotaz, id)> 0)?"Èíslo registrace smazáno. id èlena:" + id:
+																									"Èíslo registrace nesmazáno. id èlena:" + id;
+		LOGGER.warning(zprava);
+		
+		//smazaní èlena ze seznamu
+		dotaz = "DELETE FROM clen_seznam " + "WHERE id = ?";
+		return sqlExecutor.deleteRow(dotaz, id);
+
 	}
 	/**
 	 * 
@@ -47,20 +101,22 @@ public class MembersDAO {
 		String[] hodnoty = { member.getFirstName(), member.getLastName(),String.valueOf(member.getBirthDay()),
 				member.getNote(),String.valueOf(member.getActive()), String.valueOf(member.getId_odd_kategorie()),
 				String.valueOf(member.getEnterDate())};
-		int id = con.insertDotaz(dotaz, hodnoty);
+		int id = sqlExecutor.insertDotaz(dotaz, hodnoty);
 		
 		if(id > 0 ) {
 			dotaz = "insert into clen_rodne_cislo" + " (id_osoby, rodne_cislo)" + " values (?, ?)";
 			String[] hodnotyRC = { String.valueOf(id),member.getRodneCislo()};
-			int idRC = con.insertDotaz(dotaz, hodnotyRC);
-			
+			int idRC = sqlExecutor.insertDotaz(dotaz, hodnotyRC);
+			LOGGER.info("Vytvoøeno nové rodné èíslo id:"+idRC + "k èlenovy id:"+ id);
 			dotaz = "insert into clen_trvala_adresa" + " (id_osoby, adresa)" + " values (?, ?)";
 			String[] hodnotyTR = { String.valueOf(id),member.getTrvaleBydliste()};
-			int idTR = con.insertDotaz(dotaz, hodnotyTR);
+			int idTR = sqlExecutor.insertDotaz(dotaz, hodnotyTR);
+			LOGGER.info("Vytvoøeno nové trvalé bydlištì id:"+idTR + "k èlenovy id:"+ id);
 			
 			dotaz = "insert into cshRegC" + " (id_osoby, regCislo)" + " values (?, ?)";
 			String[] hodnotyReg = { String.valueOf(id),member.getChfRegistrace()};
-			int idReg = con.insertDotaz(dotaz, hodnotyReg);			
+			int idReg = sqlExecutor.insertDotaz(dotaz, hodnotyReg);
+			LOGGER.info("Vytvoøeno nové èíslo registrace ÈSH id:"+idReg + "k èlenovy id:"+ id);			
 		}
 		return id;
 	}
@@ -79,7 +135,7 @@ public class MembersDAO {
 		String[] hodnoty = { member.getFirstName(), member.getLastName(),String.valueOf(member.getBirthDay()),
 												member.getNote(),String.valueOf(member.getActive()), String.valueOf(member.getId_odd_kategorie()),
 												String.valueOf(member.getEnterDate()),String.valueOf(id) };
-		int resurm = con.setDotaz(dotaz, hodnoty);
+		int resurm = sqlExecutor.setDotaz(dotaz, hodnoty);
 
 		return resurm;
 	}
@@ -98,25 +154,25 @@ public class MembersDAO {
 		String[] hodnoty = { member.getFirstName(), member.getLastName(),String.valueOf(member.getBirthDay()),
 												member.getNote(),String.valueOf(member.getActive()), String.valueOf(member.getId_odd_kategorie()),
 												String.valueOf(member.getEnterDate()),String.valueOf(id) };
-		int resurm = con.setDotaz(dotaz, hodnoty);
+		int resurm = sqlExecutor.setDotaz(dotaz, hodnoty);
 		// zapis rodneho cisla
 		if (resurm >0) {
 			dotaz = "update clen_rodne_cislo" + " set rodne_cislo = ?"
 					+ " where id_osoby = ?";
 			String[] hodnotyRC = { member.getRodneCislo(),String.valueOf(id) };
-			resurm = con.setDotaz(dotaz, hodnotyRC);
+			resurm = sqlExecutor.setDotaz(dotaz, hodnotyRC);
 			//zapis trvaleho bydliste
 			if (resurm > 0 ) {
 				dotaz = "update clen_trvala_adresa" + " set adresa = ?"
 						+ " where id_osoby = ?";
 				String[] hodnotyTR = { member.getTrvaleBydliste(),String.valueOf(id) };
-				resurm = con.setDotaz(dotaz, hodnotyTR);
+				resurm = sqlExecutor.setDotaz(dotaz, hodnotyTR);
 				//zapis cisla registrace
 				if (resurm > 0) {
 					dotaz = "update cshRegC" + " set regCislo = ?"
 							+ " where id_osoby = ?";
 					String[] hodnotyRegC = { member.getChfRegistrace(),String.valueOf(id) };
-					resurm = con.setDotaz(dotaz, hodnotyRegC);
+					resurm = sqlExecutor.setDotaz(dotaz, hodnotyRegC);
 				}
 			}
 		}
@@ -133,7 +189,7 @@ public class MembersDAO {
 		
 		String dotaz = "Select * from clen_seznam ORDER BY clen_seznam.datum_narozeni ASC";
 		
-		con.getData(dotaz,r);
+		sqlExecutor.getData(dotaz,r);
 		
 		for (String[] a : r) {			
 			Member temp = convertRowToMember(a);
@@ -168,7 +224,7 @@ public class MembersDAO {
 			dotaz = "Select * from clen_seznam ORDER BY clen_seznam.datum_narozeni ASC";
 		}
 		
-		con.getData(dotaz,r);
+		sqlExecutor.getData(dotaz,r);
 		
 		for (String[] a : r) {			
 			Member member = convertRowToMember(a);
@@ -225,7 +281,7 @@ public class MembersDAO {
 			
 		}
 		
-		con.getData(dotaz,r);
+		sqlExecutor.getData(dotaz,r);
 		
 		for (String[] a : r) {
 			Member member = convertRowToMember(a);
@@ -270,7 +326,7 @@ public class MembersDAO {
 		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
 		String dotaz ="Select * from clen_seznam"
 									+ " where id = " + id  ;
-		con.getData(dotaz,r);
+		sqlExecutor.getData(dotaz,r);
 		for (String[] a : r) {			
 			member = convertRowToMember(a);
 		}
@@ -292,7 +348,7 @@ public class MembersDAO {
 										+ "WHERE clen_seznam.id = clen_rodne_cislo.id_osoby "
 										+ "AND clen_seznam.id = clen_trvala_adresa.id_osoby AND clen_seznam.id = cshRegC.id_osoby "
 										+ "AND clen_seznam.id = " + id  ;
-		con.getData(dotaz,r);
+		sqlExecutor.getData(dotaz,r);
 		for (String[] a : r) {			
 			memberFull = convertRowToMemberFull(a);
 		}

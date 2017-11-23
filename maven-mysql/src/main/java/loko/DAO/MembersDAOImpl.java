@@ -2,10 +2,14 @@ package loko.DAO;
 
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+
 
 import loko.DB.DBSqlExecutor;
 import loko.core.Mail;
@@ -218,8 +222,88 @@ public class MembersDAOImpl implements IFMembersDAO {
 		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
 		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
 		String dotaz;
-		if (active) {
-			dotaz = "Select * from clen_seznam WHERE aktivni= 1 ORDER BY clen_seznam.datum_narozeni ASC";
+		String where = "";
+		if(active){
+			where += "WHERE aktivni= 1 ";
+		}
+		if(kategorie > 0) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar cal = Calendar.getInstance();
+			int nowYear = cal.get(Calendar.YEAR);			
+			int nowMonth = cal.get(Calendar.MONTH);
+			cal.set(Calendar.MONTH, Calendar.JANUARY);
+			cal.set(Calendar.DAY_OF_MONTH, 1);			
+			String date = sdf.format(cal.getTime());
+			
+			switch (kategorie) {
+			case 1:
+				if(nowMonth > 6) {
+					cal.set(Calendar.YEAR, nowYear - 18);
+				}
+				else {
+					cal.set(Calendar.YEAR, nowYear - 19);
+				}
+				  where += "AND datum_narozeni < '" + sdf.format(cal.getTime()) + "' ";
+				break;
+			case 2:
+				if(nowMonth > 6) {
+					cal.set(Calendar.YEAR, nowYear - 18);
+				}
+				else {
+					cal.set(Calendar.YEAR, nowYear - 19);
+				}
+				where += "AND datum_narozeni > '" + sdf.format(cal.getTime()) + "' ";
+				break;
+			case 3:
+				if(nowMonth > 6) {
+					cal.set(Calendar.YEAR, nowYear - 18);
+				}
+				else {
+					cal.set(Calendar.YEAR, nowYear - 19);
+				}
+				where += "AND datum_narozeni > '" + sdf.format(cal.getTime()) + "' ";
+				if(nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 14);
+				}
+				else {
+						cal.set(Calendar.YEAR, nowYear - 15);
+				}
+				where += "AND datum_narozeni < '" + sdf.format(cal.getTime()) + "' ";
+					
+				break;
+			case 4:
+				if(nowMonth > 6) {
+					cal.set(Calendar.YEAR, nowYear - 14);
+				}
+				else {
+					cal.set(Calendar.YEAR, nowYear - 15);
+				}
+				where += "AND datum_narozeni > '" + sdf.format(cal.getTime()) + "' ";
+				if(nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 10);
+				}
+				else {
+						cal.set(Calendar.YEAR, nowYear - 11);
+				}
+				where += "AND datum_narozeni < '" + sdf.format(cal.getTime()) + "' ";
+				break;
+			case 5:
+				if(nowMonth > 6) {
+					cal.set(Calendar.YEAR, nowYear - 10);
+				}
+				else {
+					cal.set(Calendar.YEAR, nowYear - 11);
+				}
+				where += "AND datum_narozeni > '" + sdf.format(cal.getTime()) + "' ";
+					
+				break;	
+			default:
+				break;
+			}
+		}
+		if (active && kategorie !=6) {
+			dotaz = "Select * from clen_seznam " + where +" ORDER BY clen_seznam.datum_narozeni ASC";
+			
 		} else {
 			dotaz = "Select * from clen_seznam ORDER BY clen_seznam.datum_narozeni ASC";
 		}

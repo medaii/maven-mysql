@@ -1,6 +1,7 @@
 package loko.GUI;
 
 import java.awt.EventQueue;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +37,8 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -71,7 +74,7 @@ public class MembersSearchApp  extends JFrame{
 	private JButton btnPidanUivatele;
 	private JComboBox comboBox;
 	private int id_kategorie = 0;
-	private final String[] kategorie = {"Všechny", "Muži", " Mládež" , "Dorostenci", "Žáci", "Mini a pøípravka",
+	private final String[] kategorie = {"Všechny", "Muži", "Mládež" , "Dorostenci", "Žáci", "Mini a pøípravka",
 																			"Vèetnì neaktivních"};
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
@@ -264,8 +267,9 @@ public class MembersSearchApp  extends JFrame{
 		
 		comboBox = new JComboBox(kategorie);
 		comboBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {								
 				id_kategorie = comboBox.getSelectedIndex();
+				refreshMembersView();
 			}
 		});
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();

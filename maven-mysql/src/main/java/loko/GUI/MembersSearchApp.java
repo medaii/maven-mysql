@@ -40,6 +40,8 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 
 /**
@@ -55,7 +57,7 @@ public class MembersSearchApp  extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 4801718700352877970L;
-	private MembersDAO membersDAO;
+	private IFMembersDAO membersDAO;
 	private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
 	private UserDAO userDAO;
@@ -67,6 +69,10 @@ public class MembersSearchApp  extends JFrame{
 	private JTextField textFieldSearchName;
 	private JTable tableUser;
 	private JButton btnPidanUivatele;
+	private JComboBox comboBox;
+	private int id_kategorie = 0;
+	private final String[] kategorie = {"Všechny", "Muži", " Mládež" , "Dorostenci", "Žáci", "Mini a pøípravka",
+																			"Vèetnì neaktivních"};
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	/**
@@ -86,7 +92,7 @@ public class MembersSearchApp  extends JFrame{
             throw new RuntimeException("Problems s vytvoreni logger souboru.");
 					}
 					
-					MembersDAO membersDAO = new MembersDAO();
+					IFMembersDAO membersDAO = DAOFactory.createDAO(IFMembersDAO.class);
 					UserDAO userDAO = new UserDAO();
 					
 					// Get users
@@ -112,7 +118,7 @@ public class MembersSearchApp  extends JFrame{
 	/**
 	 * Create the application.
 	 */
-	public MembersSearchApp(int theUserId, boolean theAdmin, MembersDAO theMemberDAO, UserDAO theUserDAO) {
+	public MembersSearchApp(int theUserId, boolean theAdmin, IFMembersDAO theMemberDAO, UserDAO theUserDAO) {
 		
 			userId = theUserId;
 			admin = theAdmin;
@@ -221,9 +227,10 @@ public class MembersSearchApp  extends JFrame{
 					
 					List<MemberList> membersList = null;
 					if (name != null && name.trim().length() > 0) {
-						membersList = membersDAO.seachAllMembers(name, true);
+						membersList = membersDAO.searchAllMembers(name, true, id_kategorie);
 					} else {
-						membersList = membersDAO.getAllMemberList(true);
+							refreshMembersView();
+							return;
 					}
 					for (MemberList temp : membersList) {
 						LOGGER.info("Vyhledavani:\r\n" + temp.toString());
@@ -255,7 +262,12 @@ public class MembersSearchApp  extends JFrame{
 		gbc_lblKategorie.gridy = 0;
 		panel.add(lblKategorie, gbc_lblKategorie);
 		
-		JComboBox comboBox = new JComboBox();
+		comboBox = new JComboBox(kategorie);
+		comboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				id_kategorie = comboBox.getSelectedIndex();
+			}
+		});
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBox.gridx = 5;
@@ -423,7 +435,7 @@ public class MembersSearchApp  extends JFrame{
 	public void refreshMembersView() {
 
 		try {
-			List<MemberList> members = membersDAO.getAllMemberList(true);
+			List<MemberList> members = membersDAO.getAllMemberList(true, id_kategorie);
 			
 			// create the model and update the "table"
 			MembersListTableModel model = new MembersListTableModel(members);

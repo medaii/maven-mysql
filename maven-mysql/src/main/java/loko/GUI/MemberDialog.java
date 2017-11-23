@@ -9,8 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import loko.DAO.IFMailsDAO;
+import loko.DAO.IFMembersDAO;
 import loko.DAO.IFPhoneDAO;
-import loko.DAO.MembersDAO;
+import loko.DAO.MembersDAOImpl;
 import loko.core.Mail;
 import loko.core.MailsMember;
 import loko.core.MemberFull;
@@ -55,7 +56,7 @@ public class MemberDialog extends JDialog {
 	private JDateChooser dateChooser;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	private MembersDAO membersDAO;
+	private IFMembersDAO membersDAO;
 	private MembersSearchApp membersSearchApp;
 	private MemberFull memberFull;
 	private PhonesMeber phones;
@@ -76,7 +77,7 @@ public class MemberDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public MemberDialog(int id_member, MembersDAO membersDAO, IFMailsDAO mailsDAO,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
+	public MemberDialog(int id_member, IFMembersDAO membersDAO, IFMailsDAO mailsDAO,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
 		setTitle("Editace \u010Dlena");
 		this.id_member = id_member;
 		this.membersDAO = membersDAO;

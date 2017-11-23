@@ -26,6 +26,9 @@ public class DAOFactory {
 		if (daoClass.isAssignableFrom(IFPhoneDAO.class)) {
 			return (T) createPhonesDao();
 		}
+		if(daoClass.isAssignableFrom(IFMembersDAO.class)) {
+			return (T) createMembersDao();
+		}
 		throw new IllegalArgumentException("Neznamy typ DAO " + daoClass.getName());
 	}
 	
@@ -42,5 +45,12 @@ public class DAOFactory {
 	 */
 	private static PhonesDAOImpl createPhonesDao() {
 		return new PhonesDAOImpl(DBSqlExecutor.getInstance());
+	}
+	/**
+	 * Vrati nobou instanci DAO pro praci s members
+	 * @return
+	 */
+	private static MembersDAOImpl createMembersDao() {
+		return new MembersDAOImpl(DBSqlExecutor.getInstance());
 	}
 }

@@ -15,8 +15,9 @@ import javax.swing.JTextField;
 
 import loko.DAO.DAOFactory;
 import loko.DAO.IFMailsDAO;
+import loko.DAO.IFMembersDAO;
 import loko.DAO.IFPhoneDAO;
-import loko.DAO.MembersDAO;
+import loko.DAO.MembersDAOImpl;
 import loko.core.Mail;
 import loko.core.MemberFull;
 import loko.core.MemberList;
@@ -41,7 +42,7 @@ import javax.swing.JTextPane;
  */
 public class AddMemberDialog extends JDialog {
 
-	private MembersDAO membersDAO;
+	private IFMembersDAO membersDAO;
 	private MemberFull memberFull;
 	private MembersSearchApp membersSearchApp;
 	private IFMailsDAO mailsDAO;
@@ -69,7 +70,7 @@ public class AddMemberDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AddMemberDialog(MembersDAO membersDAO,IFMailsDAO mailsDAO, IFPhoneDAO phoneDAO,MembersSearchApp membersSearchApp) {
+	public AddMemberDialog(IFMembersDAO membersDAO,IFMailsDAO mailsDAO, IFPhoneDAO phoneDAO,MembersSearchApp membersSearchApp) {
 		this.membersDAO = membersDAO;
 		this.membersSearchApp = membersSearchApp;
 		this.mailsDAO = mailsDAO;

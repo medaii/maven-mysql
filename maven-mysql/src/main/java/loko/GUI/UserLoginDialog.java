@@ -38,7 +38,7 @@ public class UserLoginDialog extends JDialog {
 
 	//private EmployeeDAO employeeDAO;
 	private UserDAO userDAO; // pro testovaní pøidat = new UserDAO();	
-	private MembersDAO membersDAO;
+	private IFMembersDAO membersDAO;
 	private JPasswordField passwordField;
 	private JComboBox comboBoxUser;
 	
@@ -47,7 +47,7 @@ public class UserLoginDialog extends JDialog {
 		userDAO = theUserDAO;
 	}
 	
-	public void setMembersDAO(MembersDAO theMemberDAO) {
+	public void setMembersDAO(IFMembersDAO theMemberDAO) {
 		membersDAO = theMemberDAO;
 	}
 

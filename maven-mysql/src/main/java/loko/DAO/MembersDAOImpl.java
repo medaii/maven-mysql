@@ -23,13 +23,13 @@ import loko.core.PhonesMeber;
  *
  */
 
-public class MembersDAO {
+public class MembersDAOImpl implements IFMembersDAO {
 	private DBSqlExecutor sqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	// vytvoøení konstruktoru
-	public MembersDAO() {
-		sqlExecutor = DBSqlExecutor.getInstance();
+	public MembersDAOImpl(DBSqlExecutor sqlExecutor) {
+		this.sqlExecutor = sqlExecutor;
 	}
 	/**
 	 * 
@@ -208,7 +208,7 @@ public class MembersDAO {
 	 * Vrací seznam èlenù s kontakty
 	 * @return
 	 */
-	public List<MemberList> getAllMemberList(boolean active){
+	public List<MemberList> getAllMemberList(boolean active, int kategorie){
 		List<MemberList>  list = new ArrayList<>();
 		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
 		
@@ -258,7 +258,7 @@ public class MembersDAO {
 		
 		return list;
 	}
-	public List<MemberList> seachAllMembers(String name, boolean active) {
+	public List<MemberList> searchAllMembers(String name, boolean active,int kategorie) {
 		List<MemberList>  list = new ArrayList<>();
 		String word = "%" + name;
 		word +="%";
@@ -415,7 +415,7 @@ public class MembersDAO {
 	public static void main(String[] args) {
 	
 		// TODO Auto-generated method stub
-		MembersDAO membersDAO = new MembersDAO();
+		IFMembersDAO membersDAO = DAOFactory.createDAO(IFMembersDAO.class);
 		
 		membersDAO.getMemberFull(168);
 	}

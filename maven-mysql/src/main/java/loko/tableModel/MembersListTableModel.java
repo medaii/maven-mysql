@@ -6,10 +6,8 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import loko.core.Mail;
-import loko.core.Member;
 import loko.core.MemberList;
 import loko.core.Phone;
-import loko.core.User;
 /**
  * 
  * @author Erik Markoviè
@@ -70,7 +68,7 @@ public class MembersListTableModel extends AbstractTableModel {
 		}
 	}
 	//vracení typ hodnot v tabulce dle sloupce
-	public Class getClassCol(int col) {
+	public Class<?> getClassCol(int col) {
 		switch (col) {
 			case NAME:
 				return String.class;
@@ -87,7 +85,7 @@ public class MembersListTableModel extends AbstractTableModel {
 		}
 	}
 	// dotaz na typ hodnoty ve sloupci
-	public Class getColumnClass(int c) {
+	public Class<?> getColumnClass(int c) {
 		return getClassCol(c);
 	}
 	

@@ -10,6 +10,10 @@ import loko.core.User;
  */
 public class UsersTableModel extends AbstractTableModel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6444027184471963691L;
 	public static final int OBJECT_COL = -1;
 	private static final int NAME_COL = 0;
 	private static final int EMAIL_COL = 1;
@@ -57,7 +61,7 @@ public class UsersTableModel extends AbstractTableModel {
 		}
 	}
 	
-	public Class getClassCol(int col) {
+	public Class<?> getClassCol(int col) {
 		switch (col) {
 			case NAME_COL:
 				return String.class;
@@ -73,7 +77,7 @@ public class UsersTableModel extends AbstractTableModel {
 	}
 	
 	// vráøí øádek
-	public Class getColumnClass(int c) {
+	public Class<?> getColumnClass(int c) {
 		return getClassCol(c);
 	}	
 	

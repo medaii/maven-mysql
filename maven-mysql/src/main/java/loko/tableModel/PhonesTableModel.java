@@ -3,8 +3,6 @@ package loko.tableModel;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
-
-import loko.core.Mail;
 import loko.core.Phone;
 /**
  * 
@@ -13,6 +11,10 @@ import loko.core.Phone;
  */
 public class PhonesTableModel extends AbstractTableModel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1440605148176039322L;
 	public static final int OBJECT_COL = -1;
 	private static final int NAME = 0;
 	private static final int PHONE = 1;
@@ -56,7 +58,7 @@ public class PhonesTableModel extends AbstractTableModel {
 			return tempPhone.getName();
 		}
 	}
-	public Class getClassCol(int col) {
+	public Class<?> getClassCol(int col) {
 		
 		switch (col) {
 			case NAME:
@@ -70,7 +72,7 @@ public class PhonesTableModel extends AbstractTableModel {
 			}
 	}
 	//vraceni typ hodnoty ve sloupci
-	public Class getColumnClass(int c) {		
+	public Class<?> getColumnClass(int c) {		
 			return getClassCol(c);
 	}
 

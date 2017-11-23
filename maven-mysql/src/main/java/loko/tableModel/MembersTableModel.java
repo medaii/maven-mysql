@@ -6,11 +6,19 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import loko.core.Mail;
-import loko.core.Member;
 
+import loko.core.Member;
+/**
+ * 
+ * @author Erik Markoviè
+ *
+ */
 public class MembersTableModel extends AbstractTableModel {
 		
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1391344318853993366L;
 		public static final int OBJECT_COL = -1;
 		private static final int LAST_NAME_COL = 0;
 		private static final int FIRST_NAME_COL = 1;
@@ -60,7 +68,7 @@ public class MembersTableModel extends AbstractTableModel {
 				return tempMembers.getLastName();
 			}
 		}
-		public Class getClassCol(int col) {
+		public Class<?> getClassCol(int col) {
 			
 			switch (col) {
 				case LAST_NAME_COL:
@@ -79,7 +87,7 @@ public class MembersTableModel extends AbstractTableModel {
 		}
 		//vraceni typ hodnoty ve sloupci
 		@Override
-		public Class getColumnClass(int c) {
+		public Class<?> getColumnClass(int c) {
 			return getValueAt(0, c).getClass();
 		}
 	}

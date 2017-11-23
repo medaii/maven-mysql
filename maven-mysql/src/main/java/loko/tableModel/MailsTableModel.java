@@ -5,7 +5,6 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import loko.core.Mail;
-import loko.core.User;
 
 /**
  * 
@@ -13,6 +12,10 @@ import loko.core.User;
  *
  */
 public class MailsTableModel extends AbstractTableModel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6675150406782902003L;
 	public static final int OBJECT_COL = -1;
 	private static final int NAME = 0;
 	private static final int MAIL = 1;
@@ -25,7 +28,6 @@ public class MailsTableModel extends AbstractTableModel{
 	public MailsTableModel (List<Mail> mails) {
 		this.mails = mails;
 	}
-
 	@Override
 	public int getRowCount() {
 		
@@ -56,7 +58,7 @@ public class MailsTableModel extends AbstractTableModel{
 			return tempMail.getName();
 		}
 	}
-	public Class getClassCol(int col) {
+	public Class<?> getClassCol(int col) {
 			
 		switch (col) {
 			case NAME:
@@ -70,7 +72,7 @@ public class MailsTableModel extends AbstractTableModel{
 			}
 	}
 	//vraceni typ hodnoty ve sloupci
-	public Class getColumnClass(int c) {		
+	public Class<?> getColumnClass(int c) {		
 			return getClassCol(c);
 	}
 

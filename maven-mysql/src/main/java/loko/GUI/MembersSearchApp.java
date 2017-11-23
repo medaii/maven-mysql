@@ -32,7 +32,6 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.omg.PortableInterceptor.LOCATION_FORWARD;
 
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
@@ -52,6 +51,10 @@ import java.awt.event.MouseEvent;
  */
 public class MembersSearchApp  extends JFrame{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4801718700352877970L;
 	private MembersDAO membersDAO;
 	private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;

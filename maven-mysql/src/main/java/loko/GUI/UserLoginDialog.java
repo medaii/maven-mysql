@@ -1,7 +1,6 @@
 package loko.GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.FlowLayout;
 
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -30,6 +28,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class UserLoginDialog extends JDialog {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3075207613660115541L;
 
 	private final JPanel contentPanel = new JPanel();
 

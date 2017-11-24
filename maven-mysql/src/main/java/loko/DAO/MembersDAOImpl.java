@@ -432,11 +432,20 @@ public class MembersDAOImpl implements IFMembersDAO {
 										+ "WHERE clen_seznam.id = clen_rodne_cislo.id_osoby "
 										+ "AND clen_seznam.id = clen_trvala_adresa.id_osoby AND clen_seznam.id = cshRegC.id_osoby "
 										+ "AND clen_seznam.id = " + id  ;
+		String[] hodnoty = {};
+		int countRow =sqlExecutor.getCountRow(dotaz, hodnoty);
+		// když je poèet øádku rovný 0, tak nastala chyba pøi dotazu z DB, nejspíš chybí záznam o pøidaných tabulkách
+		if(countRow < 1){			
+			if(!opravaTabulkyMember(id)){
+				LOGGER.severe("CHYBA TABULKY v DB");
+			}			
+		}
 		sqlExecutor.getData(dotaz,r);
+		
 		for (String[] a : r) {			
 			memberFull = convertRowToMemberFull(a);
 		}
-				
+		
 		return memberFull;
 	}
 	/**
@@ -495,6 +504,35 @@ public class MembersDAOImpl implements IFMembersDAO {
 			tempMember = null;
 		}
 		return tempMember;
+	}
+	private Boolean opravaTabulkyMember(int id) {
+		LOGGER.warning("Chyba dotazu, oprava dat v DB");
+		// kontrola trvaleho bydliste
+		String dotaz2 = "SELECT * FROM `clen_trvala_adresa` WHERE id_osoby=?";
+		String[] hodnoty2 = {String.valueOf(id)};
+		if (sqlExecutor.getCountRow(dotaz2, hodnoty2)<1) {
+			String dotaz21 = "insert into clen_trvala_adresa" + " (id_osoby, adresa)" + " values (?, ?)";
+			String[] hodnoty21 = { String.valueOf(id), ""};
+			sqlExecutor.insertDotaz(dotaz21, hodnoty21);
+		}
+		// kontrola csh registrace
+		String dotaz3 = "SELECT * FROM `cshRegC` WHERE id_osoby=?";
+		String[] hodnoty3 = {String.valueOf(id)};
+		if (sqlExecutor.getCountRow(dotaz3, hodnoty3)<1) {
+			String dotaz31 = "insert into cshRegC" + " (id_osoby, regCislo)" + " values (?, ?)";
+			String[] hodnoty31 = { String.valueOf(id), ""};
+			sqlExecutor.insertDotaz(dotaz31, hodnoty31);
+		}
+	// kontrola rodneho cisla
+		String dotaz4 = "SELECT * FROM `clen_rodne_cislo` WHERE id_osoby=?";
+		String[] hodnoty4 = {String.valueOf(id)};
+		if (sqlExecutor.getCountRow(dotaz4, hodnoty4)<1) {
+			String dotaz41 = "insert into clen_rodne_cislo" + " (id_osoby, rodne_cislo)" + " values (?, ?)";
+			String[] hodnoty41 = { String.valueOf(id), ""};
+			sqlExecutor.insertDotaz(dotaz41, hodnoty41);
+		}
+		
+		return true;
 	}
 	public static void main(String[] args) {
 	

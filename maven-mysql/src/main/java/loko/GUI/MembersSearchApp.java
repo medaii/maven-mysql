@@ -411,7 +411,6 @@ public class MembersSearchApp  extends JFrame{
 	public void editaceMember(int row) {
 		MemberList tempmemberList =  (MemberList) tableMembers.getValueAt(row, MembersListTableModel.OBJECT_COL);
 		int id_member = tempmemberList.getId();
-		
 		MemberDialog dialog = new MemberDialog(id_member,membersDAO,mailsDAO, phoneDAO, MembersSearchApp.this);
 		dialog.setVisible(true);
 	}

@@ -45,6 +45,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 /**
@@ -206,6 +208,14 @@ public class MembersSearchApp  extends JFrame{
 		panel.add(lblHledan, gbc_lblHledan);
 		
 		textFieldSearchName = new JTextField();
+		textFieldSearchName.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				 if (e.getKeyCode()==KeyEvent.VK_ENTER){
+		        searchMember();
+		    }
+			}
+		});
 		GridBagConstraints gbc_textFieldSearchName = new GridBagConstraints();
 		gbc_textFieldSearchName.insets = new Insets(0, 0, 0, 5);
 		gbc_textFieldSearchName.fill = GridBagConstraints.HORIZONTAL;
@@ -218,35 +228,7 @@ public class MembersSearchApp  extends JFrame{
 		btnHledat.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnHledat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// zislat vyhledavane slovo
-				
-				//zavolani si pres DAO pro data
-				
-				//kdyz je prazny seznam
-				
-				//tisk
-				try {
-					String name =  textFieldSearchName.getText();
-					
-					List<MemberList> membersList = null;
-					if (name != null && name.trim().length() > 0) {
-						membersList = membersDAO.searchAllMembers(name, true, id_kategorie);
-					} else {
-							refreshMembersView();
-							return;
-					}
-					for (MemberList temp : membersList) {
-						LOGGER.info("Vyhledavani:\r\n" + temp.toString());
-					}
-					//vytvoøení modelu pro naplnìní tabulky
-					MembersListTableModel model = new MembersListTableModel(membersList);
-					
-					tableMembers.setModel(model);
-					
-				}
-				catch (Exception e2) {
-					JOptionPane.showMessageDialog(null, "Chyba lisen - " + e2);
-				}
+				searchMember();
 				
 			}
 		});
@@ -423,7 +405,42 @@ public class MembersSearchApp  extends JFrame{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
+	/**
+	 * vyhledavani clena
+	 */
 	
+	private void searchMember() {
+	// zislat vyhledavane slovo
+		
+		//zavolani si pres DAO pro data
+		
+		//kdyz je prazny seznam
+		
+		//tisk
+		
+		try {
+			String name =  textFieldSearchName.getText();
+			
+			List<MemberList> membersList = null;
+			if (name != null && name.trim().length() > 0) {
+				membersList = membersDAO.searchAllMembers(name, true, id_kategorie);
+			} else {
+					refreshMembersView();
+					return;
+			}
+			for (MemberList temp : membersList) {
+				LOGGER.info("Vyhledavani:\r\n" + temp.toString());
+			}
+			//vytvoøení modelu pro naplnìní tabulky
+			MembersListTableModel model = new MembersListTableModel(membersList);
+			
+			tableMembers.setModel(model);
+			
+		}
+		catch (Exception e2) {
+			JOptionPane.showMessageDialog(null, "Chyba lisen - " + e2);
+		}
+	}
 	/**
 	 * Nastaveni user
 	 */

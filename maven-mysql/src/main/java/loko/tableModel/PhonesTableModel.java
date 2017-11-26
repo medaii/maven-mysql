@@ -18,7 +18,7 @@ public class PhonesTableModel extends AbstractTableModel {
 	public static final int OBJECT_COL = -1;
 	private static final int NAME = 0;
 	private static final int PHONE = 1;
-	
+	private boolean change = false;
 	
 	private String[] columnNames = { "Jméno", "Telefon" };
 	private List<Phone> phones;
@@ -75,5 +75,37 @@ public class PhonesTableModel extends AbstractTableModel {
 	public Class<?> getColumnClass(int c) {		
 			return getClassCol(c);
 	}
-
+	/**
+	 * editovatelnost
+	 */
+  public boolean isCellEditable(int row, int col) {
+  	// uvadí které sloupce jsou editovatelné
+    if (col < 0) {
+        return false;
+    } else {
+        return true;
+    }
+  }
+  /**
+   * implementace pro mìnìní parametru pøímo v tabulce
+   */
+  public void setValueAt(Object value, int row, int col) {
+  	change = true;
+  	Phone tempPhone = phones.get(row);
+  	if (col == 0) {
+				tempPhone.setName((String)value);
+				phones.set(row, tempPhone);
+		}
+  	if (col==1) {
+  		tempPhone.setPhone((String)value);
+  		phones.set(row, tempPhone);
+		}
+  		fireTableCellUpdated(row, col);
+  }
+  /**
+   * 
+   */
+  public boolean getChange(){
+  	return change;
+  }
 }

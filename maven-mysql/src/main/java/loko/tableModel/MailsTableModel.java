@@ -5,7 +5,6 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import loko.core.Mail;
-
 /**
  * 
  * @author Erik Markoviè
@@ -19,7 +18,7 @@ public class MailsTableModel extends AbstractTableModel{
 	public static final int OBJECT_COL = -1;
 	private static final int NAME = 0;
 	private static final int MAIL = 1;
-	
+	private boolean change = false;
 	
 	private String[] columnNames = { "Jméno", "Mail" };
 	private List<Mail> mails;
@@ -75,5 +74,34 @@ public class MailsTableModel extends AbstractTableModel{
 	public Class<?> getColumnClass(int c) {		
 			return getClassCol(c);
 	}
-
+	/**
+	 * editovatelnost
+	 */
+  public boolean isCellEditable(int row, int col) {
+  	// uvadí které sloupce jsou editovatelné
+    if (col < 0) {
+        return false;
+    } else {
+        return true;
+    }
+  }
+  /**
+   * implementace pro mìnìní parametru pøímo v tabulce
+   */
+  public void setValueAt(Object value, int row, int col) {
+  	change = true;
+  	Mail tempMail = mails.get(row);
+  	if (col == 0) {
+				tempMail.setName((String)value);
+				mails.set(row, tempMail);
+		}
+  	if (col==1) {
+  		tempMail.setMail((String)value);
+  		mails.set(row, tempMail);
+		}
+  		fireTableCellUpdated(row, col);
+  }
+  public boolean getChange() {
+		return change;
+	}
 }

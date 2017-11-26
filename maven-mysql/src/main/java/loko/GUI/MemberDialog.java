@@ -7,6 +7,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import loko.DAO.IFMailsDAO;
 import loko.DAO.IFMembersDAO;
@@ -25,14 +29,19 @@ import javax.swing.JOptionPane;
 
 
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.JTabbedPane;
 import java.awt.CardLayout;
+
+import com.sun.media.sound.ModelAbstractChannelMixer;
+import com.sun.org.apache.bcel.internal.generic.LOOKUPSWITCH;
 import com.toedter.calendar.JDateChooser;
 
 
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
@@ -42,6 +51,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.InputMethodListener;
+import java.awt.event.InputMethodEvent;
 /**
  * 
  * @author Dave
@@ -71,6 +84,8 @@ public class MemberDialog extends JDialog {
 	private JTextField textFieldTrvaleBydliste;
 	private JTextField textFieldCHFReg;
 	private JCheckBox chckbxAktivni;
+	private MailsTableModel modelMail;
+	private PhonesTableModel modelP;
 	//clipce nechce podporovat zobrazeni private JComboBox<String> comboBoxRole;
 	private JComboBox comboBoxRole;
 
@@ -246,10 +261,13 @@ public class MemberDialog extends JDialog {
 				
 				tableMails = new JTable();
 				
-				MailsTableModel model = new MailsTableModel(mails.getMails());
-				tableMails.setModel(model);
-				scrollPane.setViewportView(tableMails);
+
+
 				
+				modelMail = new MailsTableModel(mails.getMails());
+				tableMails.setModel(modelMail);
+				scrollPane.setViewportView(tableMails);
+			
 				
 				JLabel lblMail = new JLabel("Mail:");
 				lblMail.setBounds(10, 11, 46, 14);
@@ -318,9 +336,11 @@ public class MemberDialog extends JDialog {
 				kontakty.add(scrollPane_1);
 				
 				tablePhone = new JTable();
-				PhonesTableModel modelP = new PhonesTableModel(phones.getPhones());
+				modelP = new PhonesTableModel(phones.getPhones());
 				tablePhone.setModel(modelP);
 				scrollPane_1.setViewportView(tablePhone);
+				
+	
 				
 				JButton btnEditTel = new JButton("Edit tel.");
 				btnEditTel.addActionListener(new ActionListener() {
@@ -401,8 +421,8 @@ public class MemberDialog extends JDialog {
 						if (chckbxAktivni.isSelected()) {
 							active = 1;
 						} 
-						//System.out.println(dateChooser.getDateFormatString() + "  "+ dateChooser.getDate());
 						
+						// uložení hodnot do objektu memberFull
 						memberFull.setFirstName(firstName);
 						memberFull.setLastName(lastName);
 						memberFull.setBirthDay(birthDay);
@@ -413,10 +433,38 @@ public class MemberDialog extends JDialog {
 						memberFull.setActive(active);
 						memberFull.setId_odd_kategorie(id_kategorie_odd);
 						
+						// uložení do DB
 						membersDAO.updateMember(memberFull, memberFull.getId());
 						// zavrit dialogove okno
 						setVisible(false);
 						dispose();
+						
+						// kontrola zmìny hodnot mailu
+					
+						if(modelMail.getChange()) {
+							LOGGER.info("Zmìma hodnot mailu.");
+							int countRow = modelMail.getRowCount();
+							for (int i = 0; i < countRow; i++) {
+								Mail tempMail = (Mail) modelMail.getValueAt(i, MailsTableModel.OBJECT_COL);
+								mailsDAO.updateMail(tempMail, tempMail.getId());
+							}
+						}
+						else {
+							LOGGER.info("Není zmìna hodnot mailu.");
+						}
+						
+						// kontrola zmìny hodnot telefonu
+						if(modelP.getChange()) {
+							int countRow = modelP.getRowCount();
+							for (int i = 0; i < countRow; i++) {
+								Phone tempPhone = (Phone) modelP.getValueAt(i, PhonesTableModel.OBJECT_COL);
+								phoneDAO.updatePhone(tempPhone, tempPhone.getId());
+							}
+							LOGGER.info("Zmìma hodnot Telefonu.");
+						}
+						else {
+							LOGGER.info("Není zmìna hodnot telefonu.");
+						}
 						
 						// obnovit vypis list
 						membersSearchApp.refreshMembersView();

@@ -21,6 +21,28 @@ public class UserDAO {
 	public UserDAO() {
 		conn = DBSqlExecutor.getInstance(); // inteface pro db
 	}
+	
+	public int changePassword(User theUser, String oldPassword,String newPassport) {
+			// get plain text password
+			String plainTextPassword = theUser.getPassword();
+			
+			// encrypt the password
+			String encryptedPassword = PasswordUtils.encryptPassword(plainTextPassword);
+			
+			// update the password in the database
+			String dotaz = "update users" 
+										+ " set password=? " 
+										+ " where id=?";
+			String[] hodnoty = {encryptedPassword};
+			if(conn.setDotaz(dotaz, hodnoty) > 0) {
+					return 1;
+			}
+		return -1;
+	}
+	
+	/*
+	 * pøevedení dat z DB do objedktu User
+	 */
 	private User convertRowToUser(String[] temp) {
 		User tempUser;
 		try {

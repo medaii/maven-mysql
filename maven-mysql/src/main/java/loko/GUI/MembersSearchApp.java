@@ -380,6 +380,21 @@ public class MembersSearchApp  extends JFrame{
 		panel_1.add(btnEditaceUdaj);
 		
 		JButton btnZmnaHesla = new JButton("Zm\u011Bna hesla");
+		btnZmnaHesla.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// vrat vybraný øádek
+				int row  = tableUser.getSelectedRow();
+				
+				// kontrola, že je vybrany øádek
+				if(row < 0) {
+					JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+					return;
+				}
+				User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
+				ChangePassword dialog = new ChangePassword(user, userDAO,MembersSearchApp.this);
+				dialog.setVisible(true);
+			}
+		});
 		btnZmnaHesla.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		panel_1.add(btnZmnaHesla);
 		refreshUsersView();

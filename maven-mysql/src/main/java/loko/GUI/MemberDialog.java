@@ -93,6 +93,7 @@ public class MemberDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public MemberDialog(int id_member, IFMembersDAO membersDAO, IFMailsDAO mailsDAO,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
+		this.setModal(true);
 		setTitle("Editace \u010Dlena");
 		this.id_member = id_member;
 		this.membersDAO = membersDAO;
@@ -103,6 +104,7 @@ public class MemberDialog extends JDialog {
 		this.memberFull = membersDAO.getMemberFull(id_member);
 		this.mails = mailsDAO.getMailsMember(id_member);
 		this.membersSearchApp =  membersSearchApp;
+		
 		
 		setBounds(100, 100, 749, 406);
 		getContentPane().setLayout(new BorderLayout());

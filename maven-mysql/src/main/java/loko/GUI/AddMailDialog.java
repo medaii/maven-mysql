@@ -131,6 +131,9 @@ public class AddMailDialog extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);
+					//obnovit vypis
+						memberDialog.obnovitNahledMail();
+						memberDialog.setVisible(true);
 					}
 				});
 				cancelButton.setActionCommand("Cancel");

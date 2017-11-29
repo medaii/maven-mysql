@@ -361,6 +361,18 @@ public class MembersSearchApp  extends JFrame{
 		User.add(scrollPane_1, BorderLayout.CENTER);
 		
 		tableUser = new JTable();
+		tableUser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JTable table =(JTable) e.getSource();
+        Point point = e.getPoint();
+        int row = table.rowAtPoint(point);
+        if (e.getClickCount() == 2) {
+            LOGGER.fine("doubleCLick na radek user" + row);
+            editUser(row);
+        }
+			}
+		});
 		scrollPane_1.setViewportView(tableUser);
 		
 		JPanel panel_1 = new JPanel();
@@ -376,6 +388,19 @@ public class MembersSearchApp  extends JFrame{
 		panel_1.add(btnPidanUivatele);
 		
 		JButton btnEditaceUdaj = new JButton("Editace udaj\u016F");
+		btnEditaceUdaj.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			  // vrat vybraný øádek
+				int row  = tableUser.getSelectedRow();
+				
+				// kontrola, že je vybrany øádek
+				if(row < 0) {
+					JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+					return;
+				}
+				editUser(row);
+			}
+		});
 		btnEditaceUdaj.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		panel_1.add(btnEditaceUdaj);
 		
@@ -455,6 +480,15 @@ public class MembersSearchApp  extends JFrame{
 		catch (Exception e2) {
 			JOptionPane.showMessageDialog(null, "Chyba lisen - " + e2);
 		}
+	}
+	/**
+	 * Otevøevni dialogu s editaci uètu 
+	 * @param row - vybraný øádek v tabulce
+	 */
+	private void editUser(int row) {
+		User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
+		UserDialog dialog = new UserDialog(user, userDAO,MembersSearchApp.this, admin, false );
+		dialog.setVisible(true);
 	}
 	/**
 	 * Nastaveni user

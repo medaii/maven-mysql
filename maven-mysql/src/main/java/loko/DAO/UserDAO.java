@@ -21,7 +21,22 @@ public class UserDAO {
 	public UserDAO() {
 		conn = DBSqlExecutor.getInstance(); // inteface pro db
 	}
+	public int updateUser(User theUser) { 
+		int isAdmin = theUser.isAdmin()? 1 :0;
+		String dotaz = "update users" + " set first_name = ?, last_name = ?, email = ?, is_admin=?" + " where id = ?";
+		String[] hodnoty = { theUser.getFirstName(), theUser.getLastName(), theUser.getEmail(),String.valueOf(isAdmin), String.valueOf(theUser.getId()) };
+		int resurm = conn.setDotaz(dotaz, hodnoty);
+
+		return resurm;
 	
+
+	}
+	/**
+	 * Zmìna hesla uživatele
+	 * @param theUser mìnìny uživatel
+	 * @param newPassword nové heslo
+	 * @return
+	 */
 	public int changePassword(User theUser, String newPassword) {
 			// get plain text password
 			String plainTextPassword = newPassword;

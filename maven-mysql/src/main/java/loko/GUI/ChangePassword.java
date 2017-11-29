@@ -8,7 +8,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import loko.DAO.PasswordUtils;
+
 import loko.DAO.UserDAO;
 import loko.core.User;
 
@@ -16,23 +16,28 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
-import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
-
+/**
+ * 
+ * @author Erik Markoviè
+ *
+ */
 public class ChangePassword extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8661708719647586881L;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private final JPanel contentPanel = new JPanel();
 	private JPasswordField passwordOld;
 	private JPasswordField passwordNew1;
 	private JPasswordField passwordNew2;
 	
-	private User user;
-
 	/**
 	 * Launch the application.
 	 */
@@ -51,7 +56,7 @@ public class ChangePassword extends JDialog {
 	 */
 	public ChangePassword(User user, UserDAO userDAO, MembersSearchApp membersSearchApp, boolean isAdmin) {
 		this.setModal(true);
-		this.user = user;
+
 		
 		setTitle("Zm\u011Bna hesla");
 		setBounds(100, 100, 450, 300);

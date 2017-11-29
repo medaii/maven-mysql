@@ -391,7 +391,7 @@ public class MembersSearchApp  extends JFrame{
 					return;
 				}
 				User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
-				ChangePassword dialog = new ChangePassword(user, userDAO,MembersSearchApp.this);
+				ChangePassword dialog = new ChangePassword(user, userDAO,MembersSearchApp.this, admin );
 				dialog.setVisible(true);
 			}
 		});

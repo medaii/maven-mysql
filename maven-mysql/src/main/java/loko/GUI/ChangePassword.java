@@ -8,6 +8,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import loko.DAO.PasswordUtils;
 import loko.DAO.UserDAO;
 import loko.core.User;
 
@@ -18,10 +19,13 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 
 public class ChangePassword extends JDialog {
 
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private final JPanel contentPanel = new JPanel();
 	private JPasswordField passwordOld;
 	private JPasswordField passwordNew1;
@@ -45,7 +49,7 @@ public class ChangePassword extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ChangePassword(User user, UserDAO userDAO, MembersSearchApp membersSearchApp) {
+	public ChangePassword(User user, UserDAO userDAO, MembersSearchApp membersSearchApp, boolean isAdmin) {
 		this.setModal(true);
 		this.user = user;
 		
@@ -60,11 +64,17 @@ public class ChangePassword extends JDialog {
 		lblUser.setFont(new Font("Times New Roman", Font.BOLD, 14));
 		lblUser.setBounds(10, 11, 237, 14);
 		contentPanel.add(lblUser);
-		
-		JLabel lblStarHeslo = new JLabel("Star\u00E9 heslo:");
+		JLabel lblStarHeslo;		
+		if(isAdmin) {
+			lblStarHeslo = new JLabel("");			
+		}
+		else {
+			lblStarHeslo = new JLabel("Star\u00E9 heslo:");			
+		}
 		lblStarHeslo.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblStarHeslo.setBounds(10, 49, 99, 14);
 		contentPanel.add(lblStarHeslo);
+		lblStarHeslo.setEnabled(!isAdmin);
 		
 		JLabel lblNovHeslo = new JLabel("Nov\u00E9 heslo:");
 		lblNovHeslo.setFont(new Font("Times New Roman", Font.PLAIN, 12));
@@ -78,7 +88,9 @@ public class ChangePassword extends JDialog {
 		
 		passwordOld = new JPasswordField();
 		passwordOld.setBounds(119, 46, 128, 17);
-		contentPanel.add(passwordOld);
+		if (!isAdmin) {
+			contentPanel.add(passwordOld);
+		}
 		
 		passwordNew1 = new JPasswordField();
 		passwordNew1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
@@ -97,16 +109,44 @@ public class ChangePassword extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						
-						String newPassword = new String(passwordNew1.getPassword());
-						String newPassword2 = new String(passwordNew2.getPassword());
-						if(newPassword.equals(newPassword2)) {
-							System.out.println("yes");
+						boolean isValidPassword;
+						if(isAdmin) {
+							isValidPassword = true;
 						}
-						else{
-							JOptionPane.showMessageDialog(null, "Potvzení nového hesla se neshoduje s novým heslem.");
+						else {
+							// naètení password
+							String plainTextPassword = new String(passwordOld.getPassword());
+							user.setPassword(plainTextPassword);
+							
+							// Kontrola hesla s heslem zakodovaným v DB
+							// volání DAO pro validaci password
+							isValidPassword = userDAO.authenticate(user);
+						}	
+						//zmìma hesla v DB
+						if(isValidPassword) {
+							String newPassword = new String(passwordNew1.getPassword());
+							String newPassword2 = new String(passwordNew2.getPassword());
+							if(newPassword.equals(newPassword2) && !newPassword.equals("")) {
+								LOGGER.setLevel(Level.INFO);
+								if(userDAO.changePassword(user, newPassword) > 0){
+									LOGGER.info("Zmìmìno heslo u uživatele id:" + user.getId());
+									JOptionPane.showMessageDialog(null, "Heslo zmìnìno.");
+									setVisible(false);
+								}
+								else {
+									LOGGER.info("Nezdaøilo se zmìnit heslo u uživatele id:" + user.getId());
+									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna hesla.");
+									return;
+								}
+							}
+							else{
+								JOptionPane.showMessageDialog(null, "Potvzení nového hesla se neshoduje s novým heslem.");
+							}
 						}
-						
+						else {
+							JOptionPane.showMessageDialog(null, "Chybnì zadané heslo.");
+							return;
+						}						
 					}
 				});
 				okButton.setActionCommand("OK");

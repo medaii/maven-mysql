@@ -22,9 +22,9 @@ public class UserDAO {
 		conn = DBSqlExecutor.getInstance(); // inteface pro db
 	}
 	
-	public int changePassword(User theUser, String oldPassword,String newPassport) {
+	public int changePassword(User theUser, String newPassword) {
 			// get plain text password
-			String plainTextPassword = theUser.getPassword();
+			String plainTextPassword = newPassword;
 			
 			// encrypt the password
 			String encryptedPassword = PasswordUtils.encryptPassword(plainTextPassword);
@@ -33,7 +33,7 @@ public class UserDAO {
 			String dotaz = "update users" 
 										+ " set password=? " 
 										+ " where id=?";
-			String[] hodnoty = {encryptedPassword};
+			String[] hodnoty = {encryptedPassword, String.valueOf(theUser.getId())};
 			if(conn.setDotaz(dotaz, hodnoty) > 0) {
 					return 1;
 			}

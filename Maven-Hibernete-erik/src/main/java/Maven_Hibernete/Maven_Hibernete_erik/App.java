@@ -1,7 +1,7 @@
 package Maven_Hibernete.Maven_Hibernete_erik;
 
 /**
- * Hello world!
+ * Hello world! 
  *
  */
 public class App 

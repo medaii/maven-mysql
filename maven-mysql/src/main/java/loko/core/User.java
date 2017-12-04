@@ -1,20 +1,42 @@
 package loko.core;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import loko.DAO.IFUser;
 
 /*
  * typ podle tabulky user v DB
  */
+@Entity
+@Table(name="users")
 public class User implements IFUser {
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id")
 	private int id;
+	
+	@Column(name="last_name")
 	private String lastName;
+	
+	@Column(name="first_name")
 	private String firstName;
+	
+	@Column(name="email")
 	private String email;
+	
+	@Column(name="is_admin")
 	private boolean admin;
+	
+	@Column(name="password")
 	private String password;
 	
 	public User() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	public User(String lastName, String firstName, String email, boolean admin, String password) {
 		super();
@@ -93,10 +115,16 @@ public class User implements IFUser {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 	@Override
+	public String toString() {
+		return "User [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", email=" + email + ", admin="
+				+ admin + ", password=" + password + "]";
+	}
+
+/*	@Override
 	public String toString() {
 		return lastName + " " + firstName;
 	}
-
+*/
+	
 }

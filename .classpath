@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="maven-mysql/src/main/java"/>
+	<classpathentry kind="src" path="maven-mysql/src/test/java"/>
+	<classpathentry kind="lib" path="maven-mysql/jgoodies-common-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="maven-mysql/jgoodies-common-1.8.0.jar"/>
+	<classpathentry kind="lib" path="maven-mysql/jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="maven-mysql/jgoodies-forms-1.8.0.jar"/>
+	<classpathentry kind="lib" path="maven-mysql/target/maven-mysql-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="output" path="maven-mysql/target/classes"/>
+</classpath>

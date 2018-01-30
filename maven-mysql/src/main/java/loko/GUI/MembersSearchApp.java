@@ -16,6 +16,8 @@ import loko.core.User;
 import loko.loger.LoggerLoko;
 import loko.tableModel.MembersListTableModel;
 import loko.tableModel.UsersTableModel;
+import service.IFMembersService;
+import service.MembersServiceImpl;
 
 import java.awt.BorderLayout;
 import javax.swing.JTabbedPane;
@@ -62,6 +64,8 @@ public class MembersSearchApp  extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 4801718700352877970L;
+	private IFMembersService membersService; // instance na service tridu
+	
 	private IFMembersDAO membersDAO;
 	private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
@@ -106,6 +110,7 @@ public class MembersSearchApp  extends JFrame{
 					// Show login dialog
 					UserLoginDialog dialog = new UserLoginDialog();
 					dialog.populateUsers(users);
+					dialog.setMembersService(new MembersServiceImpl());
 					dialog.setMembersDAO(membersDAO);
 					dialog.setUserDAO(userDAO);
 				
@@ -123,11 +128,11 @@ public class MembersSearchApp  extends JFrame{
 	/**
 	 * Create the application.
 	 */
-	public MembersSearchApp(int theUserId, boolean theAdmin, IFMembersDAO theMemberDAO, UserDAO theUserDAO) {
-		
+	public MembersSearchApp(IFMembersService membersService,int theUserId, boolean theAdmin, UserDAO theUserDAO) {
+		this.membersService = membersService;
+	
 			userId = theUserId;
 			admin = theAdmin;
-			membersDAO = theMemberDAO;
 			mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
 			phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
 			userDAO = theUserDAO;

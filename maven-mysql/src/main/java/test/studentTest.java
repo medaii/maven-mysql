@@ -1,19 +1,25 @@
 package test;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import loko.DAO.UserDAO;
+import loko.DB.DBHibernateSqlExecutor;
 import loko.core.*;
 
 public class studentTest {
-
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public static void main(String[] args) {
 
 		// create session factory
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
+		/*try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
 				.buildSessionFactory();) {
 
 			// create session
@@ -38,6 +44,21 @@ public class studentTest {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+		*/
+		LOGGER.setLevel(Level.WARNING);
+		DBHibernateSqlExecutor pokus = new DBHibernateSqlExecutor();
+		UserDAO userDAO = new UserDAO(pokus);
+		
+		List<User> user = new ArrayList<User>();
+		
+		//pokus.getData("from User", user, User.class);
+		user = userDAO.getUsers(false, 2);
+		System.out.println(user + "\n" + User.class.getSimpleName());
+		userDAO = new UserDAO();
+		
+		user = userDAO.getUsers(false, 2);
+		
+		System.out.println(user + "\n" + User.class.getSimpleName());
 	}
 
 }

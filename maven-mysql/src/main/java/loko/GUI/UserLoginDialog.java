@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import loko.DAO.*;
 import loko.core.User;
+import service.IFMembersService;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -36,12 +37,17 @@ public class UserLoginDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 
+	private IFMembersService membersService; // servisni trida pro DAO
 	//private EmployeeDAO employeeDAO;
 	private UserDAO userDAO; // pro testovaní pøidat = new UserDAO();	
 	private IFMembersDAO membersDAO;
 	private JPasswordField passwordField;
 	private JComboBox comboBoxUser;
 	
+	
+	public void setMembersService(IFMembersService membersService) {		
+		this.membersService = membersService;		
+	}
 	
 	public void setUserDAO(UserDAO theUserDAO) {
 		userDAO = theUserDAO;
@@ -54,20 +60,6 @@ public class UserLoginDialog extends JDialog {
 	public void populateUsers(List<User> users) {
 		// vytvoøí pole a naslednì naplni box
 		comboBoxUser.setModel(new DefaultComboBoxModel(users.toArray(new User[0]))); // vytvoøeni pole s udaji user a do listu pridaní vrácené hodnoty z .toString
-	}
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			UserLoginDialog dialog = new UserLoginDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -175,7 +167,7 @@ public class UserLoginDialog extends JDialog {
 				setVisible(false);
 
 				// now show the main app window
-				MembersSearchApp frame = new MembersSearchApp(userId, admin, membersDAO, userDAO);
+				MembersSearchApp frame = new MembersSearchApp(membersService,userId, admin, userDAO);
 				frame.setLoggedInUserName(theUser.getFirstName(), theUser.getLastName());
 				frame.refreshMembersView();
 				

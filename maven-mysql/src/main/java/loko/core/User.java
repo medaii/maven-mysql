@@ -26,7 +26,7 @@ public class User implements IFUser {
 	@Column(name="first_name")
 	private String firstName;
 	
-	@Column(name="email")
+	@Column(name="email" , nullable = true)
 	private String email;
 	
 	@Column(name="is_admin")

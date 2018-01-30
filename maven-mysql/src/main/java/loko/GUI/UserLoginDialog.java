@@ -39,8 +39,8 @@ public class UserLoginDialog extends JDialog {
 
 	private IFMembersService membersService; // servisni trida pro DAO
 	//private EmployeeDAO employeeDAO;
-	private UserDAO userDAO; // pro testovaní pøidat = new UserDAO();	
-	private IFMembersDAO membersDAO;
+	//private IFUserDAO userDAO; // pro testovaní pøidat = new UserDAO();	
+
 	private JPasswordField passwordField;
 	private JComboBox comboBoxUser;
 	
@@ -49,13 +49,6 @@ public class UserLoginDialog extends JDialog {
 		this.membersService = membersService;		
 	}
 	
-	public void setUserDAO(UserDAO theUserDAO) {
-		userDAO = theUserDAO;
-	}
-	
-	public void setMembersDAO(IFMembersDAO theMemberDAO) {
-		membersDAO = theMemberDAO;
-	}
 
 	public void populateUsers(List<User> users) {
 		// vytvoøí pole a naslednì naplni box
@@ -161,13 +154,13 @@ public class UserLoginDialog extends JDialog {
 			
 			// Kontrola hesla s heslem zakodovaným v DB
 			// volání DAO pro validaci password
-			boolean isValidPassword = userDAO.authenticate(theUser);
+			boolean isValidPassword = membersService.authenticate(theUser);
 			if (isValidPassword) {
 				// hide the login window
 				setVisible(false);
 
 				// now show the main app window
-				MembersSearchApp frame = new MembersSearchApp(membersService,userId, admin, userDAO);
+				MembersSearchApp frame = new MembersSearchApp(membersService,userId, admin);
 				frame.setLoggedInUserName(theUser.getFirstName(), theUser.getLastName());
 				frame.refreshMembersView();
 				
@@ -183,8 +176,9 @@ public class UserLoginDialog extends JDialog {
 			}
 		}
 		catch (Exception exc) {
-			JOptionPane.showMessageDialog(this, "Error during login", "Error",
-					JOptionPane.ERROR_MESSAGE);			
+			JOptionPane.showMessageDialog(this, "Error during login.", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			 exc.printStackTrace();
 		}
 	}
 }

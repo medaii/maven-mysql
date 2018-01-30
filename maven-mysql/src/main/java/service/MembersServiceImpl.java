@@ -34,7 +34,7 @@ public class MembersServiceImpl implements IFMembersService {
 	
 	public MembersServiceImpl() {
 		membersDAO = (IFMembersDAO)DAOFactory.createDAO(IFMembersDAO.class);
-		IFUserDAO userDAO = new UserDAO(); // pridat do Factory
+		this.userDAO = new UserDAO(); // pridat do Factory
 	}
 	/**
 	 * servis MembersDAO metod

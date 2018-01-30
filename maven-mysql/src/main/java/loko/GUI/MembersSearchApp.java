@@ -65,11 +65,10 @@ public class MembersSearchApp  extends JFrame{
 	 */
 	private static final long serialVersionUID = 4801718700352877970L;
 	private IFMembersService membersService; // instance na service tridu
-	
+	private IFUserDAO userDAO = new UserDAO();
 	private IFMembersDAO membersDAO;
 	private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
-	private UserDAO userDAO;
 	private JFrame frame;
 	private int userId;
 	private boolean admin;
@@ -101,8 +100,7 @@ public class MembersSearchApp  extends JFrame{
             throw new RuntimeException("Problems s vytvoreni logger souboru.");
 					}
 					
-					IFMembersDAO membersDAO = DAOFactory.createDAO(IFMembersDAO.class);
-					UserDAO userDAO = new UserDAO();
+					IFUserDAO userDAO = new UserDAO();
 					
 					// Get users
 					List<User> users = userDAO.getUsers(true, 0);
@@ -111,9 +109,7 @@ public class MembersSearchApp  extends JFrame{
 					UserLoginDialog dialog = new UserLoginDialog();
 					dialog.populateUsers(users);
 					dialog.setMembersService(new MembersServiceImpl());
-					dialog.setMembersDAO(membersDAO);
-					dialog.setUserDAO(userDAO);
-				
+
 					
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
@@ -128,14 +124,13 @@ public class MembersSearchApp  extends JFrame{
 	/**
 	 * Create the application.
 	 */
-	public MembersSearchApp(IFMembersService membersService,int theUserId, boolean theAdmin, UserDAO theUserDAO) {
+	public MembersSearchApp(IFMembersService membersService,int theUserId, boolean theAdmin) {
 		this.membersService = membersService;
 	
 			userId = theUserId;
 			admin = theAdmin;
 			mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
 			phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
-			userDAO = theUserDAO;
 			
 			
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -319,7 +314,7 @@ public class MembersSearchApp  extends JFrame{
 				int id_member = tempmemberList.getId();
 				// smazaní zaznamu
 				String zprava = "id: " + id_member;
-				if(membersDAO.deleteMember(id_member) > 0) {
+				if(membersService.deleteMember(id_member) > 0) {
 					LOGGER.warning("Smazán záznam èlena id:" + id_member);
 					zprava += " byl smazán.";
 					//refresh tabulky
@@ -468,7 +463,7 @@ public class MembersSearchApp  extends JFrame{
 			
 			List<MemberList> membersList = null;
 			if (name != null && name.trim().length() > 0) {
-				membersList = membersDAO.searchAllMembers(name, true, id_kategorie);
+				membersList = membersService.searchAllMembers(name, true, id_kategorie);
 			} else {
 					refreshMembersView();
 					return;
@@ -509,7 +504,7 @@ public class MembersSearchApp  extends JFrame{
 	public void refreshMembersView() {
 
 		try {
-			List<MemberList> members = membersDAO.getAllMemberList(true, id_kategorie);
+			List<MemberList> members = membersService.getAllMemberList(true, id_kategorie);
 			
 			// create the model and update the "table"
 			MembersListTableModel model = new MembersListTableModel(members);
@@ -526,7 +521,7 @@ public class MembersSearchApp  extends JFrame{
 	public void refreshUsersView() {
 
 		try {
-			List<User> users = userDAO.getUsers(admin, userId);
+			List<User> users = membersService.getUsers(admin, userId);
 
 			// Vytvoøení tabulky s uživately
 			UsersTableModel model = new UsersTableModel(users);

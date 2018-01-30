@@ -7,7 +7,7 @@ import loko.DAO.DAOFactory;
 import loko.DAO.IFMailsDAO;
 import loko.DAO.IFMembersDAO;
 import loko.DAO.IFPhoneDAO;
-import loko.DAO.IFUser;
+import loko.DAO.IFUserDAO;
 import loko.DAO.UserDAO;
 import loko.core.Mail;
 import loko.core.MailsMember;
@@ -16,6 +16,7 @@ import loko.core.MemberFull;
 import loko.core.MemberList;
 import loko.core.Phone;
 import loko.core.PhonesMeber;
+import loko.core.User;
 /**
  * 
  * @author Erik Markovic
@@ -27,13 +28,13 @@ public class MembersServiceImpl implements IFMembersService {
 	private IFMembersDAO membersDAO;
 	//private IFMailsDAO mailsDAO;
 	//private IFPhoneDAO phoneDAO;
-	//private IFUser userDAO;
+	private IFUserDAO userDAO;
 
 	//membersDAO = DAOFactory.createDAO(IFMembersDAO.class);
 	
 	public MembersServiceImpl() {
 		membersDAO = (IFMembersDAO)DAOFactory.createDAO(IFMembersDAO.class);
-		
+		IFUserDAO userDAO = new UserDAO(); // pridat do Factory
 	}
 	/**
 	 * servis MembersDAO metod
@@ -158,77 +159,26 @@ public class MembersServiceImpl implements IFMembersService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	/**
+	 * metody UserDAO
+	 */
 	@Override
-	public int getId() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateUser(User theUser) {
+		return userDAO.updateUser(theUser);
+	}
+	@Override
+	public int changePassword(User theUser, String newPassword) {
+		return userDAO.changePassword(theUser, newPassword);
+	}
+	@Override
+	public List<User> getUsers(boolean admin, int userId) {
+		return userDAO.getUsers(admin, userId);
+	}
+	@Override
+	public boolean authenticate(User theUser) {
+		return userDAO.authenticate(theUser);
 	}
 
-	@Override
-	public void setId(int id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getLastName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setLastName(String lastName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getFirstName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setFirstName(String firstName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getEmail() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setEmail(String email) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isAdmin() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setAdmin(boolean admin) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setPassword(String password) {
-		// TODO Auto-generated method stub
-
-	}
 
 }

@@ -26,7 +26,7 @@ import loko.core.User;
 public class MembersServiceImpl implements IFMembersService {
 
 	private IFMembersDAO membersDAO;
-	//private IFMailsDAO mailsDAO;
+	private IFMailsDAO mailsDAO;
 	//private IFPhoneDAO phoneDAO;
 	private IFUserDAO userDAO;
 
@@ -34,6 +34,7 @@ public class MembersServiceImpl implements IFMembersService {
 	
 	public MembersServiceImpl() {
 		membersDAO = (IFMembersDAO)DAOFactory.createDAO(IFMembersDAO.class);
+		this.mailsDAO = (IFMailsDAO)DAOFactory.createDAO(IFMailsDAO.class);
 		this.userDAO = new UserDAO(); // pridat do Factory
 	}
 	/**
@@ -124,40 +125,37 @@ public class MembersServiceImpl implements IFMembersService {
 		return null;
 	}
 
+	/**
+	 * servis MailDAO
+	 */
 	@Override
 	public int deleteMail(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+		return mailsDAO.deleteMail(id);
 	}
 
 	@Override
 	public int addMail(Mail mail) {
-		// TODO Auto-generated method stub
-		return 0;
+		return mailsDAO.addMail(mail);
 	}
 
 	@Override
 	public int updateMail(Mail mail, int id) {
-		// TODO Auto-generated method stub
-		return 0;
+		return mailsDAO.updateMail(mail, id);
 	}
 
 	@Override
 	public Map<Integer, MailsMember> getAllMailMembers() {
-		// TODO Auto-generated method stub
-		return null;
+		return mailsDAO.getAllMailMembers();
 	}
 
 	@Override
 	public MailsMember getMailsMember(int id_member) {
-		// TODO Auto-generated method stub
-		return null;
+		return mailsDAO.getMailsMember(id_member);
 	}
 
 	@Override
 	public Mail getMail(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return mailsDAO.getMail(id);
 	}
 	
 	/**

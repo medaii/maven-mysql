@@ -1,7 +1,6 @@
 package loko.GUI;
 
 import java.awt.EventQueue;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,8 +38,6 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -66,8 +63,6 @@ public class MembersSearchApp  extends JFrame{
 	private static final long serialVersionUID = 4801718700352877970L;
 	private IFMembersService membersService; // instance na service tridu
 	private IFUserDAO userDAO = new UserDAO();
-	private IFMembersDAO membersDAO;
-	//private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
 	private JFrame frame;
 	private int userId;

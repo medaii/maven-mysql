@@ -7,15 +7,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 
-import loko.DAO.IFMailsDAO;
-import loko.DAO.IFMembersDAO;
+
+
 import loko.DAO.IFPhoneDAO;
-import loko.DAO.MembersDAOImpl;
 import loko.core.Mail;
 import loko.core.MailsMember;
 import loko.core.MemberFull;
@@ -30,19 +25,16 @@ import javax.swing.JOptionPane;
 
 
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+
 import javax.swing.JTabbedPane;
 import java.awt.CardLayout;
 
-import com.sun.media.sound.ModelAbstractChannelMixer;
-import com.sun.org.apache.bcel.internal.generic.LOOKUPSWITCH;
 import com.toedter.calendar.JDateChooser;
 
 
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
@@ -52,10 +44,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
 /**
  * 
  * @author Dave
@@ -64,6 +52,7 @@ import java.awt.event.InputMethodEvent;
  */
 public class MemberDialog extends JDialog {
 
+	private static final long serialVersionUID = 8676803454227556101L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldFirstName;
 	private JTextField textFieldLastName;
@@ -71,12 +60,9 @@ public class MemberDialog extends JDialog {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	private IFMembersService membersService;
-	//private IFMembersDAO membersDAO;
-	private MembersSearchApp membersSearchApp;
 	private MemberFull memberFull;
 	private PhonesMeber phones;
 	private MailsMember mails;
-	//private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
 	private JTable tableMails;
 	private JTable tablePhone;
@@ -96,20 +82,21 @@ public class MemberDialog extends JDialog {
 	 */
 	public MemberDialog(int id_member,IFMembersService membersService,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
 		this.setModal(true);
+		
+		//nastavení názvu okna
 		setTitle("Editace \u010Dlena");
 		
-		this.membersService = membersService;
-		
+		// inicializace promìných
+		this.membersService = membersService;		
 		this.id_member = id_member;
 		
 		this.phoneDAO = phoneDAO;
 		this.phones = phoneDAO.getPhonesMember(id_member);
 		
 		this.memberFull = membersService.getMemberFull(id_member);
-		this.mails = membersService.getMailsMember(id_member);
-		this.membersSearchApp =  membersSearchApp;
+		this.mails = membersService.getMailsMember(id_member);		
 		
-		
+		//inicializace okna
 		setBounds(100, 100, 749, 406);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -186,6 +173,8 @@ public class MemberDialog extends JDialog {
 				panel_1.add(lblRegsh);
 				
 				textFieldCHFReg = new JTextField();
+				
+				//èíslo registrace mùže být jen èísla...kontrola zadavaní z klavesnice
 				textFieldCHFReg.addKeyListener(new KeyAdapter() {
 					@Override
 					public void keyTyped(KeyEvent e) {
@@ -241,21 +230,27 @@ public class MemberDialog extends JDialog {
 				tabbedPane.addTab("Kontakty", null, kontakty, null);
 				kontakty.setLayout(null);
 				
+				// tlaèítko na vytvoøení nového mailu
 				JButton btnNovMail = new JButton("Nov\u00FD mail");
 				btnNovMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						//otevøení nového okna addMailDialog
 						AddMailDialog dialog = new AddMailDialog(id_member,true, membersService, MemberDialog.this, null);
 						dialog.setVisible(true);
+						LOGGER.info("Otevøení okna pro pøidaní mailu");
 					}
 				});
 				btnNovMail.setBounds(10, 262, 89, 23);
 				kontakty.add(btnNovMail);
 				
+				// tlaèítko na vytvoøení nového telefoního èísla
 				JButton btnNovTelefon = new JButton("Nov\u00FD Telefon");
 				btnNovTelefon.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						// otevøení nového okna addPhoneDialog
 						AddPhoneDialog dialog = new AddPhoneDialog(id_member,true, phoneDAO, MemberDialog.this, null);
 						dialog.setVisible(true);
+						LOGGER.info("Otevøení okna pro pøidaní mailu");
 					}
 				});
 				btnNovTelefon.setBounds(352, 262, 114, 23);
@@ -268,8 +263,6 @@ public class MemberDialog extends JDialog {
 				tableMails = new JTable();
 				
 
-
-				
 				modelMail = new MailsTableModel(mails.getMails());
 				tableMails.setModel(modelMail);
 				scrollPane.setViewportView(tableMails);
@@ -279,6 +272,7 @@ public class MemberDialog extends JDialog {
 				lblMail.setBounds(10, 11, 46, 14);
 				kontakty.add(lblMail);
 				
+				// tlaèítko pro editaci mailu
 				JButton btnEditMailu = new JButton("Edit mailu");
 				btnEditMailu.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -288,17 +282,21 @@ public class MemberDialog extends JDialog {
 						// kontrola, že je vybrany øádek
 						if(row < 0) {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							LOGGER.info("Tlaèítko editace mailu - nebyl vybran øádek.");
 							return;
 						}
+						// naètení dat do objektu Mail a otevøeno okno pro editaci mailu
 						Mail tempMail =  (Mail) tableMails.getValueAt(row, MailsTableModel.OBJECT_COL);
 						
 						AddMailDialog dialog = new AddMailDialog(id_member,false,membersService, MemberDialog.this, tempMail );
 						dialog.setVisible(true);
+						LOGGER.info("Otevøení okna pro editaci mailu");						
 					}
 				});
 				btnEditMailu.setBounds(109, 262, 105, 23);
 				kontakty.add(btnEditMailu);
 				
+				// tlaèítko na mazání mailu
 				JButton btnSmazatMail = new JButton("Smazat mail");
 				btnSmazatMail.setFont(new Font("Times New Roman", Font.PLAIN, 9));
 				btnSmazatMail.addActionListener(new ActionListener() {
@@ -310,15 +308,18 @@ public class MemberDialog extends JDialog {
 						// kontrola, že je vybrany øádek
 						if(row < 0) {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							LOGGER.info("Tlaèítko smazání mailu - nebyl vybran øádek.");
 							return;
 						}
-					//potvrzeni že opravdu chcete smazat
+					//potvrzeni že opravdu chcete smazat						
 						int response = JOptionPane.showConfirmDialog(
 								null, "Opravdu chcete smazat mail?", "Confirm", 
 								JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 						if (response != JOptionPane.YES_OPTION) {
+							LOGGER.info("Zrušení pøíkazu na smazání mailu.");
 							return;
 						}
+						//naètení objektu Mail a smazání z DB
 						Mail tempMail =  (Mail) tableMails.getValueAt(row, MailsTableModel.OBJECT_COL);
 						
 						LOGGER.info("Maže se member id = " + id_member);
@@ -346,8 +347,7 @@ public class MemberDialog extends JDialog {
 				tablePhone.setModel(modelP);
 				scrollPane_1.setViewportView(tablePhone);
 				
-	
-				
+				// tlaèítko editace telefonu
 				JButton btnEditTel = new JButton("Edit tel.");
 				btnEditTel.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -357,16 +357,20 @@ public class MemberDialog extends JDialog {
 						// kontrola, že je vybrany øádek
 						if(row < 0) {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							LOGGER.info("Tlaèítko editace telefonu - nebyl vybran øádek.");
 							return;
 						}
+						// vytvoøení objektu Phone a otevøení okna AddPhoneDialog
 						Phone tempPhone =  (Phone) tablePhone.getValueAt(row, PhonesTableModel.OBJECT_COL);
 						AddPhoneDialog dialog = new AddPhoneDialog(id_member,false, phoneDAO, MemberDialog.this, tempPhone);
 						dialog.setVisible(true);
+						LOGGER.info("Otevøení okna pro editaci telefonu");	
 					}
 				});
 				btnEditTel.setBounds(485, 262, 89, 23);
 				kontakty.add(btnEditTel);
 				
+				// tlaèítko pro smazaní telefonu
 				JButton btnSmazatTel = new JButton("Smazat tel.");
 				btnSmazatTel.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -376,6 +380,7 @@ public class MemberDialog extends JDialog {
 						// kontrola, že je vybrany øádek
 						if(row < 0) {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							LOGGER.info("Tlaèítko smazání telefonu - nebyl vybran øádek.");
 							return;
 						}
 						//potvrzeni že opravdu chcete smazat
@@ -383,8 +388,10 @@ public class MemberDialog extends JDialog {
 								null, "Opravdu chcete smazat tento telefon?", "Confirm", 
 								JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 						if (response != JOptionPane.YES_OPTION) {
+							LOGGER.info("Zrušení pøíkazu na smazání telefonu.");
 							return;
 						}
+						// vytvoøení objektu Phone pro smazání telefonu
 						Phone tempPhone =  (Phone) tablePhone.getValueAt(row, PhonesTableModel.OBJECT_COL);
 						
 						//smazat zaznam
@@ -407,6 +414,7 @@ public class MemberDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				// uložení a návrat do hlavního okna
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -477,6 +485,7 @@ public class MemberDialog extends JDialog {
 						
 					//potvrdit uložení
 						JOptionPane.showMessageDialog(null, "Uspìšmì pøidáno");
+						LOGGER.info("Uspìšnì uloženy zmìny a návrat do hlavního okna.");
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -484,10 +493,12 @@ public class MemberDialog extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
+				// tlaèítko Cancel
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);
+						LOGGER.info("Bez uložení návrat do hlavního okna.");
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
@@ -495,6 +506,9 @@ public class MemberDialog extends JDialog {
 			}
 		}
 	}
+	/**
+	 * obnovení tabulky mail
+	 */
 	public void obnovitNahledMail() {
 		try {
 			this.mails = membersService.getMailsMember(id_member);
@@ -503,9 +517,13 @@ public class MemberDialog extends JDialog {
 			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "chyba" + e);
+			LOGGER.warning("Chyba pøi obnovì tabulky mailù - " + e);
+			e.getLocalizedMessage();
 		}
-
 	}
+	/**
+	 * Obnovení tabulky telefoních èísel
+	 */
 	public void obnovitNahledPhone() {
 		try {
 			this.phones = phoneDAO.getPhonesMember(id_member);
@@ -514,7 +532,7 @@ public class MemberDialog extends JDialog {
 			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "chyba" + e);
+			LOGGER.warning("Chyba pøi obnovì tabulky telefoních èísel - " + e);
 		}
-
 	}
 }

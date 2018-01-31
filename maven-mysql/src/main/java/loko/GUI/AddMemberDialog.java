@@ -317,6 +317,7 @@ public class AddMemberDialog extends JDialog {
 								IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
 								phoneDAO.addPhone(phone);
 							}
+							// kontrola jestli je vyplnený text
 							if(!textFieldTel2.getText().isEmpty()) {
 								if(textFieldOdTel2.getText().isEmpty()) {
 									textFieldOdTel2.setText("");
@@ -341,7 +342,7 @@ public class AddMemberDialog extends JDialog {
 													
 							MemberDialog dialog = new MemberDialog(id_member,membersService, phoneDAO, membersSearchApp);
 							dialog.setVisible(true);
-							LOGGER.info("Návrat zpìt do okna MemberDialog.");
+							LOGGER.info("Uložení a otevøení novéhé okna MemberDialog.");
 							
 							
 						} else {
@@ -358,10 +359,12 @@ public class AddMemberDialog extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
+				// tlaèitko Cancel
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);
+						LOGGER.info("Návrat bez uložení z " + this.toString());
 					}
 				});
 				cancelButton.setActionCommand("Cancel");

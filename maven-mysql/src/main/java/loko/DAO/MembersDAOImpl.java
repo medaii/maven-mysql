@@ -233,7 +233,7 @@ public class MembersDAOImpl implements IFMembersDAO {
 			int nowMonth = cal.get(Calendar.MONTH);
 			cal.set(Calendar.MONTH, Calendar.JANUARY);
 			cal.set(Calendar.DAY_OF_MONTH, 1);			
-			String date = sdf.format(cal.getTime());
+			//String date = sdf.format(cal.getTime());
 			
 			switch (kategorie) {
 			case 1:

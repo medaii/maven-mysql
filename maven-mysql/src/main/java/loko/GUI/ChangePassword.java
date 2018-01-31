@@ -8,9 +8,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-
-import loko.DAO.UserDAO;
 import loko.core.User;
+import service.IFMembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -54,7 +53,7 @@ public class ChangePassword extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ChangePassword(User user, UserDAO userDAO, MembersSearchApp membersSearchApp, boolean isAdmin) {
+	public ChangePassword(User user, IFMembersService membersService, MembersSearchApp membersSearchApp, boolean isAdmin) {
 		this.setModal(true);
 
 		
@@ -125,7 +124,7 @@ public class ChangePassword extends JDialog {
 							
 							// Kontrola hesla s heslem zakodovaným v DB
 							// volání DAO pro validaci password
-							isValidPassword = userDAO.authenticate(user);
+							isValidPassword = membersService.authenticate(user);
 						}	
 						//zmìma hesla v DB
 						if(isValidPassword) {
@@ -133,7 +132,7 @@ public class ChangePassword extends JDialog {
 							String newPassword2 = new String(passwordNew2.getPassword());
 							if(newPassword.equals(newPassword2) && !newPassword.equals("")) {
 								LOGGER.setLevel(Level.INFO);
-								if(userDAO.changePassword(user, newPassword) > 0){
+								if(membersService.changePassword(user, newPassword) > 0){
 									LOGGER.info("Zmìmìno heslo u uživatele id:" + user.getId());
 									JOptionPane.showMessageDialog(null, "Heslo zmìnìno.");
 									setVisible(false);

@@ -13,7 +13,7 @@ import loko.core.User;
  * @author Erik Markoviè Prostredník mezi gui user a db user
  */
 
-public class UserDAO {
+public class UserDAO implements IFUserDAO {
 	private DBSqlExecutor conn;
 	private DBHibernateSqlExecutor HSqlExecutor;
 	private int metodConnection = 0;
@@ -30,6 +30,10 @@ public class UserDAO {
 		HSqlExecutor = conn;
 	}
 
+	/* (non-Javadoc)
+	 * @see loko.DAO.IFUserDAO#updateUser(loko.core.User)
+	 */
+	@Override
 	public int updateUser(User theUser) {
 		int resurm;
 		String dotaz;
@@ -59,15 +63,10 @@ public class UserDAO {
 
 	}
 
-	/**
-	 * Zmìna hesla uživatele
-	 * 
-	 * @param theUser
-	 *          mìnìny uživatel
-	 * @param newPassword
-	 *          nové heslo
-	 * @return
+	/* (non-Javadoc)
+	 * @see loko.DAO.IFUserDAO#changePassword(loko.core.User, java.lang.String)
 	 */
+	@Override
 	public int changePassword(User theUser, String newPassword) {
 		// get plain text password
 		String plainTextPassword = newPassword;
@@ -112,6 +111,10 @@ public class UserDAO {
 		return tempUser;
 	}
 
+	/* (non-Javadoc)
+	 * @see loko.DAO.IFUserDAO#getUsers(boolean, int)
+	 */
+	@Override
 	public List<User> getUsers(boolean admin, int userId) {
 		List<User> list = new ArrayList<User>();
 		
@@ -172,12 +175,10 @@ public class UserDAO {
 		}
 	}
 
-	/**
-	 * Kontrola správnosti hesla, jestli je správne, tak vrací true.
-	 * 
-	 * @param theUser
-	 * @return
+	/* (non-Javadoc)
+	 * @see loko.DAO.IFUserDAO#authenticate(loko.core.User)
 	 */
+	@Override
 	public boolean authenticate(User theUser) {
 		boolean result = false;
 

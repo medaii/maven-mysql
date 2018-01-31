@@ -7,9 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import loko.DAO.IFPhoneDAO;
 import loko.core.Phone;
+import service.IFMembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,22 +27,21 @@ import java.awt.event.ActionEvent;
  */
 public class AddPhoneDialog extends JDialog {
 
+
+	private static final long serialVersionUID = -8767176534424954073L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldJmeno;
 	private JTextField textFieldTelefon;
-	private Phone phone = null;
-	private Boolean newPhone;
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	/**
 	 * Create the dialog.
 	 */
-	public AddPhoneDialog(int id_member,Boolean newPhone,IFPhoneDAO phoneDAO, MemberDialog memberDialog, Phone phone) {
-		this.phone = phone;
-		this.newPhone = newPhone;
+	public AddPhoneDialog(int id_member,Boolean newPhone,IFMembersService membersService, MemberDialog memberDialog, Phone phone) {		
+		memberDialog.setVisible(false);
+		// nastaveni názvu okna
 		if (newPhone && (phone!=null)) {
 			setTitle("P\u0159id\u00E1n\u00ED telefonu");
 		} else {
-			this.phone = phone;
 			setTitle("Editace telefonu");
 			
 		}
@@ -75,6 +73,8 @@ public class AddPhoneDialog extends JDialog {
 		}
 		{
 			textFieldTelefon = new JTextField();
+			
+			// kontrola ze se zadavaji jen cisla
 			textFieldTelefon.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyTyped(KeyEvent e) {
@@ -102,21 +102,24 @@ public class AddPhoneDialog extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						
+						// kontrola zadání povinných udajù
 						if(textFieldJmeno.getText().isEmpty() || textFieldTelefon.getText().isEmpty()) {
 							JOptionPane.showMessageDialog(null, "Nezadane povinne udaje!");
+							LOGGER.info("Nelze uložit, nezadané povinné údaje - " +  this.toString());
 						}
 						else {
 							//uložit telefon
 							if (newPhone) {
 								Phone phone = new Phone(id_member, textFieldJmeno.getText(), textFieldTelefon.getText());
-								int id_newphone = phoneDAO.addPhone(phone);
+								int id_newphone = membersService.addPhone(phone);
 								LOGGER.info("Èíslo bylo uloženo pod id: " + id_newphone);
 							}
 							else {
 								phone.setName(textFieldJmeno.getText());
 								phone.setPhone(textFieldTelefon.getText());
 							 // kontrola uložení
-								if(phoneDAO.updatePhone(phone, phone.getId()) < 1) {
+								if(membersService.updatePhone(phone, phone.getId()) < 1) {
 										LOGGER.warning("Chyba zpisu v DB a záznam telefonu nezmìnìn!");
 										JOptionPane.showMessageDialog(null, "Chyba zápisu nezmìnìno!");
 									return;
@@ -126,7 +129,7 @@ public class AddPhoneDialog extends JDialog {
 							//zavreni okna a otevreni editace
 							setVisible(false);
 							dispose();
-							
+							LOGGER.info("Okno zavøeno - " + this.toString());
 							//obnovit vypis
 							memberDialog.obnovitNahledPhone();
 							memberDialog.setVisible(true);

@@ -15,7 +15,6 @@ import javax.swing.JTextField;
 
 import loko.DAO.DAOFactory;
 import loko.DAO.IFMailsDAO;
-import loko.DAO.IFPhoneDAO;
 import loko.core.Mail;
 import loko.core.MemberFull;
 import loko.core.Phone;
@@ -64,7 +63,7 @@ public class AddMemberDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AddMemberDialog(IFMembersService membersService, IFPhoneDAO phoneDAO,MembersSearchApp membersSearchApp) {
+	public AddMemberDialog(IFMembersService membersService,MembersSearchApp membersSearchApp) {
 		
 		setBounds(100, 100, 737, 598);
 		getContentPane().setLayout(new BorderLayout());
@@ -314,8 +313,8 @@ public class AddMemberDialog extends JDialog {
 									textFieldOdTel1.setText("");
 								}
 								Phone phone = new Phone(id_member, textFieldOdTel1.getText(), textFieldTel1.getText());
-								IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
-								phoneDAO.addPhone(phone);
+								
+								membersService.addPhone(phone);
 							}
 							// kontrola jestli je vyplnený text
 							if(!textFieldTel2.getText().isEmpty()) {
@@ -323,8 +322,8 @@ public class AddMemberDialog extends JDialog {
 									textFieldOdTel2.setText("");
 								}
 								Phone phone = new Phone(id_member, textFieldOdTel2.getText(), textFieldTel2.getText());
-								IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
-								phoneDAO.addPhone(phone);
+								
+								membersService.addPhone(phone);
 							}
 							
 							
@@ -340,7 +339,7 @@ public class AddMemberDialog extends JDialog {
 							JOptionPane.showMessageDialog(null, "Uspìšmì pøidáno");
 							// otevreni editace
 													
-							MemberDialog dialog = new MemberDialog(id_member,membersService, phoneDAO, membersSearchApp);
+							MemberDialog dialog = new MemberDialog(id_member,membersService, membersSearchApp);
 							dialog.setVisible(true);
 							LOGGER.info("Uložení a otevøení novéhé okna MemberDialog.");
 							

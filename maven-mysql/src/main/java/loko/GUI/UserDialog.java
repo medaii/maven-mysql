@@ -9,8 +9,9 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import loko.DAO.UserDAO;
 import loko.core.User;
+import service.IFMembersService;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
@@ -44,7 +45,7 @@ public class UserDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public UserDialog(User user, UserDAO userDAO, MembersSearchApp membersSearchApp, boolean isAdmin, boolean addUser) {
+	public UserDialog(User user,IFMembersService membersService, MembersSearchApp membersSearchApp, boolean isAdmin, boolean addUser) {
 		this.user = user;
 		if(addUser) {
 			if(!isAdmin) {
@@ -147,7 +148,7 @@ public class UserDialog extends JDialog {
 						}
 						else {
 								User theUser = new User(user.getId(),lastName, firstName, mail, admin);
-								if(userDAO.updateUser(theUser) > 0) {
+								if(membersService.updateUser(theUser) > 0) {
 									LOGGER.info("Zmìna udaje uživatele zmìnìna id uživate: " + theUser.getId());
 									}
 								else {

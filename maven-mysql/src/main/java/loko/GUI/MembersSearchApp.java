@@ -62,8 +62,7 @@ public class MembersSearchApp  extends JFrame{
 	 */
 	private static final long serialVersionUID = 4801718700352877970L;
 	private IFMembersService membersService; // instance na service tridu
-	private IFUserDAO userDAO = new UserDAO();
-	private IFPhoneDAO phoneDAO;
+	//private IFPhoneDAO phoneDAO;
 	private JFrame frame;
 	private int userId;
 	private boolean admin;
@@ -123,7 +122,7 @@ public class MembersSearchApp  extends JFrame{
 		this.membersService = membersService;
 			userId = theUserId;
 			admin = theAdmin;
-			phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
+			
 			
 			
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -260,7 +259,7 @@ public class MembersSearchApp  extends JFrame{
 		btnAddMember.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnAddMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddMemberDialog dialog = new AddMemberDialog(membersService, phoneDAO, MembersSearchApp.this);
+				AddMemberDialog dialog = new AddMemberDialog(membersService, MembersSearchApp.this);
 				dialog.setVisible(true);
 			}
 		});
@@ -409,7 +408,7 @@ public class MembersSearchApp  extends JFrame{
 					return;
 				}
 				User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
-				ChangePassword dialog = new ChangePassword(user, userDAO,MembersSearchApp.this, admin );
+				ChangePassword dialog = new ChangePassword(user, membersService,MembersSearchApp.this, admin );
 				dialog.setVisible(true);
 			}
 		});
@@ -426,7 +425,7 @@ public class MembersSearchApp  extends JFrame{
 	public void editaceMember(int row) {
 		MemberList tempmemberList =  (MemberList) tableMembers.getValueAt(row, MembersListTableModel.OBJECT_COL);
 		int id_member = tempmemberList.getId();
-		MemberDialog dialog = new MemberDialog(id_member,membersService, phoneDAO, MembersSearchApp.this);
+		MemberDialog dialog = new MemberDialog(id_member,membersService, MembersSearchApp.this);
 		dialog.setVisible(true);
 	}
 	/**
@@ -480,7 +479,7 @@ public class MembersSearchApp  extends JFrame{
 	 */
 	private void editUser(int row) {
 		User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
-		UserDialog dialog = new UserDialog(user, userDAO,MembersSearchApp.this, admin, false );
+		UserDialog dialog = new UserDialog(user, membersService,MembersSearchApp.this, admin, false );
 		dialog.setVisible(true);
 	}
 	/**

@@ -63,7 +63,6 @@ public class MemberDialog extends JDialog {
 	private MemberFull memberFull;
 	private PhonesMeber phones;
 	private MailsMember mails;
-	private IFPhoneDAO phoneDAO;
 	private JTable tableMails;
 	private JTable tablePhone;
 	private int id_member;
@@ -80,7 +79,7 @@ public class MemberDialog extends JDialog {
 	/**
 	 * Vytvoøení okna MemberDialog.
 	 */
-	public MemberDialog(int id_member,IFMembersService membersService,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
+	public MemberDialog(int id_member,IFMembersService membersService, MembersSearchApp membersSearchApp) {
 		this.setModal(true);
 		
 		//nastavení názvu okna
@@ -90,8 +89,7 @@ public class MemberDialog extends JDialog {
 		this.membersService = membersService;		
 		this.id_member = id_member;
 		
-		this.phoneDAO = phoneDAO;
-		this.phones = phoneDAO.getPhonesMember(id_member);
+		this.phones = membersService.getPhonesMember(id_member);
 		
 		this.memberFull = membersService.getMemberFull(id_member);
 		this.mails = membersService.getMailsMember(id_member);		
@@ -248,7 +246,7 @@ public class MemberDialog extends JDialog {
 				btnNovTelefon.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// otevøení nového okna addPhoneDialog
-						AddPhoneDialog dialog = new AddPhoneDialog(id_member,true, phoneDAO, MemberDialog.this, null);
+						AddPhoneDialog dialog = new AddPhoneDialog(id_member,true, membersService, MemberDialog.this, null);
 						dialog.setVisible(true);
 						LOGGER.info("Otevøení okna pro pøidaní mailu");
 					}
@@ -362,7 +360,7 @@ public class MemberDialog extends JDialog {
 						}
 						// vytvoøení objektu Phone a otevøení okna AddPhoneDialog
 						Phone tempPhone =  (Phone) tablePhone.getValueAt(row, PhonesTableModel.OBJECT_COL);
-						AddPhoneDialog dialog = new AddPhoneDialog(id_member,false, phoneDAO, MemberDialog.this, tempPhone);
+						AddPhoneDialog dialog = new AddPhoneDialog(id_member,false, membersService, MemberDialog.this, tempPhone);
 						dialog.setVisible(true);
 						LOGGER.info("Otevøení okna pro editaci telefonu");	
 					}
@@ -395,7 +393,7 @@ public class MemberDialog extends JDialog {
 						Phone tempPhone =  (Phone) tablePhone.getValueAt(row, PhonesTableModel.OBJECT_COL);
 						
 						//smazat zaznam
-						phoneDAO.deletePhone(tempPhone.getId());
+						membersService.deletePhone(tempPhone.getId());
 						//refresh tabulkz
 						obnovitNahledPhone();
 						// show success message
@@ -472,7 +470,7 @@ public class MemberDialog extends JDialog {
 							int countRow = modelP.getRowCount();
 							for (int i = 0; i < countRow; i++) {
 								Phone tempPhone = (Phone) modelP.getValueAt(i, PhonesTableModel.OBJECT_COL);
-								phoneDAO.updatePhone(tempPhone, tempPhone.getId());
+								membersService.updatePhone(tempPhone, tempPhone.getId());
 							}
 							LOGGER.info("Zmìma hodnot Telefonu.");
 						}
@@ -526,7 +524,7 @@ public class MemberDialog extends JDialog {
 	 */
 	public void obnovitNahledPhone() {
 		try {
-			this.phones = phoneDAO.getPhonesMember(id_member);
+			this.phones = membersService.getPhonesMember(id_member);
 			PhonesTableModel modelP = new PhonesTableModel(phones.getPhones());
 			tablePhone.setModel(modelP);
 			

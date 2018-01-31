@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -34,7 +36,7 @@ public class UserLoginDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = -3075207613660115541L;
-
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private final JPanel contentPanel = new JPanel();
 
 	private IFMembersService membersService; // servisni trida pro DAO
@@ -60,7 +62,6 @@ public class UserLoginDialog extends JDialog {
 	 */
 	public UserLoginDialog() {
 		
-		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -83,13 +84,6 @@ public class UserLoginDialog extends JDialog {
 			
 			comboBoxUser = new JComboBox();
 			comboBoxUser.setBounds(75, 12, 132, 23);
-			//inicializace listu
-			
-			/*
-			 * pro testovaní vytvoreni seznamu login
-			 */
-			//List<User> themUser = userDAO.getUsers(true, 0);
-			//populateUsers(themUser);
 			
 			panel.add(comboBoxUser);
 			
@@ -132,17 +126,19 @@ public class UserLoginDialog extends JDialog {
 		return comboBoxUser;
 	}
 	
+	/**
+	 * Kontrola hesla pøi pøihlašování uživatele
+	 */
 	private void performUserLogin() {
 		
 		try {
-			// get the user id
+			// Vybrání uživatele
 			if (comboBoxUser.getSelectedIndex() == -1) {						
 				JOptionPane.showMessageDialog(UserLoginDialog.this, "You must select a user.", "Error", JOptionPane.ERROR_MESSAGE);				
 				return;
 			}
 			
-			
-			//Vytvoøení user a naplnìni hodnotami
+			//Vytvoøení user a naplnìni hodnotami select
 			User theUser = (User) comboBoxUser.getSelectedItem();
 			int userId = theUser.getId();
 			boolean admin = theUser.isAdmin();
@@ -153,35 +149,43 @@ public class UserLoginDialog extends JDialog {
 			
 			
 			// Kontrola hesla s heslem zakodovaným v DB
-			// volání DAO pro validaci password
+			// volání Service pro validaci password user
 			boolean isValidPassword = membersService.authenticate(theUser);
+			
 			if (isValidPassword) {
-				// hide the login window
+				// validace v poøádku, skrytí okna a spuštìní membersearch okna
+				LOGGER.info("Oveøené pøihlašení uživatele " + theUser.getFirstName() + " " + theUser.getLastName());
 				setVisible(false);
 
-				// now show the main app window
+				// Neni otevøení okna membersearch (hlavní okno)
 				MembersSearchApp frame = new MembersSearchApp(membersService,userId, admin);
 				frame.setLoggedInUserName(theUser.getFirstName(), theUser.getLastName());
 				frame.refreshMembersView();
 				
 				frame.setVisible(true);
+				LOGGER.fine("Spušteno hlavní okno.");
 				
 			}
 			else {
-				// show error message
+				//chybné heslo
+				LOGGER.info("Chybné heslo pøi pøihlašení uživatele " + theUser.getFirstName() + " " + theUser.getLastName());
+				
+				// Vyskoèení okna s informaci, že bylo zadáno nesprávné heslo
 				JOptionPane.showMessageDialog(this, "Invalid login", "Invalid Login",
 						JOptionPane.ERROR_MESSAGE);
-
+				
 				return;			
 			}
 		}
 		catch (Exception exc) {
+			// zalogování
+			LOGGER.warning("Vyhozeni vyjímky pøi kontrole pøihlašovacích údajù - " + exc.toString());
+			// vypis do konzole
+			exc.printStackTrace();
+			// vyskakovací okno, že nastala chyba behem logování
 			JOptionPane.showMessageDialog(this, "Error during login.", "Error",
 					JOptionPane.ERROR_MESSAGE);
-			 exc.printStackTrace();
+			
 		}
 	}
 }
-
-
-

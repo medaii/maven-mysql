@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import loko.DAO.IFMailsDAO;
 import loko.core.Mail;
+import service.IFMembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -35,7 +36,7 @@ public class AddMailDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AddMailDialog(int id_member,Boolean newMail,IFMailsDAO mailsDAO, MemberDialog memberDialog,Mail mail) {
+	public AddMailDialog(int id_member,Boolean newMail,IFMembersService membersService, MemberDialog memberDialog,Mail mail) {
 		memberDialog.setVisible(false);
 		if (newMail && (mail!=null)) {
 			setTitle("P\u0159id\u00E1n\u00ED mailu");
@@ -91,7 +92,7 @@ public class AddMailDialog extends JDialog {
 							//uložit mail
 							if (newMail) {
 								Mail mail = new Mail(id_member, textFieldOdMail.getText(), textFieldMail.getText());
-								int id_newmail = mailsDAO.addMail(mail);
+								int id_newmail = membersService.addMail(mail);
 								LOGGER.info("Vytvoøené nový mail pod id = " + id_newmail);
 								
 							} else {
@@ -99,7 +100,7 @@ public class AddMailDialog extends JDialog {
 								mail.setMail(textFieldMail.getText());
 								
 								// kontrola uložení
-								if(mailsDAO.updateMail(mail, mail.getId()) < 1) {
+								if(membersService.updateMail(mail, mail.getId()) < 1) {
 										LOGGER.warning("Chyba zápisu do DB a mail nezmìnìn!");
 										JOptionPane.showMessageDialog(null, "Nezmìnìno!");
 									return;

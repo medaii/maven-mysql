@@ -23,6 +23,7 @@ import loko.core.Phone;
 import loko.core.PhonesMeber;
 import loko.tableModel.MailsTableModel;
 import loko.tableModel.PhonesTableModel;
+import service.IFMembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -69,12 +70,13 @@ public class MemberDialog extends JDialog {
 	private JDateChooser dateChooser;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	private IFMembersDAO membersDAO;
+	private IFMembersService membersService;
+	//private IFMembersDAO membersDAO;
 	private MembersSearchApp membersSearchApp;
 	private MemberFull memberFull;
 	private PhonesMeber phones;
 	private MailsMember mails;
-	private IFMailsDAO mailsDAO;
+	//private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
 	private JTable tableMails;
 	private JTable tablePhone;
@@ -90,19 +92,21 @@ public class MemberDialog extends JDialog {
 	private JComboBox comboBoxRole;
 
 	/**
-	 * Create the dialog.
+	 * Vytvoøení okna MemberDialog.
 	 */
-	public MemberDialog(int id_member, IFMembersDAO membersDAO, IFMailsDAO mailsDAO,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
+	public MemberDialog(int id_member,IFMembersService membersService,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
 		this.setModal(true);
 		setTitle("Editace \u010Dlena");
+		
+		this.membersService = membersService;
+		
 		this.id_member = id_member;
-		this.membersDAO = membersDAO;
-		this.mailsDAO = mailsDAO;
+		
 		this.phoneDAO = phoneDAO;
 		this.phones = phoneDAO.getPhonesMember(id_member);
 		
-		this.memberFull = membersDAO.getMemberFull(id_member);
-		this.mails = mailsDAO.getMailsMember(id_member);
+		this.memberFull = membersService.getMemberFull(id_member);
+		this.mails = membersService.getMailsMember(id_member);
 		this.membersSearchApp =  membersSearchApp;
 		
 		
@@ -240,7 +244,7 @@ public class MemberDialog extends JDialog {
 				JButton btnNovMail = new JButton("Nov\u00FD mail");
 				btnNovMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						AddMailDialog dialog = new AddMailDialog(id_member,true, mailsDAO, MemberDialog.this, null);
+						AddMailDialog dialog = new AddMailDialog(id_member,true, membersService, MemberDialog.this, null);
 						dialog.setVisible(true);
 					}
 				});
@@ -288,7 +292,7 @@ public class MemberDialog extends JDialog {
 						}
 						Mail tempMail =  (Mail) tableMails.getValueAt(row, MailsTableModel.OBJECT_COL);
 						
-						AddMailDialog dialog = new AddMailDialog(id_member,false,mailsDAO, MemberDialog.this, tempMail );
+						AddMailDialog dialog = new AddMailDialog(id_member,false,membersService, MemberDialog.this, tempMail );
 						dialog.setVisible(true);
 					}
 				});
@@ -319,7 +323,7 @@ public class MemberDialog extends JDialog {
 						
 						LOGGER.info("Maže se member id = " + id_member);
 					//smazat zaznam
-						mailsDAO.deleteMail(tempMail.getId());
+						membersService.deleteMail(tempMail.getId());
 					//refresh tabulkz
 						obnovitNahledMail();
 						// show success message
@@ -436,7 +440,7 @@ public class MemberDialog extends JDialog {
 						memberFull.setId_odd_kategorie(id_kategorie_odd);
 						
 						// uložení do DB
-						membersDAO.updateMember(memberFull, memberFull.getId());
+						membersService.updateMember(memberFull, memberFull.getId());
 						// zavrit dialogove okno
 						setVisible(false);
 						dispose();
@@ -448,7 +452,7 @@ public class MemberDialog extends JDialog {
 							int countRow = modelMail.getRowCount();
 							for (int i = 0; i < countRow; i++) {
 								Mail tempMail = (Mail) modelMail.getValueAt(i, MailsTableModel.OBJECT_COL);
-								mailsDAO.updateMail(tempMail, tempMail.getId());
+								membersService.updateMail(tempMail, tempMail.getId());
 							}
 						}
 						else {
@@ -493,7 +497,7 @@ public class MemberDialog extends JDialog {
 	}
 	public void obnovitNahledMail() {
 		try {
-			this.mails = mailsDAO.getMailsMember(id_member);
+			this.mails = membersService.getMailsMember(id_member);
 			MailsTableModel model = new MailsTableModel(mails.getMails());
 			tableMails.setModel(model);
 			

@@ -265,7 +265,7 @@ public class MembersSearchApp  extends JFrame{
 		btnAddMember.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnAddMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddMemberDialog dialog = new AddMemberDialog(membersDAO,membersService, phoneDAO, MembersSearchApp.this);
+				AddMemberDialog dialog = new AddMemberDialog(membersService, phoneDAO, MembersSearchApp.this);
 				dialog.setVisible(true);
 			}
 		});

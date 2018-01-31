@@ -15,14 +15,11 @@ import javax.swing.JTextField;
 
 import loko.DAO.DAOFactory;
 import loko.DAO.IFMailsDAO;
-import loko.DAO.IFMembersDAO;
 import loko.DAO.IFPhoneDAO;
-import loko.DAO.MembersDAOImpl;
 import loko.core.Mail;
 import loko.core.MemberFull;
-import loko.core.MemberList;
 import loko.core.Phone;
-import loko.tableModel.MembersListTableModel;
+import service.IFMembersService;
 
 import java.awt.event.ActionListener;
 import java.sql.Date;
@@ -31,7 +28,6 @@ import java.util.Calendar;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 
-import com.sun.xml.internal.messaging.saaj.util.TeeInputStream;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.JComboBox;
 import javax.swing.JTextPane;
@@ -42,11 +38,9 @@ import javax.swing.JTextPane;
  */
 public class AddMemberDialog extends JDialog {
 
-	private IFMembersDAO membersDAO;
+
+	private static final long serialVersionUID = -2496886616425471958L;
 	private MemberFull memberFull;
-	private MembersSearchApp membersSearchApp;
-	private IFMailsDAO mailsDAO;
-	private IFPhoneDAO phoneDAO;
 	private final String[] role = {"Hráè", "Hráè Bèka", " Hráè-souzenci" , "Èinnovník", "LimitkaD", "LimitkaV", "Rodiè"};
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
@@ -70,11 +64,7 @@ public class AddMemberDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AddMemberDialog(IFMembersDAO membersDAO,IFMailsDAO mailsDAO, IFPhoneDAO phoneDAO,MembersSearchApp membersSearchApp) {
-		this.membersDAO = membersDAO;
-		this.membersSearchApp = membersSearchApp;
-		this.mailsDAO = mailsDAO;
-		this.phoneDAO = phoneDAO;
+	public AddMemberDialog(IFMembersService membersService, IFPhoneDAO phoneDAO,MembersSearchApp membersSearchApp) {
 		
 		setBounds(100, 100, 737, 598);
 		getContentPane().setLayout(new BorderLayout());
@@ -297,7 +287,7 @@ public class AddMemberDialog extends JDialog {
 							
 							memberFull = new MemberFull(firstName, lastName, birthDay, note, active, id_odd_kategorie, enterDate,
 							rodneCislo, trvaleBydliste, chfRegistrace);	
-							int id_member = membersDAO.addMemberFull(memberFull);
+							int id_member = membersService.addMemberFull(memberFull);
 							
 							// ulozeni mailu
 							if(!textFieldMail1.getText().isEmpty()) {
@@ -347,7 +337,7 @@ public class AddMemberDialog extends JDialog {
 							JOptionPane.showMessageDialog(null, "Uspìšmì pøidáno");
 							// otevreni editace
 													
-							MemberDialog dialog = new MemberDialog(id_member,membersDAO,mailsDAO, phoneDAO, membersSearchApp);
+							MemberDialog dialog = new MemberDialog(id_member,membersService, phoneDAO, membersSearchApp);
 							dialog.setVisible(true);
 							
 						} else {

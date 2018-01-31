@@ -9,8 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 
-
-import loko.DAO.IFPhoneDAO;
 import loko.core.Mail;
 import loko.core.MailsMember;
 import loko.core.MemberFull;
@@ -46,7 +44,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 /**
  * 
- * @author Dave
+ * @author Erik Markoviè
  *
  *Dialogové okno pro editaci èlena
  */

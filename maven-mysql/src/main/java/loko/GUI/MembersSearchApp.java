@@ -67,7 +67,7 @@ public class MembersSearchApp  extends JFrame{
 	private IFMembersService membersService; // instance na service tridu
 	private IFUserDAO userDAO = new UserDAO();
 	private IFMembersDAO membersDAO;
-	private IFMailsDAO mailsDAO;
+	//private IFMailsDAO mailsDAO;
 	private IFPhoneDAO phoneDAO;
 	private JFrame frame;
 	private int userId;
@@ -126,10 +126,8 @@ public class MembersSearchApp  extends JFrame{
 	 */
 	public MembersSearchApp(IFMembersService membersService,int theUserId, boolean theAdmin) {
 		this.membersService = membersService;
-	
 			userId = theUserId;
 			admin = theAdmin;
-			mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
 			phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
 			
 			
@@ -267,7 +265,7 @@ public class MembersSearchApp  extends JFrame{
 		btnAddMember.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnAddMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddMemberDialog dialog = new AddMemberDialog(membersDAO,mailsDAO, phoneDAO, MembersSearchApp.this);
+				AddMemberDialog dialog = new AddMemberDialog(membersDAO,membersService, phoneDAO, MembersSearchApp.this);
 				dialog.setVisible(true);
 			}
 		});
@@ -433,7 +431,7 @@ public class MembersSearchApp  extends JFrame{
 	public void editaceMember(int row) {
 		MemberList tempmemberList =  (MemberList) tableMembers.getValueAt(row, MembersListTableModel.OBJECT_COL);
 		int id_member = tempmemberList.getId();
-		MemberDialog dialog = new MemberDialog(id_member,membersDAO,mailsDAO, phoneDAO, MembersSearchApp.this);
+		MemberDialog dialog = new MemberDialog(id_member,membersService, phoneDAO, MembersSearchApp.this);
 		dialog.setVisible(true);
 	}
 	/**

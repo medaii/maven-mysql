@@ -262,9 +262,11 @@ public class AddMemberDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				// tlaèitko uložit
 				JButton okButton = new JButton("Ulo\u017Eit");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						// kontrola poviných udajù
 						if (!(textFieldFirstName.getText().isEmpty() || textFieldLastName.getText().isEmpty() || dateChooser.getDate() == null)) {
 							String firstName = textFieldFirstName.getText();
 							String lastName = textFieldLastName.getText();
@@ -328,7 +330,7 @@ public class AddMemberDialog extends JDialog {
 							//zavreni okna a otevreni editace
 							setVisible(false);
 							dispose();
-							
+							LOGGER.info("Zavøení okna " + this.toString());
 							// obnovit vypis list
 							membersSearchApp.refreshMembersView();
 							
@@ -339,9 +341,13 @@ public class AddMemberDialog extends JDialog {
 													
 							MemberDialog dialog = new MemberDialog(id_member,membersService, phoneDAO, membersSearchApp);
 							dialog.setVisible(true);
+							LOGGER.info("Návrat zpìt do okna MemberDialog.");
+							
 							
 						} else {
+								// nezadané povinné údaje
 								JOptionPane.showMessageDialog(null, "nezadane povinne udaje!");
+								LOGGER.info("Pokus uložit záznam bez uvedení povinných údajù " + this.toString());
 						}
 						
 						

@@ -91,7 +91,7 @@ public class MembersSearchApp  extends JFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+					//vytvoøení LOGGER
 					try {
             LoggerLoko.setup();
             LOGGER.setLevel(Level.WARNING);
@@ -100,21 +100,21 @@ public class MembersSearchApp  extends JFrame{
             throw new RuntimeException("Problems s vytvoreni logger souboru.");
 					}
 					
-					IFUserDAO userDAO = new UserDAO();
-					
-					// Get users
-					List<User> users = userDAO.getUsers(true, 0);
-
-					// Show login dialog
+					// Výtvoøení okna pro pøihlášení
 					UserLoginDialog dialog = new UserLoginDialog();
-					dialog.populateUsers(users);
-					dialog.setMembersService(new MembersServiceImpl());
-
 					
+					//inicializace servisni tøidy a uživatelského listu
+					dialog.setMembersService(new MembersServiceImpl());
+					dialog.populateUsers();
+					
+					// zobrazení okna pro pøihlášení
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
+					LOGGER.info("Otevøení okna pro pøihlášení");
 
 				} catch (Exception e) {
+					//Chyba pøi spuštìní vlákna
+					LOGGER.warning("Pøi spuštìni nastala chyba - " + e.toString());					
 					e.printStackTrace();
 				}
 			}
@@ -122,7 +122,7 @@ public class MembersSearchApp  extends JFrame{
 	}
 
 	/**
-	 * Create the application.
+	 * Vytvoøení hlavního okna aplikace po pøihlašení
 	 */
 	public MembersSearchApp(IFMembersService membersService,int theUserId, boolean theAdmin) {
 		this.membersService = membersService;

@@ -52,13 +52,19 @@ public class UserLoginDialog extends JDialog {
 	}
 	
 
-	public void populateUsers(List<User> users) {
-		// vytvoøí pole a naslednì naplni box
-		comboBoxUser.setModel(new DefaultComboBoxModel(users.toArray(new User[0]))); // vytvoøeni pole s udaji user a do listu pridaní vrácené hodnoty z .toString
+	public void populateUsers() {
+		if(membersService != null) {
+			// vytvoøí pole a naslednì naplni box
+			List<User> users = membersService.getUsers(true, 0);
+			comboBoxUser.setModel(new DefaultComboBoxModel(users.toArray(new User[0]))); // vytvoøeni pole s udaji user a do listu pridaní vrácené hodnoty z .toString
+		}
+		else {
+			LOGGER.warning("Neni instance na servisní tøídu.");			
+		}
 	}
 
 	/**
-	 * Create the dialog.
+	 * Vytvoøení okna.
 	 */
 	public UserLoginDialog() {
 		

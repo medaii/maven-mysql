@@ -61,7 +61,7 @@ public class AddMemberDialog extends JDialog {
 	private JComboBox comboBox;
 
 	/**
-	 * Create the dialog.
+	 * Vytvoøení okna.
 	 */
 	public AddMemberDialog(IFMembersService membersService,MembersSearchApp membersSearchApp) {
 		
@@ -298,6 +298,7 @@ public class AddMemberDialog extends JDialog {
 								Mail mail = new Mail(id_member, textFieldOdMail1.getText(), textFieldMail1.getText());
 								IFMailsDAO mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
 								mailsDAO.addMail(mail);
+								LOGGER.info("Pøidán nový mail. id member: " + id_member + " mail: " + mail.toString());
 							}
 							if(!textFieldMail2.getText().isEmpty()) {
 								if(textFieldOdMail2.getText().isEmpty()) {
@@ -306,6 +307,7 @@ public class AddMemberDialog extends JDialog {
 								Mail mail = new Mail(id_member, textFieldOdMail2.getText(), textFieldMail2.getText());
 								IFMailsDAO mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
 								mailsDAO.addMail(mail);
+								LOGGER.info("Pøidán nový mail. id member: " + id_member + " mail: " + mail.toString());
 							}
 							// ulozeni telefonu
 							if(!textFieldTel1.getText().isEmpty()) {
@@ -315,6 +317,7 @@ public class AddMemberDialog extends JDialog {
 								Phone phone = new Phone(id_member, textFieldOdTel1.getText(), textFieldTel1.getText());
 								
 								membersService.addPhone(phone);
+								LOGGER.info("Pøidán nové telefoní èíslo. id member: " + id_member + " telefon: " + phone.toString());
 							}
 							// kontrola jestli je vyplnený text
 							if(!textFieldTel2.getText().isEmpty()) {
@@ -324,6 +327,7 @@ public class AddMemberDialog extends JDialog {
 								Phone phone = new Phone(id_member, textFieldOdTel2.getText(), textFieldTel2.getText());
 								
 								membersService.addPhone(phone);
+								LOGGER.info("Pøidán nové telefoní èíslo. id member: " + id_member + " telefon: " + phone.toString());
 							}
 							
 							

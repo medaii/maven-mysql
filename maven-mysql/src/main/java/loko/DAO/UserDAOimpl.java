@@ -30,6 +30,10 @@ public class UserDAOimpl implements IFUserDAO {
 		HSqlExecutor = conn;
 	}
 
+	
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see loko.DAO.IFUserDAO#updateUser(loko.core.User)
 	 */
@@ -238,5 +242,11 @@ public class UserDAOimpl implements IFUserDAO {
 		
 		System.out.println(a);
 
+	}
+
+	@Override
+	public int addUser(User theUser) {
+		System.out.println("Pridej user" + theUser);
+		return 1;
 	}
 }

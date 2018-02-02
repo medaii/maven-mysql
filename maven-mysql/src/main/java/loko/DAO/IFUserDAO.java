@@ -6,6 +6,9 @@ import loko.core.User;
 
 public interface IFUserDAO {
 
+	
+	int addUser(User theUser);
+	
 	int updateUser(User theUser);
 
 	/**

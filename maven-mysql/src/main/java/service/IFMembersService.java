@@ -76,5 +76,7 @@ public interface IFMembersService {
 	List<User> getUsers(boolean admin, int userId);
 
 	boolean authenticate(User theUser);
+	
+	int addUser(User theUser); 
 
 }

@@ -148,7 +148,21 @@ public class UserDialog extends JDialog {
 						boolean admin = checkBoxAdmin.isSelected();
 						
 						if(addUser) {
-							
+							if(!(firstName.isEmpty() || firstName == "") || !(lastName.isEmpty() || firstName == "") || !(mail.isEmpty() || mail == "")) {
+								User theUser = new User(lastName, firstName, mail, admin, "java");
+								if(membersService.addUser(theUser) > 0) {
+									
+								}
+								else {
+									LOGGER.warning("Chyba pøi uložení objektu do DB user - " + user.toString());
+									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna údajù.");
+								}
+							}
+							else {
+								
+								JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna údajù, jelikož nejsou vyplnìné všechny udaje.");
+								return;
+							}
 						}
 						else {
 								// uložení zmeny do databáze

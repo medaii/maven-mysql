@@ -8,7 +8,6 @@ import loko.DAO.IFMailsDAO;
 import loko.DAO.IFMembersDAO;
 import loko.DAO.IFPhoneDAO;
 import loko.DAO.IFUserDAO;
-import loko.DAO.UserDAOimpl;
 import loko.core.Mail;
 import loko.core.MailsMember;
 import loko.core.Member;
@@ -242,5 +241,10 @@ public class MembersServiceImpl implements IFMembersService {
 	@Override
 	public boolean authenticate(User theUser) {
 		return userDAO.authenticate(theUser);
+	}
+
+	@Override
+	public int addUser(User theUser) {		
+		return userDAO.addUser(theUser);
 	}
 }

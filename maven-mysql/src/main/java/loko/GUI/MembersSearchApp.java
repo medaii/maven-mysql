@@ -255,6 +255,7 @@ public class MembersSearchApp  extends JFrame{
 		JPanel panel_3 = new JPanel();
 		membersPanel.add(panel_3, BorderLayout.SOUTH);
 		
+		// tlaèítko pro pøidaní nového èlena
 		JButton btnAddMember = new JButton("P\u0159idat \u010Dlena");
 		btnAddMember.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnAddMember.addActionListener(new ActionListener() {
@@ -265,6 +266,7 @@ public class MembersSearchApp  extends JFrame{
 		});
 		panel_3.add(btnAddMember);
 		
+		// tlaèítko editace èlena
 		JButton btnEditovatlena = new JButton("Editovat \u010Dlena");
 		btnEditovatlena.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnEditovatlena.addActionListener(new ActionListener() {
@@ -283,6 +285,7 @@ public class MembersSearchApp  extends JFrame{
 		});
 		panel_3.add(btnEditovatlena);
 		
+		// tlaèítko smazaní èlena
 		JButton btnSmazatlena = new JButton("Smazat \u010Dlena");
 		btnSmazatlena.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -370,15 +373,17 @@ public class MembersSearchApp  extends JFrame{
 		JPanel panel_1 = new JPanel();
 		User.add(panel_1, BorderLayout.SOUTH);
 		
+		// tlaèítko pøidaní nového uživatele
 		btnPidanUivatele = new JButton("P\u0159idan\u00ED u\u017Eivatele");
 		btnPidanUivatele.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				addUser();
 			}
 		});
 		btnPidanUivatele.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		panel_1.add(btnPidanUivatele);
 		
+		// editace vybraného uživatle
 		JButton btnEditaceUdaj = new JButton("Editace udaj\u016F");
 		btnEditaceUdaj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -480,6 +485,15 @@ public class MembersSearchApp  extends JFrame{
 	private void editUser(int row) {
 		User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
 		UserDialog dialog = new UserDialog(user, membersService,MembersSearchApp.this, admin, false );
+		dialog.setVisible(true);
+	}
+	/**
+	 * Otevøevni dialogu pro vytvoøení nového úètu 
+	 * 
+	 */
+	private void addUser() {
+		User user = new User();
+		UserDialog dialog = new UserDialog(user, membersService,MembersSearchApp.this, admin, true );
 		dialog.setVisible(true);
 	}
 	/**

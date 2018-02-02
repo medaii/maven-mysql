@@ -27,9 +27,7 @@ import java.awt.event.ActionEvent;
  */
 public class ChangePassword extends JDialog {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 8661708719647586881L;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private final JPanel contentPanel = new JPanel();
@@ -38,20 +36,7 @@ public class ChangePassword extends JDialog {
 	private JPasswordField passwordNew2;
 	
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			//ChangePassword dialog = new ChangePassword();
-			//dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			//dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Create the dialog.
+	 * Otevøení okna pro zmìnu hesla User.
 	 */
 	public ChangePassword(User user, IFMembersService membersService, MembersSearchApp membersSearchApp, boolean isAdmin) {
 		this.setModal(true);
@@ -110,13 +95,16 @@ public class ChangePassword extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				// tlaèítko pro zmìnu hesla 
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						boolean isValidPassword;
+						// je-li pøihlašený uživatel admin, tak nemusí znát staré heslo a pøeskakuje validaci
 						if(isAdmin) {
 							isValidPassword = true;
 						}
+						// validace zadaného hesla
 						else {
 							// naètení password
 							String plainTextPassword = new String(passwordOld.getPassword());
@@ -127,28 +115,41 @@ public class ChangePassword extends JDialog {
 							isValidPassword = membersService.authenticate(user);
 						}	
 						//zmìma hesla v DB
+						// validace probìhala
 						if(isValidPassword) {
 							String newPassword = new String(passwordNew1.getPassword());
 							String newPassword2 = new String(passwordNew2.getPassword());
+							
+							// kontrola zadaní dvakrát stejnì nové heslo
 							if(newPassword.equals(newPassword2) && !newPassword.equals("")) {
 								LOGGER.setLevel(Level.INFO);
+								
+								// kontrola, že bylo uspìšnì uloženo do DB
 								if(membersService.changePassword(user, newPassword) > 0){
 									LOGGER.info("Zmìmìno heslo u uživatele id:" + user.getId());
 									JOptionPane.showMessageDialog(null, "Heslo zmìnìno.");
 									setVisible(false);
 								}
+								
+								// chyba pøi uložení do DB
 								else {
 									LOGGER.info("Nezdaøilo se zmìnit heslo u uživatele id:" + user.getId());
 									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna hesla.");
+									LOGGER.warning("Chyba uložení hesla do DB u user - " + user.getId());
 									return;
 								}
 							}
+							
+							// chybnì zadané nové heslo
 							else{
 								JOptionPane.showMessageDialog(null, "Potvzení nového hesla se neshoduje s novým heslem.");
 							}
 						}
+						
+						// chybnì zadané stavající heslo
 						else {
 							JOptionPane.showMessageDialog(null, "Chybnì zadané heslo.");
+							LOGGER.info("Chybnì zadané stavající heslo. user - " + user.getId());
 							return;
 						}						
 					}

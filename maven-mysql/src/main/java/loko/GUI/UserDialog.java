@@ -43,7 +43,7 @@ public class UserDialog extends JDialog {
 
 
 	/**
-	 * Create the dialog.
+	 * Otevøení nového okna vytvoøení nového uživatele nebo editaci.
 	 */
 	public UserDialog(User user,IFMembersService membersService, MembersSearchApp membersSearchApp, boolean isAdmin, boolean addUser) {
 		this.user = user;
@@ -135,23 +135,30 @@ public class UserDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				
+				// vytvoøení nového uživatele
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						
 					// nadètení z formuláøe  get date from form
 						String firstName = textFieldFirstName.getText();
 						String lastName = textFieldSurName.getText();
 						String mail = textFieldMail.getText();
 						boolean admin = checkBoxAdmin.isSelected();
+						
 						if(addUser) {
 							
 						}
 						else {
+								// uložení zmeny do databáze
 								User theUser = new User(user.getId(),lastName, firstName, mail, admin);
 								if(membersService.updateUser(theUser) > 0) {
 									LOGGER.info("Zmìna udaje uživatele zmìnìna id uživate: " + theUser.getId());
 									}
+								//chyba pøi ukladání zmìn do DB
 								else {
+									LOGGER.warning("Chyba pøi uložení objektu do DB user - " + user.toString());
 									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna údajù.");
 									}
 						}

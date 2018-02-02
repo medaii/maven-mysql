@@ -13,19 +13,19 @@ import loko.core.User;
  * @author Erik Markoviè Prostredník mezi gui user a db user
  */
 
-public class UserDAO implements IFUserDAO {
+public class UserDAOimpl implements IFUserDAO {
 	private DBSqlExecutor conn;
 	private DBHibernateSqlExecutor HSqlExecutor;
 	private int metodConnection = 0;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	// konstruktor
-	public UserDAO() {
+	public UserDAOimpl() {
 		conn = DBSqlExecutor.getInstance(); // inteface pro db
 
 	}
 
-	public UserDAO(DBHibernateSqlExecutor conn) {
+	public UserDAOimpl(DBHibernateSqlExecutor conn) {
 		this.metodConnection = 1;
 		HSqlExecutor = conn;
 	}
@@ -225,7 +225,7 @@ public class UserDAO implements IFUserDAO {
 
 	public static void main(String[] args) {
 		DBHibernateSqlExecutor pokus = new DBHibernateSqlExecutor();
-		UserDAO userDAO = new UserDAO(pokus);
+		UserDAOimpl userDAO = new UserDAOimpl(pokus);
 		String a= userDAO.getEncrpytedPassword(2);
 		List<User> list = new ArrayList<User>();
 		list = userDAO.getUsers(false, 1);

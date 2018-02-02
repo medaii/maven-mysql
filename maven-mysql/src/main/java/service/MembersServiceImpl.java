@@ -8,7 +8,7 @@ import loko.DAO.IFMailsDAO;
 import loko.DAO.IFMembersDAO;
 import loko.DAO.IFPhoneDAO;
 import loko.DAO.IFUserDAO;
-import loko.DAO.UserDAO;
+import loko.DAO.UserDAOimpl;
 import loko.core.Mail;
 import loko.core.MailsMember;
 import loko.core.Member;
@@ -36,7 +36,7 @@ public class MembersServiceImpl implements IFMembersService {
 		membersDAO = (IFMembersDAO)DAOFactory.createDAO(IFMembersDAO.class);
 		this.mailsDAO = (IFMailsDAO)DAOFactory.createDAO(IFMailsDAO.class);
 		this.phoneDAO = (IFPhoneDAO)DAOFactory.createDAO(IFPhoneDAO.class);
-		this.userDAO = new UserDAO(); // pridat do Factory
+		this.userDAO = (IFUserDAO)DAOFactory.createDAO(IFUserDAO.class); 
 		
 	}
 	/* (non-Javadoc)

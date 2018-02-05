@@ -12,7 +12,11 @@ import java.util.logging.Logger;
 
 //import javax.swing.JOptionPane;
 
-
+/**
+ * 
+ * @author Erik Markoviè
+ *
+ */
 public class DBSqlExecutor {
 	private static DBSqlExecutor instance = null;
 	private DBConnectionSimpleManager dbConnectionSimpleManager;

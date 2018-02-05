@@ -3,6 +3,7 @@
  */
 package loko.DAO;
 
+import loko.DB.DBHibernateSqlExecutor;
 import loko.DB.DBSqlExecutor;
 
 /**
@@ -60,7 +61,7 @@ public class DAOFactory {
 	 * Vrati nobou instanci DAO pro praci s users
 	 * @return
 	 */
-	private static UserDAOimpl createUserDao() {
-		return new UserDAOimpl();
+	private static UserHibernateDAOimpl createUserDao() {
+		return new UserHibernateDAOimpl(new DBHibernateSqlExecutor());
 	}
 }

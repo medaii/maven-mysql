@@ -47,8 +47,8 @@ public class DAOFactory {
 	 * Vrati novou instanci DAO pro praci s telefony.
 	 * @return
 	 */
-	private static PhonesDAOImpl createPhonesDao() {
-		return new PhonesDAOImpl(DBSqlExecutor.getInstance());
+	private static PhonesHibernateDAOImpl createPhonesDao() {
+		return new PhonesHibernateDAOImpl(DBSqlExecutor.getInstance());
 	}
 	/**
 	 * Vrati nobou instanci DAO pro praci s members

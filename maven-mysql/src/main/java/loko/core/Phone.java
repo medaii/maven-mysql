@@ -1,15 +1,40 @@
 package loko.core;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * 
  * @author Erik Markoviè
  *
  */
+
+@Entity
+@Table(name="clen_mobil")
 public class Phone {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id")
 	private int id;
+	
+	@Column(name="id_osoby")
 	private int id_member;
+	
+	@Column(name="nazev")
 	private String name;
+	
+	@Column(name="telefon")
 	private String phone;
 	
+	
+	public Phone() {
+	}
+
 	public Phone(int id_member, String name, String phone) {
 		this(0, id_member, name, phone);
 	}
@@ -21,8 +46,7 @@ public class Phone {
 		this.name = name;
 		this.phone = phone;
 	}
-
-
+	
 	public int getId() {
 		return id;
 	}
@@ -54,7 +78,7 @@ public class Phone {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
+
 	public String toString() {
 		return name + ": " + phone;
 	}

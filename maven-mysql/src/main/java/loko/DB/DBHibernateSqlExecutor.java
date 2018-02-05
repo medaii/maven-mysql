@@ -61,12 +61,11 @@ public class DBHibernateSqlExecutor {
 			// create session
 			Session session = factory.getCurrentSession();
 
-			// start a transaction
 			session.beginTransaction();
 
 			// dotaz
 			int id = (int)session.save(object);
-			System.out.println("pridany id - " + id);
+			
 			// commit transaction
 			session.getTransaction().commit();
 			return id;
@@ -77,6 +76,88 @@ public class DBHibernateSqlExecutor {
 		}
 				
 	}
+	public <T> int updateObject(T object) {
+		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
+		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(object.getClass())
+				.buildSessionFactory();) {
+
+			// create session
+			Session session = factory.getCurrentSession();
+
+			// start a transaction
+			session.beginTransaction();
+
+			// dotaz
+			session.saveOrUpdate(object);
+			System.out.println(object);
+			// commit transaction
+			session.getTransaction().commit();
+			return 1;
+			
+		} catch (Exception e) {
+			LOGGER.warning("Chyba zápisu!");
+			return 0;
+		}
+				
+	}
+	/**
+	 * 
+	 * @param object
+	 * @return vetsi nez 0 nenastane-li chyba
+	 */
+	public <T> int deleteObject (T object) {
+		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
+		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(object.getClass())
+				.buildSessionFactory();) {
+
+			// create session
+			Session session = factory.getCurrentSession();
+
+			// start a transaction
+			session.beginTransaction();
+
+			// smazani radku
+			session.delete(object);
+			
+			// commit transaction
+			session.getTransaction().commit();
+			return 1;
+			
+		} catch (Exception e) {
+			LOGGER.warning("Chyba zápisu!");
+			return 0;
+		}
+	}
+	
+	public <T> int deleteObject (int id, T object) {
+		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
+		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(object.getClass())
+				.buildSessionFactory();) {
+
+			// create session
+			Session session = factory.getCurrentSession();
+
+			// start a transaction
+			session.beginTransaction();
+			
+			//vytvoreni objektu
+			T theObject = (T)session.get(object.getClass(), id);
+			
+			// smazani radku
+			session.delete(theObject);
+			
+			// commit transaction
+			session.getTransaction().commit();
+			return 1;
+			
+		} catch (Exception e) {
+			LOGGER.warning("Chyba zápisu!");
+			return 0;
+		}
+	}
+	
+	
+	
 	/**
 	 * 
 	 * @param sql

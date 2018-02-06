@@ -7,6 +7,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import loko.core.Mail;
+import loko.core.Member;
+import loko.core.Phone;
+import loko.core.User;
+
 /**
  * 
  * @author Erik
@@ -14,150 +19,145 @@ import org.hibernate.cfg.Configuration;
  */
 public class DBHibernateSqlExecutor {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private SessionFactory factory;
 
 	public DBHibernateSqlExecutor() {
-
+		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
+		factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Member.class)
+				.addAnnotatedClass(User.class).addAnnotatedClass(Phone.class).addAnnotatedClass(Mail.class)
+				.buildSessionFactory();
 	}
+
 	/**
 	 * Vraci vybrany radek jako objekt
+	 * 
 	 * @param id
 	 * @param trida
 	 * @return vraci objekt
 	 */
-	public <T>T getObject(int id, Class<?> trida){
-	// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
-			try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(trida)
-					.buildSessionFactory();) {
+	public <T> T getObject(int id, Class<?> trida) {
 
-				// create session
-				Session session = factory.getCurrentSession();
+		// vytvoreni session
+		try (Session session = factory.getCurrentSession();) {
 
-				// start a transaction
-				session.beginTransaction();
+			// start a transaction
+			session.beginTransaction();
 
-				// dotaz
-				T t = (T)session.get(trida, id);
+			// dotaz
+			T t = (T) session.get(trida, id);
 
-				// commit transaction
-				session.getTransaction().commit();
-				return t;
-				
-			} catch (Exception e) {
-				LOGGER.warning("Chyba zápisu!");
-				return null;
-			}
-		
+			// commit transaction
+			session.getTransaction().commit();
+			return t;
+
+		} catch (Exception e) {
+			LOGGER.warning("Chyba zápisu!");
+			return null;
+		}
+
 	}
+
 	/**
 	 * Pridani noveho radku do tabulky
+	 * 
 	 * @param object
 	 * @return id
 	 */
 	public <T> int setObject(T object) {
-		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(object.getClass())
-				.buildSessionFactory();) {
 
-			// create session
-			Session session = factory.getCurrentSession();
-
+		// vytvoreni session
+		try (Session session = factory.getCurrentSession();) {
+			// start a transaction
 			session.beginTransaction();
-
 			// dotaz
-			int id = (int)session.save(object);
-			
+			int id = (int) session.save(object);
+
 			// commit transaction
 			session.getTransaction().commit();
 			return id;
-			
+
 		} catch (Exception e) {
 			LOGGER.warning("Chyba zápisu!");
 			return 0;
 		}
-				
 	}
+
 	public <T> int updateObject(T object) {
-		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(object.getClass())
-				.buildSessionFactory();) {
 
-			// create session
-			Session session = factory.getCurrentSession();
-
+		// vytvoreni session
+		try (Session session = factory.getCurrentSession();) {
 			// start a transaction
 			session.beginTransaction();
 
 			// dotaz
 			session.saveOrUpdate(object);
-			System.out.println(object);
+
 			// commit transaction
 			session.getTransaction().commit();
 			return 1;
-			
+
 		} catch (Exception e) {
 			LOGGER.warning("Chyba zápisu!");
 			return 0;
 		}
-				
 	}
+
 	/**
 	 * 
 	 * @param object
 	 * @return vetsi nez 0 nenastane-li chyba
 	 */
-	public <T> int deleteObject (T object) {
-		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(object.getClass())
-				.buildSessionFactory();) {
+	public <T> int deleteObject(T object) {
 
-			// create session
-			Session session = factory.getCurrentSession();
-
+		// vytvoreni session
+		try (Session session = factory.getCurrentSession();) {
 			// start a transaction
 			session.beginTransaction();
 
 			// smazani radku
 			session.delete(object);
-			
+
 			// commit transaction
 			session.getTransaction().commit();
 			return 1;
-			
+
 		} catch (Exception e) {
 			LOGGER.warning("Chyba zápisu!");
 			return 0;
 		}
 	}
-	
-	public <T> int deleteObject (int id, T object) {
-		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(object.getClass())
-				.buildSessionFactory();) {
 
-			// create session
-			Session session = factory.getCurrentSession();
+	/**
+	 * 
+	 * @param id
+	 *          - primarni klic
+	 * @param object
+	 *          - tabulka v DB
+	 * @return vetsi nez 0 nenastane-li chyba
+	 */
+	public <T> int deleteObject(int id, T object) {
 
+		// vytvoreni session
+		try (Session session = factory.getCurrentSession();) {
 			// start a transaction
 			session.beginTransaction();
-			
-			//vytvoreni objektu
-			T theObject = (T)session.get(object.getClass(), id);
-			
+
+			// vytvoreni objektu
+			T theObject = (T) session.get(object.getClass(), id);
+
 			// smazani radku
 			session.delete(theObject);
-			
+
 			// commit transaction
 			session.getTransaction().commit();
 			return 1;
-			
+
 		} catch (Exception e) {
 			LOGGER.warning("Chyba zápisu!");
 			return 0;
 		}
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * @param sql
@@ -168,13 +168,9 @@ public class DBHibernateSqlExecutor {
 	 *          - tøída pro inicializaci hibernate
 	 */
 	public <T> void getData(String sql, List<T> a, Class<?> trida) {
-		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(trida)
-				.buildSessionFactory();) {
 
-			// create session
-			Session session = factory.getCurrentSession();
-
+		// vytvoreni session
+		try (Session session = factory.getCurrentSession();) {
 			// start a transaction
 			session.beginTransaction();
 
@@ -193,24 +189,23 @@ public class DBHibernateSqlExecutor {
 			LOGGER.warning("Chyba zápisu!");
 		}
 	}
+
 	/**
 	 * update pomoci query
+	 * 
 	 * @param dotaz
 	 * @param trida
 	 * @return
 	 */
 	public int setDotaz(String dotaz, Class<?> trida) {
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(trida)
-				.buildSessionFactory();) {
-			// create session
-			Session session = factory.getCurrentSession();
-
+		// vytvoreni session
+		try (Session session = factory.getCurrentSession();) {
 			// start a transaction
 			session.beginTransaction();
-			
+
 			//
 			session.createQuery(dotaz).executeUpdate();
-			//commit the transaction
+			// commit the transaction
 			session.getTransaction().commit(); // close session
 			return 1;
 		} catch (Exception e) {
@@ -218,31 +213,34 @@ public class DBHibernateSqlExecutor {
 		}
 		return 0;
 	}
+
 	/**
 	 * update pomoci setteru
+	 * 
 	 * @param a
 	 * @param trida
 	 * @return
 	 */
 	public <T> int setDotaz(T a, Class<?> trida) {
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(trida)
-				.buildSessionFactory();) {
-			// create session
-			Session session = factory.getCurrentSession();
-
+		// vytvoreni session
+		try (Session session = factory.getCurrentSession();) {
 			// start a transaction
 			session.beginTransaction();
-			
-			//obnoveni dat
+			// obnoveni dat
 			session.update(a);
-			
-			//commit the transaction
+
+			// commit the transaction
 			session.getTransaction().commit(); // close session
-		
+
 			return 1;
 		} catch (Exception e) {
 			LOGGER.warning("Chyba zápisu!" + e);
 		}
 		return 0;
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		factory.close();
 	}
 }

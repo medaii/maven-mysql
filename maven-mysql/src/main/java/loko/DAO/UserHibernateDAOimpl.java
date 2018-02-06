@@ -8,7 +8,10 @@ import loko.core.User;
 
 /**
  * uziti HIBERNATE
- * @author Erik Markoviè Prostredník mezi gui user a db user
+ * Prostredník mezi gui user a db user
+ * 
+ * @author Erik Markoviè 
+ * 
  * 
  */
 
@@ -58,8 +61,10 @@ public class UserHibernateDAOimpl implements IFUserDAO {
 	}
 
 
-	/* (non-Javadoc)
+	/**
+	 * 
 	 * @list - seznam users
+	 * 
 	 * @admin - true seznam vsech user, false jen dany uzivatel
 	 */
 	@Override
@@ -79,8 +84,10 @@ public class UserHibernateDAOimpl implements IFUserDAO {
 			
 		return list;
 	}	
-	/* 
-	 * @result boolean jestli bylo spravne zadane heslo
+	
+	/** 
+	 * Porovnani zadaneho hesla ve formulari s heslem v DB
+	 * @result boolean shoda hash hesel
 	 */
 	@Override
 	public boolean authenticate(User theUser) {
@@ -96,20 +103,21 @@ public class UserHibernateDAOimpl implements IFUserDAO {
 		LOGGER.info("Výsledek kontroly hesla - " + (result ? "Správené heslo" : "Nesprávné heslo"));
 		return result;
 	}
+	
 	/**
 	 * 
-	 * @param id
+	 * @param id  idUser
 	 * @return vraci zakodovane heslo
+	 * @throws RuntimeException -  pokud neni nalezeno id v DB
 	 */
 	private String getEncrpytedPassword(int id) {
 		String encryptedPassword = null;
-		System.out.println("1---" + id);
 		User theUser = HSqlExecutor.getObject(id, User.class);
 		if(theUser != null){
 			encryptedPassword = theUser.getPassword();
 		}
 		else {
-			LOGGER.warning("Neprijmuto z databaze.");
+			throw new RuntimeException("Nezname id user - " + id);			
 		}
 		return encryptedPassword;
 	}

@@ -15,6 +15,7 @@ import loko.core.RodneCislo;
 import loko.core.User;
 
 /**
+ * Trida pro provadeni obecne prace s DB a nebo predani sessionFabrik pro komunikaci s DB
  * 
  * @author Erik
  *
@@ -22,8 +23,9 @@ import loko.core.User;
 public class DBHibernateSqlExecutor {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private SessionFactory factory;
+	private static DBHibernateSqlExecutor instance = null;
 
-	public DBHibernateSqlExecutor() {
+	private DBHibernateSqlExecutor() {
 		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
 		factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Member.class)
 				.addAnnotatedClass(User.class).addAnnotatedClass(Phone.class).addAnnotatedClass(Mail.class)
@@ -31,11 +33,18 @@ public class DBHibernateSqlExecutor {
 				.addAnnotatedClass(CshRegNumber.class)
 				.buildSessionFactory();
 	}
-
+	
+	//vrací instanci na DBHibernateSqlExecutor
+	public static DBHibernateSqlExecutor getInstance() {
+		if (instance == null) {
+			instance = new DBHibernateSqlExecutor();
+		}		
+		return instance;
+	}
+	
 	/**
 	 * Vraci instanci na SessionFabrik
 	 */
-	
 	public SessionFactory getSessionFactory() {
 		return this.factory;
 	}

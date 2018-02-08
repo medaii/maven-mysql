@@ -22,7 +22,7 @@ import loko.core.PhonesMeber;
  */
 
 public class PhonesHibernateDAOImpl implements IFPhoneDAO {
-	private DBHibernateSqlExecutor dbHibernateSqlExecutor = new DBHibernateSqlExecutor();
+	private DBHibernateSqlExecutor dbHibernateSqlExecutor ;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	public PhonesHibernateDAOImpl(DBHibernateSqlExecutor dbHibernateSqlExecutor) {

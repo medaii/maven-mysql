@@ -228,7 +228,7 @@ public class UserDAOimpl implements IFUserDAO {
 	}
 
 	public static void main(String[] args) {
-		DBHibernateSqlExecutor pokus = new DBHibernateSqlExecutor();
+		DBHibernateSqlExecutor pokus = DBHibernateSqlExecutor.getInstance();
 		UserDAOimpl userDAO = new UserDAOimpl(pokus);
 		String a= userDAO.getEncrpytedPassword(2);
 		List<User> list = new ArrayList<User>();

@@ -48,7 +48,7 @@ public class DAOFactory {
 	 * @return
 	 */
 	private static PhonesHibernateDAOImpl createPhonesDao() {
-		return new PhonesHibernateDAOImpl(DBSqlExecutor.getInstance());
+		return new PhonesHibernateDAOImpl(DBHibernateSqlExecutor.getInstance());
 	}
 	/**
 	 * Vrati nobou instanci DAO pro praci s members
@@ -62,6 +62,6 @@ public class DAOFactory {
 	 * @return
 	 */
 	private static UserHibernateDAOimpl createUserDao() {
-		return new UserHibernateDAOimpl(new DBHibernateSqlExecutor());
+		return new UserHibernateDAOimpl(DBHibernateSqlExecutor.getInstance());
 	}
 }

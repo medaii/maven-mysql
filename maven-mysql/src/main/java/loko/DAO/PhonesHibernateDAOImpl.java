@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import loko.DB.DBHibernateSqlExecutor;
 import loko.DB.DBSqlExecutor;
-
+import loko.core.Member;
 import loko.core.Phone;
 import loko.core.PhonesMeber;
 /**
@@ -46,8 +49,25 @@ public class PhonesHibernateDAOImpl implements IFPhoneDAO {
 	 * @param phone - pøidání telefonu do DB
 	 * @return
 	 */
-	public int addPhone(Phone phone) {		
-		return dbHibernateSqlExecutor.setObject(phone);
+	public int addPhone(Phone phone) {	
+		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
+		
+		try (Session session = factory.getCurrentSession();) {
+			// start a transaction
+			session.beginTransaction();
+			// dotaz
+			Member member = session.get(Member.class, phone.getId_member());
+			member.add(phone);
+			int id = (int) session.save(phone);			
+			// commit transaction
+			session.getTransaction().commit();
+			return id;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.warning("Chyba zápisu!");
+			return 0;
+		}
 	}
 
 	/**
@@ -71,6 +91,7 @@ public class PhonesHibernateDAOImpl implements IFPhoneDAO {
 	 * @phones = vrati telefony daneho clena
 	 * 
 	 */
+
 	public Map<Integer, PhonesMeber> getAllPhonesMembers() {
 		Map<Integer, PhonesMeber> map = new HashMap<>();
 		
@@ -101,28 +122,44 @@ public class PhonesHibernateDAOImpl implements IFPhoneDAO {
 		
 		return map;
 	}
+	
 	/**
 	 * pro vracení phone kokretní osobì
 	 * 
 	 * @param id_member
 	 *            - id èlena pro kterého chceme vrátit telefon
 	 * @return
-	 */
+	 */	
 	public PhonesMeber getPhonesMember(int id_member) {
+		
+		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
 		PhonesMeber phonesMember = new PhonesMeber(id_member);
 		
-		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
+		try(Session session = factory.getCurrentSession();) {
 
-		String dotaz = "SELECT id,id_osoby as id_member, nazev as name, telefon  as phone FROM clen_mobil WHERE id_osoby = "
-				+ id_member + " ORDER BY clen_mobil.id_osoby ASC ";
+			// Zacatek tranzakce
+			session.beginTransaction();
 
-		sqlExecutor.getData(dotaz, r);
-		for (String[] a : r) {
-			Phone temp = convertRowToPhone(a);
-			phonesMember.setPhones(temp);
+			// dotaz
+			Member member = session.get(Member.class, id_member);
+			List<Phone> phones = member.getPhones(); 
+			
+			//List<Phone> phones2 = phones.stream().collect(toList());
+			phonesMember.setPhones(phones);
+			
+			// commit tranzakce
+			session.getTransaction().commit();
+			
+			// ulozeni tel. cisel do PhonesMember
+			//System.out.println(phones2);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Chyba pri spojeni member s phone");
 		}
-		return phonesMember;
-
+		
+	return phonesMember;
 	}
 
 	/**
@@ -132,17 +169,7 @@ public class PhonesHibernateDAOImpl implements IFPhoneDAO {
 	 * @return vraci objekt phone
 	 */
 	public Phone getPhone(int id) {
-		Phone phone = null;
-		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
-
-		String dotaz = "SELECT id,id_osoby as id_member, nazev as name, telefon  as phone FROM clen_mobil WHERE id = " + id
-				+ " ORDER BY clen_mobil.id_osoby ASC ";
-
-		sqlExecutor.getData(dotaz, r);
-		for (String[] a : r) {
-			phone = convertRowToPhone(a);
-		}
-
+		Phone phone = (Phone)dbHibernateSqlExecutor.getObject(id, Phone.class);
 		return phone;
 	}
 

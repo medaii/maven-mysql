@@ -7,9 +7,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import loko.core.CshRegNumber;
 import loko.core.Mail;
 import loko.core.Member;
 import loko.core.Phone;
+import loko.core.RodneCislo;
 import loko.core.User;
 
 /**
@@ -25,9 +27,19 @@ public class DBHibernateSqlExecutor {
 		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
 		factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Member.class)
 				.addAnnotatedClass(User.class).addAnnotatedClass(Phone.class).addAnnotatedClass(Mail.class)
+				.addAnnotatedClass(RodneCislo.class)
+				.addAnnotatedClass(CshRegNumber.class)
 				.buildSessionFactory();
 	}
 
+	/**
+	 * Vraci instanci na SessionFabrik
+	 */
+	
+	public SessionFactory getSessionFactory() {
+		return this.factory;
+	}
+	
 	/**
 	 * Vraci vybrany radek jako objekt
 	 * 

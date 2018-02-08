@@ -124,7 +124,6 @@ public class UserHibernateDAOimpl implements IFUserDAO {
 
 	@Override
 	public int addUser(User theUser) {
-		System.out.println("Pridej user" + theUser);
 		int id = HSqlExecutor.setObject(theUser);
 		
 		return id;

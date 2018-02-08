@@ -2,6 +2,7 @@ package loko.core;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * 
  * @author Erik Markoviè
@@ -33,6 +34,11 @@ public class PhonesMeber {
 
 	public void setPhones(Phone phone) {
 		this.phones.add(phone);
+	}
+	
+	public void setPhones(List<Phone> phones) {
+		// clonovani, protoze list zanika po ukonceni session (fetch.LAZY)
+		this.phones = phones.stream().collect(java.util.stream.Collectors.toList());
 	}
 	
 	public String toString() {

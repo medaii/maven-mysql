@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,6 +55,9 @@ public class Member implements IFMember {
 	
 	@OneToMany(mappedBy="member", cascade=CascadeType.ALL)
 	private List<Mail> mails;
+	
+	@OneToMany(mappedBy="member", cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	private List<Phone> phones ;
 	
 	@OneToOne(mappedBy="member", cascade= CascadeType.ALL)
 	private RodneCislo rodneCislo;
@@ -183,15 +187,32 @@ public class Member implements IFMember {
 		this.mails = mails;
 	}
 
-	public void add(Mail theMail) {
+	public void add(Mail tempMail) {
 		
 		if(mails!=null) {
 			mails = new ArrayList<>();
 		}
-		mails.add(theMail);
-		theMail.setMember(this);
+		mails.add(tempMail);
+		tempMail.setMember(this);
 	}
 	
+	public void add(Phone tempPhone) {
+		
+		if(mails!=null) {
+			mails = new ArrayList<>();
+		}
+		phones.add(tempPhone);
+		tempPhone.setMember(this);
+	}
+	
+	public List<Phone> getPhones() {
+		return phones;
+	}
+
+	public void setPhones(List<Phone> phones) {
+		this.phones = phones;
+	}
+
 	@Override
 	public String toString() {
 		return  lastName + " " + firstName + "\n";
@@ -204,6 +225,7 @@ public class Member implements IFMember {
 																							.addAnnotatedClass(Mail.class)
 																							.addAnnotatedClass(RodneCislo.class)
 																							.addAnnotatedClass(CshRegNumber.class)
+																							.addAnnotatedClass(Phone.class)
 																							.buildSessionFactory();) {
 			System.out.println("n");
 			// create session
@@ -215,17 +237,26 @@ public class Member implements IFMember {
 			// dotaz
 			//Mail mail = session.get(Mail.class,1);
 			
-			Member member = session.get(Member.class, 13);
+			Member member = session.get(Member.class, 1);
 			List<Mail> mails = member.getMails();
 			RodneCislo rodneCislo = member.getRodneCislo();
 			
+			List<Phone> phones = member.getPhones();
+			Phone phone = session.get(Phone.class, 240);
+			
+			//member.add(phone);
+			
 			Mail mail2 = session.get(Mail.class, 201);
+			
 			
 			//Member member = mail.getMember();
 			System.out.println("sout" + member + " - " + mails + rodneCislo + " - c - "+ member.getCshRegNumber());
-			
+			System.out.println("Tel.-" + phones);
 			System.out.println(mail2 + " " + mail2.getId_member());
-			// commit transaction
+			
+			session.delete(phone);
+			
+			// commit transaction			
 			session.getTransaction().commit();
 			
 			

@@ -34,6 +34,11 @@ public class MailsMember {
 	public void setMails(Mail mails) {
 		this.mails.add(mails);
 	}	
+	
+	public void setMails(List<Mail> mails) {
+		// clonovani, protoze list zanika po ukonceni session (fetch.LAZY)
+		this.mails = mails.stream().collect(java.util.stream.Collectors.toList());
+	}	
 
 	@Override
 	public String toString() {

@@ -40,8 +40,8 @@ public class DAOFactory {
 	 * Vrati novou instanci DAO pro praci s maily.
 	 * @return
 	 */
-	private static MailsDAOImpl createMailsDao() {
-		return new MailsDAOImpl(DBSqlExecutor.getInstance());
+	private static MailsHibernateDAOImpl createMailsDao() {
+		return new MailsHibernateDAOImpl(DBHibernateSqlExecutor.getInstance());
 	}
 	/**
 	 * Vrati novou instanci DAO pro praci s telefony.

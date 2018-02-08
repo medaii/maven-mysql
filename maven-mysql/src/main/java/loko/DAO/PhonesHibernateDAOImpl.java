@@ -76,10 +76,8 @@ public class PhonesHibernateDAOImpl implements IFPhoneDAO {
 	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
 	 */
 	public int updatePhone(Phone phone, int id) {
-		System.out.println("id phone = " + phone.getId());
 		phone.setId(id);
 		return dbHibernateSqlExecutor.updateObject(phone);
-
 	}
 
 	/**

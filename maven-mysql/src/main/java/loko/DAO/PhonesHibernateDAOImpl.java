@@ -88,7 +88,7 @@ public class PhonesHibernateDAOImpl implements IFPhoneDAO {
 	 * @phones = Vraci hash list klic je id clena a obsah je list telefonu
 	 * 
 	 */
-
+	@SuppressWarnings("unchecked")
 	public Map<Integer, PhonesMeber> getAllPhonesMembers() {
 		Map<Integer, PhonesMeber> map = new HashMap<>();
 

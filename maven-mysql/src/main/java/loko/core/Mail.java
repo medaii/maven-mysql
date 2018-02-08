@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
@@ -34,7 +34,7 @@ public class Mail {
 	@Column(name = "mail")
 	private String mail;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "id_osoby")
 	private Member member;
 
@@ -42,6 +42,11 @@ public class Mail {
 	public Mail() {
 	}
 
+	public Mail( String name, String mail) {
+		this.name = name;
+		this.mail = mail;
+	}
+	
 	public Mail(int id_member, String name, String mail) {
 		this(0, id_member, name, mail);
 	}

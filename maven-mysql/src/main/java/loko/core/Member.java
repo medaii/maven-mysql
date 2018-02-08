@@ -1,13 +1,18 @@
 package loko.core;
 
 import java.sql.Date;
+import java.util.ArrayList;
 //id, kjmeno, pjmeno, datum_narozeni, poznamka, aktivni, id_odd_kategorie, zacal
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.Session;
@@ -46,6 +51,15 @@ public class Member implements IFMember {
 	
 	@Column(name="zacal")
 	private Date enterDate;
+	
+	@OneToMany(mappedBy="member", cascade=CascadeType.ALL)
+	private List<Mail> mails;
+	
+	@OneToOne(mappedBy="member", cascade= CascadeType.ALL)
+	private RodneCislo rodneCislo;
+	
+	@OneToOne(mappedBy="member", cascade= CascadeType.ALL)
+	private CshRegNumber cshRegNumber;
 	
 	public Member() {
 	}
@@ -144,6 +158,40 @@ public class Member implements IFMember {
 	public void setEnterDate(Date enterDate) {
 		this.enterDate = enterDate;
 	}
+	
+	public RodneCislo getRodneCislo() {
+		return rodneCislo;
+	}
+	
+	public CshRegNumber getCshRegNumber() {
+		return cshRegNumber;
+	}
+
+	public void setCshRegNumber(CshRegNumber cshRegNumber) {
+		this.cshRegNumber = cshRegNumber;
+	}
+
+	public void setRodneCislo(RodneCislo rodneCislo) {
+		this.rodneCislo = rodneCislo;
+	}
+
+	public List<Mail> getMails() {
+		return mails;
+	}
+
+	public void setMails(List<Mail> mails) {
+		this.mails = mails;
+	}
+
+	public void add(Mail theMail) {
+		
+		if(mails!=null) {
+			mails = new ArrayList<>();
+		}
+		mails.add(theMail);
+		theMail.setMember(this);
+	}
+	
 	@Override
 	public String toString() {
 		return  lastName + " " + firstName + "\n";
@@ -153,7 +201,9 @@ public class Member implements IFMember {
 		System.out.println("a");
 		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml")
 																							.addAnnotatedClass(Member.class)
-																							.addAnnotatedClass(Mail.class)		
+																							.addAnnotatedClass(Mail.class)
+																							.addAnnotatedClass(RodneCislo.class)
+																							.addAnnotatedClass(CshRegNumber.class)
 																							.buildSessionFactory();) {
 			System.out.println("n");
 			// create session
@@ -163,11 +213,18 @@ public class Member implements IFMember {
 			session.beginTransaction();
 
 			// dotaz
-			Mail mail = session.get(Mail.class,1);
-
-			Member member = mail.getMember();
-			System.out.println("sout" + member);
+			//Mail mail = session.get(Mail.class,1);
 			
+			Member member = session.get(Member.class, 13);
+			List<Mail> mails = member.getMails();
+			RodneCislo rodneCislo = member.getRodneCislo();
+			
+			Mail mail2 = session.get(Mail.class, 201);
+			
+			//Member member = mail.getMember();
+			System.out.println("sout" + member + " - " + mails + rodneCislo + " - c - "+ member.getCshRegNumber());
+			
+			System.out.println(mail2 + " " + mail2.getId_member());
 			// commit transaction
 			session.getTransaction().commit();
 			

@@ -53,16 +53,16 @@ public class Member implements IFMember {
 	@Column(name="zacal")
 	private Date enterDate;
 	
-	@OneToMany(mappedBy="member", cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="member", cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	private List<Mail> mails;
 	
 	@OneToMany(mappedBy="member", cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	private List<Phone> phones ;
 	
-	@OneToOne(mappedBy="member", cascade= CascadeType.ALL)
+	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.LAZY)
 	private RodneCislo rodneCislo;
 	
-	@OneToOne(mappedBy="member", cascade= CascadeType.ALL)
+	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.LAZY)
 	private CshRegNumber cshRegNumber;
 	
 	public Member() {

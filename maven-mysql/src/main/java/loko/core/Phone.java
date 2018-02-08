@@ -1,10 +1,13 @@
 package loko.core;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -22,7 +25,7 @@ public class Phone {
 	@Column(name="id")
 	private int id;
 	
-	@Column(name="id_osoby")
+	@Column(name="id_osoby",insertable=false, updatable=false)
 	private int id_member;
 	
 	@Column(name="nazev")
@@ -31,10 +34,16 @@ public class Phone {
 	@Column(name="telefon")
 	private String phone;
 	
+	@ManyToOne(cascade= {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinColumn(name="id_osoby")
+	private Member member;
 	
 	public Phone() {
 	}
-
+	public Phone(String name, String phone) {
+		this.name = name;
+		this.phone = phone;
+	}
 	public Phone(int id_member, String name, String phone) {
 		this(0, id_member, name, phone);
 	}
@@ -77,6 +86,14 @@ public class Phone {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
 	public String toString() {

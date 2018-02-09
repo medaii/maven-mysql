@@ -1,4 +1,4 @@
-package loko.DAO;
+package service;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 

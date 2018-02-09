@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import loko.DB.DBHibernateSqlExecutor;
 import loko.core.User;
+import service.PasswordUtils;
 
 /**
  * uziti HIBERNATE

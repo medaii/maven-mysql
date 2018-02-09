@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import loko.DB.DBHibernateSqlExecutor;
 import loko.DB.DBSqlExecutor;
 import loko.core.User;
+import service.PasswordUtils;
 
 /**
  * 

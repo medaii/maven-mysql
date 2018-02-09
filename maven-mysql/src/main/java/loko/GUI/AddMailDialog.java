@@ -60,6 +60,7 @@ public class AddMailDialog extends JDialog {
 		contentPanel.add(lblMail);
 		
 		textFieldOdMail = new JTextField();
+		textFieldOdMail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdMail.setBounds(123, 23, 183, 21);
 		contentPanel.add(textFieldOdMail);
 		textFieldOdMail.setColumns(10);
@@ -69,6 +70,7 @@ public class AddMailDialog extends JDialog {
 		
 		
 		textFieldMail = new JTextField();
+		textFieldMail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldMail.setBounds(122, 55, 184, 21);
 		contentPanel.add(textFieldMail);
 		if (!newMail) {
@@ -82,6 +84,7 @@ public class AddMailDialog extends JDialog {
 			{
 				// tlaèítko OK
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// kontra povinných údajù
@@ -133,6 +136,7 @@ public class AddMailDialog extends JDialog {
 			{
 				// tlaèítko Cancel
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);

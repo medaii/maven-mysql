@@ -72,11 +72,13 @@ public class MemberDialog extends JDialog {
 	private MailsTableModel modelMail;
 	private PhonesTableModel modelP;
 	//clipce nechce podporovat zobrazeni private JComboBox<String> comboBoxRole;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxRole;
 
 	/**
 	 * Vytvoøení okna MemberDialog.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public MemberDialog(int id_member,IFMembersService membersService, MembersSearchApp membersSearchApp) {
 		this.setModal(true);
 		

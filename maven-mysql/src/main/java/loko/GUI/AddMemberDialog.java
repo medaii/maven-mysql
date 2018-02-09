@@ -58,11 +58,13 @@ public class AddMemberDialog extends JDialog {
 	private JTextField textFieldTel2;
 	private JDateChooser dateChooser;
 	private JTextField textFieldRegC;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBox;
 
 	/**
 	 * Vytvoøení okna.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public AddMemberDialog(IFMembersService membersService,MembersSearchApp membersSearchApp) {
 		
 		setBounds(100, 100, 737, 598);
@@ -108,18 +110,21 @@ public class AddMemberDialog extends JDialog {
 		}
 		{
 			textFieldFirstName = new JTextField();
+			textFieldFirstName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			textFieldFirstName.setBounds(144, 66, 164, 24);
 			contentPanel.add(textFieldFirstName);
 			textFieldFirstName.setColumns(10);
 		}
 		{
 			textFieldLastName = new JTextField();
+			textFieldLastName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			textFieldLastName.setBounds(144, 107, 167, 24);
 			contentPanel.add(textFieldLastName);
 			textFieldLastName.setColumns(10);
 		}
 		{
 			textFieldRC = new JTextField();
+			textFieldRC.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			textFieldRC.setBounds(144, 192, 167, 27);
 			contentPanel.add(textFieldRC);
 			textFieldRC.setColumns(10);
@@ -151,21 +156,25 @@ public class AddMemberDialog extends JDialog {
 		contentPanel.add(lblAdresaMailu);
 		
 		textFieldOdMail1 = new JTextField();
+		textFieldOdMail1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdMail1.setBounds(513, 107, 151, 20);
 		contentPanel.add(textFieldOdMail1);
 		textFieldOdMail1.setColumns(10);
 		
 		textFieldMail1 = new JTextField();
+		textFieldMail1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldMail1.setBounds(513, 150, 151, 20);
 		contentPanel.add(textFieldMail1);
 		textFieldMail1.setColumns(10);
 		
 		textFieldOdMail2 = new JTextField();
+		textFieldOdMail2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdMail2.setBounds(513, 195, 151, 20);
 		contentPanel.add(textFieldOdMail2);
 		textFieldOdMail2.setColumns(10);
 		
 		textFieldMail2 = new JTextField();
+		textFieldMail2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldMail2.setBounds(513, 233, 151, 20);
 		contentPanel.add(textFieldMail2);
 		textFieldMail2.setColumns(10);
@@ -176,37 +185,45 @@ public class AddMemberDialog extends JDialog {
 		contentPanel.add(lblTelefon);
 		
 		JLabel lblVlastnkTel = new JLabel("Vlastn\u00EDk tel.");
+		lblVlastnkTel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblVlastnkTel.setBounds(364, 321, 108, 14);
 		contentPanel.add(lblVlastnkTel);
 		
 		JLabel lblTelefon_1 = new JLabel("Telefon");
+		lblTelefon_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblTelefon_1.setBounds(364, 359, 97, 14);
 		contentPanel.add(lblTelefon_1);
 		
 		JLabel lblVlastnkTel_1 = new JLabel("Vlastn\u00EDk tel.");
+		lblVlastnkTel_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblVlastnkTel_1.setBounds(363, 397, 109, 14);
 		contentPanel.add(lblVlastnkTel_1);
 		
 		JLabel lblTelefon_2 = new JLabel("Telefon");
+		lblTelefon_2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblTelefon_2.setBounds(364, 433, 108, 14);
 		contentPanel.add(lblTelefon_2);
 		
 		textFieldOdTel1 = new JTextField();
+		textFieldOdTel1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdTel1.setBounds(513, 315, 151, 20);
 		contentPanel.add(textFieldOdTel1);
 		textFieldOdTel1.setColumns(10);
 		
 		textFieldTel1 = new JTextField();
+		textFieldTel1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldTel1.setBounds(513, 356, 151, 20);
 		contentPanel.add(textFieldTel1);
 		textFieldTel1.setColumns(10);
 		
 		textFieldOdTel2 = new JTextField();
+		textFieldOdTel2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdTel2.setBounds(513, 394, 151, 20);
 		contentPanel.add(textFieldOdTel2);
 		textFieldOdTel2.setColumns(10);
 		
 		textFieldTel2 = new JTextField();
+		textFieldTel2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldTel2.setText("");
 		textFieldTel2.setBounds(513, 430, 151, 20);
 		contentPanel.add(textFieldTel2);
@@ -218,6 +235,7 @@ public class AddMemberDialog extends JDialog {
 		contentPanel.add(lblTrvalBydlit);
 		
 		dateChooser = new JDateChooser();
+		dateChooser.getCalendarButton().setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		dateChooser.setBounds(147, 144, 161, 20);
 		contentPanel.add(dateChooser);
 		
@@ -228,6 +246,7 @@ public class AddMemberDialog extends JDialog {
 		contentPanel.add(lblRegsh);
 		
 		textFieldRegC = new JTextField();
+		textFieldRegC.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldRegC.setBounds(144, 356, 164, 24);
 		contentPanel.add(textFieldRegC);
 		textFieldRegC.setColumns(10);
@@ -239,6 +258,7 @@ public class AddMemberDialog extends JDialog {
 		
 		
 		comboBox = new JComboBox(role);
+		comboBox.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		comboBox.setBounds(144, 394, 164, 24);
 		contentPanel.add(comboBox);
 		
@@ -263,6 +283,7 @@ public class AddMemberDialog extends JDialog {
 			{
 				// tlaèitko uložit
 				JButton okButton = new JButton("Ulo\u017Eit");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// kontrola poviných udajù
@@ -364,6 +385,7 @@ public class AddMemberDialog extends JDialog {
 			{
 				// tlaèitko Cancel
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);

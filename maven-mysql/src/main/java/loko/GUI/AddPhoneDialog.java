@@ -64,7 +64,8 @@ private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
 		}
 		{
 			textFieldJmeno = new JTextField();
-			textFieldJmeno.setBounds(85, 24, 153, 20);
+			textFieldJmeno.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+			textFieldJmeno.setBounds(83, 24, 153, 20);
 			contentPanel.add(textFieldJmeno);
 			textFieldJmeno.setColumns(10);
 			if (!newPhone) {
@@ -73,6 +74,7 @@ private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
 		}
 		{
 			textFieldTelefon = new JTextField();
+			textFieldTelefon.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			
 			// kontrola ze se zadavaji jen cisla
 			textFieldTelefon.addKeyListener(new KeyAdapter() {
@@ -100,6 +102,7 @@ private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -147,6 +150,7 @@ private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);

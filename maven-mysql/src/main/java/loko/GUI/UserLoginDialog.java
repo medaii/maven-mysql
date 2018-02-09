@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
@@ -14,8 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 
-
-import loko.DAO.*;
 import loko.core.User;
 import service.IFMembersService;
 
@@ -29,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class UserLoginDialog extends JDialog {
 
@@ -44,6 +42,7 @@ public class UserLoginDialog extends JDialog {
 	//private IFUserDAO userDAO; // pro testovaní pøidat = new UserDAO();	
 
 	private JPasswordField passwordField;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxUser;
 	
 	
@@ -52,6 +51,7 @@ public class UserLoginDialog extends JDialog {
 	}
 	
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void populateUsers() {
 		if(membersService != null) {
 			// vytvoøí pole a naslednì naplni box
@@ -66,6 +66,7 @@ public class UserLoginDialog extends JDialog {
 	/**
 	 * Vytvoøení okna.
 	 */
+	@SuppressWarnings("rawtypes")
 	public UserLoginDialog() {
 		
 		setBounds(100, 100, 450, 300);
@@ -84,21 +85,25 @@ public class UserLoginDialog extends JDialog {
 			panel.setLayout(null);
 			{
 				JLabel lblUivatel = new JLabel("U\u017Eivatel:");
+				lblUivatel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				lblUivatel.setBounds(10, 11, 55, 23);
 				panel.add(lblUivatel);
 			}
 			
 			comboBoxUser = new JComboBox();
+			comboBoxUser.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			comboBoxUser.setBounds(75, 12, 132, 23);
 			
 			panel.add(comboBoxUser);
 			
-			JLabel lblHeslo = new JLabel("Heslo");
-			lblHeslo.setBounds(10, 42, 55, 23);
+			JLabel lblHeslo = new JLabel("Heslo:");
+			lblHeslo.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+			lblHeslo.setBounds(10, 46, 55, 23);
 			panel.add(lblHeslo);
 			
 			passwordField = new JPasswordField();
-			passwordField.setBounds(70, 46, 137, 23);
+			passwordField.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+			passwordField.setBounds(75, 46, 137, 23);
 			panel.add(passwordField);
 		}
 		{
@@ -107,6 +112,7 @@ public class UserLoginDialog extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						performUserLogin();
@@ -118,6 +124,7 @@ public class UserLoginDialog extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						 System.exit(0);
@@ -128,6 +135,7 @@ public class UserLoginDialog extends JDialog {
 			}
 		}
 	}
+	@SuppressWarnings("rawtypes")
 	public JComboBox getUserComboBox() {
 		return comboBoxUser;
 	}

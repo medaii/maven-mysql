@@ -8,8 +8,6 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-
-import loko.DAO.*;
 import loko.core.MemberList;
 import loko.core.User;
 import loko.loger.LoggerLoko;
@@ -71,6 +69,7 @@ public class MembersSearchApp  extends JFrame{
 	private JTextField textFieldSearchName;
 	private JTable tableUser;
 	private JButton btnPidanUivatele;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBox;
 	private int id_kategorie = 0;
 	private final String[] kategorie = {"Všechny", "Muži", "Mládež" , "Dorostenci", "Žáci", "Mini a pøípravka",
@@ -118,6 +117,7 @@ public class MembersSearchApp  extends JFrame{
 	/**
 	 * Vytvoøení hlavního okna aplikace po pøihlašení
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public MembersSearchApp(IFMembersService membersService,int theUserId, boolean theAdmin) {
 		this.membersService = membersService;
 			userId = theUserId;

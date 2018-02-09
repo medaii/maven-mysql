@@ -97,6 +97,7 @@ public class ChangePassword extends JDialog {
 			{
 				// tlaèítko pro zmìnu hesla 
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						boolean isValidPassword;
@@ -160,6 +161,7 @@ public class ChangePassword extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);

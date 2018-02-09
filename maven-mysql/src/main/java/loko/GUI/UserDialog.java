@@ -117,11 +117,13 @@ public class UserDialog extends JDialog {
 		}
 		{
 			JLabel lblAdmin = new JLabel("Admin");
+			lblAdmin.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			lblAdmin.setBounds(10, 185, 46, 14);
 			contentPanel.add(lblAdmin);
 		}
 		
 		checkBoxAdmin = new JCheckBox("");
+		checkBoxAdmin.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		checkBoxAdmin.setBounds(121, 181, 97, 23);
 		contentPanel.add(checkBoxAdmin);
 		
@@ -138,6 +140,7 @@ public class UserDialog extends JDialog {
 				
 				// vytvoøení nového uživatele
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -186,6 +189,7 @@ public class UserDialog extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);

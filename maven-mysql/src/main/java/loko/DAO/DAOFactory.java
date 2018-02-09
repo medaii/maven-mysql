@@ -4,7 +4,6 @@
 package loko.DAO;
 
 import loko.DB.DBHibernateSqlExecutor;
-import loko.DB.DBSqlExecutor;
 
 /**
  * Tovarna pro vytvareni DAO implementaci

@@ -235,14 +235,21 @@ public class MembersServiceImpl implements IFMembersService {
 	public List<User> getUsers(boolean admin, int userId) {
 		return userDAO.getUsers(admin, userId);
 	}
-	/* (non-Javadoc)
-	 * @see service.IFMembersService#authenticate(loko.core.User)
+	/** 
+	 * @return kontrola shody zadaného hesla a hesla v DB
 	 */
 	@Override
-	public boolean authenticate(User theUser) {
-		return userDAO.authenticate(theUser);
+	public boolean authenticate(byte[] password,int id) {
+		return userDAO.authenticate(password, id);
 	}
-
+	/**
+	 * @password -  heslo nezakodovane v poli byte
+	 * return zakodované heslo
+	 */
+	public String encryptPassword(byte[] password) {
+		return PasswordUtils.encryptPassword(password);
+	}
+	
 	@Override
 	public int addUser(User theUser) {		
 		return userDAO.addUser(theUser);

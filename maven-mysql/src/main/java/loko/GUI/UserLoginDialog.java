@@ -158,13 +158,9 @@ public class UserLoginDialog extends JDialog {
 			boolean admin = theUser.isAdmin();
 			
 			// naètení password
-			String plainTextPassword = new String(passwordField.getPassword());
-			theUser.setPassword(plainTextPassword);
-			
-			
 			// Kontrola hesla s heslem zakodovaným v DB
 			// volání Service pro validaci password user
-			boolean isValidPassword = membersService.authenticate(theUser);
+			boolean isValidPassword = membersService.authenticate(new String(passwordField.getPassword()).getBytes("UTF-8"), userId);
 			
 			if (isValidPassword) {
 				// validace v poøádku, skrytí okna a spuštìní membersearch okna

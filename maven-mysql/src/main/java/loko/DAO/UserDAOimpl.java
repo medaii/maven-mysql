@@ -21,8 +21,8 @@ public class UserDAOimpl implements IFUserDAO {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	// konstruktor
-	public UserDAOimpl() {
-		conn = DBSqlExecutor.getInstance(); // inteface pro db
+	public UserDAOimpl(DBSqlExecutor dbSqlExecutor) {
+		conn = dbSqlExecutor; // inteface pro db
 
 	}
 
@@ -31,11 +31,9 @@ public class UserDAOimpl implements IFUserDAO {
 		HSqlExecutor = conn;
 	}
 
-	
-	
-	
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see loko.DAO.IFUserDAO#updateUser(loko.core.User)
 	 */
 	@Override
@@ -46,29 +44,30 @@ public class UserDAOimpl implements IFUserDAO {
 		switch (metodConnection) {
 		case 1:
 			resurm = HSqlExecutor.setDotaz(theUser, User.class);
-			
+
 			break;
-		case 2:			
-			dotaz = "update User" + " set firstName = '" + theUser.getFirstName()+ "', lastName = '"+ theUser.getLastName()
-					+ "', email ='"+ theUser.getEmail()+ "' , admin='"+ isAdmin + "' where id ="+ theUser.getId();
+		case 2:
+			dotaz = "update User" + " set firstName = '" + theUser.getFirstName() + "', lastName = '" + theUser.getLastName()
+					+ "', email ='" + theUser.getEmail() + "' , admin='" + isAdmin + "' where id =" + theUser.getId();
 			resurm = HSqlExecutor.setDotaz(dotaz, User.class);
 			break;
 
 		default:
-			
+
 			dotaz = "update users" + " set first_name = ?, last_name = ?, email = ?, is_admin=?" + " where id = ?";
 			String[] hodnoty = { theUser.getFirstName(), theUser.getLastName(), theUser.getEmail(), String.valueOf(isAdmin),
 					String.valueOf(theUser.getId()) };
 			resurm = conn.setDotaz(dotaz, hodnoty);
 			break;
 		}
-		
 
 		return resurm;
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see loko.DAO.IFUserDAO#changePassword(loko.core.User, java.lang.String)
 	 */
 	@Override
@@ -116,13 +115,15 @@ public class UserDAOimpl implements IFUserDAO {
 		return tempUser;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see loko.DAO.IFUserDAO#getUsers(boolean, int)
 	 */
 	@Override
 	public List<User> getUsers(boolean admin, int userId) {
 		List<User> list = new ArrayList<User>();
-		
+
 		String sql = null;
 		if (admin) {
 			// get all users
@@ -161,10 +162,14 @@ public class UserDAOimpl implements IFUserDAO {
 		}
 		return list;
 	}
+
 	/**
 	 * zpracováni pri JDBC
-	 * @param list kam poslat data
-	 * @param sql pøíkaz vykonání
+	 * 
+	 * @param list
+	 *          kam poslat data
+	 * @param sql
+	 *          pøíkaz vykonání
 	 */
 	private void getDataJDBCmetod(List<User> list, String sql) {
 		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
@@ -180,74 +185,26 @@ public class UserDAOimpl implements IFUserDAO {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see loko.DAO.IFUserDAO#authenticate(loko.core.User)
-	 */
-	@Override
-	public boolean authenticate(User theUser) {
-		boolean result = false;
-
-		String plainTextPassword = theUser.getPassword();
-
-		// vrací heslo z databáze zakodováne
-		String encryptedPasswordFromDatabase = getEncrpytedPassword(theUser.getId());
-
-		// porovnání zadaného hesla a zakodovaného hesla v DB
-		result = PasswordUtils.checkPassword(plainTextPassword, encryptedPasswordFromDatabase);
-		LOGGER.info("Výsledek kontroly hesla - " + (result ? "Správené heslo" : "Nesprávné heslo"));
-		return result;
-	}
-	/**
-	 * 
-	 * @param id
-	 * @return vraci zakodovane heslo
-	 */
-	private String getEncrpytedPassword(int id) {
-		String encryptedPassword = null;
-		
-		String sql;
-		switch (metodConnection) {
-		case 1:
-			sql = "from User where id=" + id;
-			List<User> list = new ArrayList<User>();
-			HSqlExecutor.getData(sql, list, User.class);
-			for (User a : list) {
-				encryptedPassword = a.getPassword();
-			}
-			break;
-
-		default:
-			sql = "select password from users where id=" + id;
-			ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
-			conn.getData(sql, r);
-			for (String[] a : r) {
-				encryptedPassword = a[0];
-			}
-			break;
-		}
-		return encryptedPassword;
-	}
-
-	public static void main(String[] args) {
-		DBHibernateSqlExecutor pokus = DBHibernateSqlExecutor.getInstance();
-		UserDAOimpl userDAO = new UserDAOimpl(pokus);
-		String a= userDAO.getEncrpytedPassword(2);
-		List<User> list = new ArrayList<User>();
-		list = userDAO.getUsers(false, 1);
-		User user = new User();
-		for (User c:list) {
-			user = c;
-		}
-		user.setFirstName("Josef1");
-		userDAO.updateUser(user);
-		
-		System.out.println(a);
-
-	}
-
 	@Override
 	public int addUser(User theUser) {
 		System.out.println("Pridej user" + theUser);
 		return 1;
+	}
+
+	/**
+	 * Porovnani zadaneho hesla ve formulari s heslem v DB
+	 * 
+	 * @result boolean shoda hash hesel
+	 */
+	@Override
+	public boolean authenticate(byte[] password, int id) {
+		String encryptedPassword = null;
+		String sql = "select password from users where id=" + id;
+		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
+		conn.getData(sql, r);
+		for (String[] a : r) {
+			encryptedPassword = a[0];
+		}
+		return PasswordUtils.checkPassword(password, encryptedPassword);
 	}
 }

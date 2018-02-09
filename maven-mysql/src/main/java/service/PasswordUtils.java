@@ -1,5 +1,7 @@
 package service;
 
+import java.io.UnsupportedEncodingException;
+
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 public class PasswordUtils {
@@ -19,6 +21,17 @@ public class PasswordUtils {
 		return result;
 	}
 	
+	public static String encryptPassword(byte[] password) {
+		String data = "";
+		try {
+			data = new String(password, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		String result = passwordEncryptor.encryptPassword(data);
+		return result;
+	}
+	
 	/**
 	 * Checks an unencrypted (plain) password against an encrypted one (a digest) to see if they match. 
 	 * 
@@ -28,6 +41,16 @@ public class PasswordUtils {
 	 */
 	public static boolean checkPassword(String plainText, String encryptedPassword) {
 		
+		return passwordEncryptor.checkPassword(plainText, encryptedPassword);
+	}
+	
+	public static boolean checkPassword(byte[] password, String encryptedPassword) {
+		String plainText = "";
+		try {
+			plainText = new String(password, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		return passwordEncryptor.checkPassword(plainText, encryptedPassword);
 	}
 	

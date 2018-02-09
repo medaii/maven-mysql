@@ -75,8 +75,19 @@ public interface IFMembersService {
 
 	List<User> getUsers(boolean admin, int userId);
 
-	boolean authenticate(User theUser);
+	/** 
+	 * @return kontrola shody zadaného hesla a hesla v DB
+	 */
+	boolean authenticate(byte[] password, int id); 
 	
-	int addUser(User theUser); 
+	/**
+	 * @password -  heslo nezakodovane v poli byte
+	 * return zakodované heslo
+	 */
+	public String encryptPassword(byte[] password);
+	
+	int addUser(User theUser);
+
+	
 
 }

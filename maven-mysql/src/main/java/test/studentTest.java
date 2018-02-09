@@ -13,6 +13,7 @@ import org.hibernate.cfg.Configuration;
 import loko.DAO.IFUserDAO;
 import loko.DAO.UserDAOimpl;
 import loko.DB.DBHibernateSqlExecutor;
+import loko.DB.DBSqlExecutor;
 import loko.core.*;
 
 public class studentTest {
@@ -55,7 +56,7 @@ public class studentTest {
 		//pokus.getData("from User", user, User.class);
 		user = userDAO.getUsers(false, 2);
 		System.out.println(user + "\n" + User.class.getSimpleName());
-		userDAO = new UserDAOimpl();
+		userDAO = new UserDAOimpl(DBSqlExecutor.getInstance());
 		
 		user = userDAO.getUsers(false, 2);
 		

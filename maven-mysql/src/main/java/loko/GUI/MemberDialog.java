@@ -125,18 +125,21 @@ public class MemberDialog extends JDialog {
 				}
 				
 				textFieldFirstName = new JTextField();
+				textFieldFirstName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				textFieldFirstName.setBounds(139, 11, 177, 25);
 				panel_1.add(textFieldFirstName);
 				textFieldFirstName.setColumns(10);
 				textFieldFirstName.setText(memberFull.getFirstName());
 				
 				textFieldLastName = new JTextField();
+				textFieldLastName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				textFieldLastName.setBounds(139, 42, 177, 25);
 				panel_1.add(textFieldLastName);
 				textFieldLastName.setColumns(10);
 				textFieldLastName.setText(memberFull.getLastName());
 				
 				dateChooser = new JDateChooser();
+				dateChooser.getCalendarButton().setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				dateChooser.setBounds(139, 83, 177, 20);
 				panel_1.add(dateChooser);
 				dateChooser.setDate(memberFull.getBirthDay());
@@ -147,6 +150,7 @@ public class MemberDialog extends JDialog {
 				panel_1.add(lblRodnslo);
 				
 				textFieldRC = new JTextField();
+				textFieldRC.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				textFieldRC.setBounds(139, 115, 177, 20);
 				panel_1.add(textFieldRC);
 				textFieldRC.setColumns(10);
@@ -158,6 +162,7 @@ public class MemberDialog extends JDialog {
 				panel_1.add(lblTrvBydlit);
 				
 				textFieldTrvaleBydliste = new JTextField();
+				textFieldTrvaleBydliste.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				textFieldTrvaleBydliste.setBounds(139, 146, 555, 20);
 				panel_1.add(textFieldTrvaleBydliste);
 				textFieldTrvaleBydliste.setColumns(10);
@@ -169,6 +174,7 @@ public class MemberDialog extends JDialog {
 				panel_1.add(lblRegsh);
 				
 				textFieldCHFReg = new JTextField();
+				textFieldCHFReg.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				
 				//èíslo registrace mùže být jen èísla...kontrola zadavaní z klavesnice
 				textFieldCHFReg.addKeyListener(new KeyAdapter() {
@@ -189,6 +195,7 @@ public class MemberDialog extends JDialog {
 				textFieldCHFReg.setText(memberFull.getChfRegistrace());
 				
 				chckbxAktivni = new JCheckBox("aktivni");
+				chckbxAktivni.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				chckbxAktivni.setBounds(139, 267, 97, 23);
 				panel_1.add(chckbxAktivni);
 				if(memberFull.getActive() > 0) {
@@ -200,6 +207,7 @@ public class MemberDialog extends JDialog {
 					
 				
 				JLabel lblStav = new JLabel("Stav:");
+				lblStav.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				lblStav.setBounds(23, 271, 46, 14);
 				panel_1.add(lblStav);
 				
@@ -215,6 +223,7 @@ public class MemberDialog extends JDialog {
 			
 				//comboBoxRole = new JComboBox<String>(role);
 				comboBoxRole = new JComboBox(role);
+				comboBoxRole.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				
 				comboBoxRole.setBounds(139, 208, 177, 20);
 				panel_1.add(comboBoxRole);
@@ -228,6 +237,7 @@ public class MemberDialog extends JDialog {
 				
 				// tlaèítko na vytvoøení nového mailu
 				JButton btnNovMail = new JButton("Nov\u00FD mail");
+				btnNovMail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnNovMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						//otevøení nového okna addMailDialog
@@ -241,6 +251,7 @@ public class MemberDialog extends JDialog {
 				
 				// tlaèítko na vytvoøení nového telefoního èísla
 				JButton btnNovTelefon = new JButton("Nov\u00FD Telefon");
+				btnNovTelefon.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnNovTelefon.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// otevøení nového okna addPhoneDialog
@@ -257,6 +268,7 @@ public class MemberDialog extends JDialog {
 				kontakty.add(scrollPane);
 				
 				tableMails = new JTable();
+				tableMails.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				
 
 				modelMail = new MailsTableModel(mails.getMails());
@@ -265,11 +277,13 @@ public class MemberDialog extends JDialog {
 			
 				
 				JLabel lblMail = new JLabel("Mail:");
+				lblMail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				lblMail.setBounds(10, 11, 46, 14);
 				kontakty.add(lblMail);
 				
 				// tlaèítko pro editaci mailu
 				JButton btnEditMailu = new JButton("Edit mailu");
+				btnEditMailu.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnEditMailu.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// vrat vybraný øádek
@@ -293,8 +307,8 @@ public class MemberDialog extends JDialog {
 				kontakty.add(btnEditMailu);
 				
 				// tlaèítko na mazání mailu
-				JButton btnSmazatMail = new JButton("Smazat mail");
-				btnSmazatMail.setFont(new Font("Times New Roman", Font.PLAIN, 9));
+				JButton btnSmazatMail = new JButton("Smazat m.");
+				btnSmazatMail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnSmazatMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -339,12 +353,14 @@ public class MemberDialog extends JDialog {
 				kontakty.add(scrollPane_1);
 				
 				tablePhone = new JTable();
+				tablePhone.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				modelP = new PhonesTableModel(phones.getPhones());
 				tablePhone.setModel(modelP);
 				scrollPane_1.setViewportView(tablePhone);
 				
 				// tlaèítko editace telefonu
 				JButton btnEditTel = new JButton("Edit tel.");
+				btnEditTel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnEditTel.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 					// vrat vybraný øádek
@@ -368,6 +384,7 @@ public class MemberDialog extends JDialog {
 				
 				// tlaèítko pro smazaní telefonu
 				JButton btnSmazatTel = new JButton("Smazat tel.");
+				btnSmazatTel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnSmazatTel.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// vrat vybraný øádek
@@ -403,6 +420,11 @@ public class MemberDialog extends JDialog {
 				});
 				btnSmazatTel.setBounds(585, 262, 106, 23);
 				kontakty.add(btnSmazatTel);
+				
+				JLabel lblTelefon = new JLabel("Telefon:");
+				lblTelefon.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+				lblTelefon.setBounds(352, 11, 46, 14);
+				kontakty.add(lblTelefon);
 			}
 		}
 		{
@@ -412,6 +434,7 @@ public class MemberDialog extends JDialog {
 			{
 				// uložení a návrat do hlavního okna
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -491,6 +514,7 @@ public class MemberDialog extends JDialog {
 			{
 				// tlaèítko Cancel
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);

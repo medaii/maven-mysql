@@ -91,7 +91,8 @@ public class MailsHibernateDAOImpl implements IFMailsDAO {
 
 			List<Member> members = session
 					.createQuery(
-							"select i from Member i join fetch i.cshRegNumber " + "join fetch i.rodneCislo " + "join fetch i.mails")
+							"select i from Member i join fetch i.cshRegNumber " + "join fetch i.rodneCislo " 
+									+ "join fetch i.mails " + "join fetch i.trvaleBydliste")
 					.list();
 			for (Member member : members) {
 				if (!member.getMails().isEmpty()) {

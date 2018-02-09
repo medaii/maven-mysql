@@ -54,8 +54,8 @@ public class DAOFactory {
 	 * Vrati nobou instanci DAO pro praci s members
 	 * @return
 	 */
-	private static MembersDAOImpl createMembersDao() {
-		return new MembersDAOImpl(DBSqlExecutor.getInstance());
+	private static MembersHibernateDAOImpl createMembersDao() {
+		return new MembersHibernateDAOImpl(DBHibernateSqlExecutor.getInstance());
 	}
 	/**
 	 * Vrati nobou instanci DAO pro praci s users

@@ -10,7 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import loko.DAO.UserDAO;
+import loko.DAO.IFUserDAO;
+import loko.DAO.UserDAOimpl;
 import loko.DB.DBHibernateSqlExecutor;
 import loko.core.*;
 
@@ -46,15 +47,15 @@ public class studentTest {
 		}
 		*/
 		LOGGER.setLevel(Level.WARNING);
-		DBHibernateSqlExecutor pokus = new DBHibernateSqlExecutor();
-		UserDAO userDAO = new UserDAO(pokus);
+		DBHibernateSqlExecutor pokus = DBHibernateSqlExecutor.getInstance();
+		IFUserDAO userDAO = new UserDAOimpl(pokus);
 		
 		List<User> user = new ArrayList<User>();
 		
 		//pokus.getData("from User", user, User.class);
 		user = userDAO.getUsers(false, 2);
 		System.out.println(user + "\n" + User.class.getSimpleName());
-		userDAO = new UserDAO();
+		userDAO = new UserDAOimpl();
 		
 		user = userDAO.getUsers(false, 2);
 		

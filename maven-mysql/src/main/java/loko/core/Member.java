@@ -65,6 +65,9 @@ public class Member implements IFMember {
 	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.LAZY)
 	private CshRegNumber cshRegNumber;
 	
+	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.LAZY)
+	private TrvaleBydliste trvaleBydliste;
+	
 	public Member() {
 	}
 	
@@ -82,6 +85,16 @@ public class Member implements IFMember {
 		this.id_odd_kategorie = id_odd_kategorie;
 		this.enterDate = enterDate;
 	}
+	public void setMember(Member member) {
+		this.firstName = member.getFirstName();
+		this.lastName = member.getLastName();
+		this.birthDay = member.getBirthDay();
+		this.note = member.getNote();
+		this.active = member.getActive();
+		this.id_odd_kategorie = member.getId_odd_kategorie();
+		this.enterDate = member.getEnterDate();
+	}
+	
 	@Override
 	public int getId() {
 		return id;
@@ -177,6 +190,14 @@ public class Member implements IFMember {
 
 	public void setRodneCislo(RodneCislo rodneCislo) {
 		this.rodneCislo = rodneCislo;
+	}
+	
+	public TrvaleBydliste getTrvaleBydliste() {
+		return trvaleBydliste;
+	}
+
+	public void setTrvaleBydliste(TrvaleBydliste trvaleBydliste) {
+		this.trvaleBydliste = trvaleBydliste;
 	}
 
 	public List<Mail> getMails() {

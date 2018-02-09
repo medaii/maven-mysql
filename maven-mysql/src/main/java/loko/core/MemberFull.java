@@ -42,6 +42,19 @@ public class MemberFull {
 		this.chfRegistrace = chfRegistrace;
 	}
 
+	public MemberFull(Member member, RodneCislo rodneCislo, CshRegNumber cshRegNumber, TrvaleBydliste trvaleBydliste) {
+		this.id = member.getId();
+		this.firstName = member.getFirstName();
+		this.lastName = member.getLastName();
+		this.birthDay = member.getBirthDay();
+		this.note = member.getNote();
+		this.active = member.getActive();
+		this.id_odd_kategorie = member.getId_odd_kategorie();
+		this.enterDate = member.getEnterDate();
+		this.rodneCislo = rodneCislo.getRodne_cislo();
+		this.trvaleBydliste = trvaleBydliste.getAdresa();
+		this.chfRegistrace = cshRegNumber.getRegCislo();
+	}
 	public int getId() {
 		return id;
 	}

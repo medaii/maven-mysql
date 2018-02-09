@@ -11,38 +11,39 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="clen_rodne_cislo")
-public class RodneCislo {
+@Table(name="clen_trvala_adresa")
+public class TrvaleBydliste {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id")
 	private int id;
 	
 	@Column(name = "id_osoby", insertable = false, updatable = false)	
 	private int id_member;
 	
-	@Column(name="rodne_cislo")
-	private String rodne_cislo;
+	@Column(name="adresa")
+	private String adresa;
 
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_osoby")
 	private Member member;
 	
-	public RodneCislo() {
+	public TrvaleBydliste() {
 	}
 	
-	public RodneCislo(String rodne_cislo) {
-		this.rodne_cislo = rodne_cislo;
+	public TrvaleBydliste(String adresa) {
+		this.adresa = adresa;
 	}
-	public RodneCislo(int id, int id_member, String rodne_cislo) {
+	public TrvaleBydliste(int id, int id_member, String adresa) {
 		this.id = id;
 		this.id_member = id_member;
-		this.rodne_cislo = rodne_cislo;
+		this.adresa = adresa;
 	}
 
-	public RodneCislo(int id_member, String rodne_cislo) {
+	public TrvaleBydliste(int id_member, String adresa) {
 		this.id_member = id_member;
-		this.rodne_cislo = rodne_cislo;
+		this.adresa = adresa;
 	}
 
 	public int getId() {
@@ -60,15 +61,15 @@ public class RodneCislo {
 	public void setId_member(int id_member) {
 		this.id_member = id_member;
 	}
-
-	public String getRodne_cislo() {
-		return rodne_cislo;
-	}
-
-	public void setRodne_cislo(String rodne_cislo) {
-		this.rodne_cislo = rodne_cislo;
-	}
 		
+	public String getAdresa() {
+		return adresa;
+	}
+
+	public void setAdresa(String adresa) {
+		this.adresa = adresa;
+	}
+
 	public Member getMember() {
 		return member;
 	}
@@ -79,7 +80,7 @@ public class RodneCislo {
 
 	@Override
 	public String toString() {
-		return "RodneCislo [id=" + id + ", id_member=" + id_member + ", rodne_cislo=" + rodne_cislo + "]";
+		return "Adresa [id=" + id + ", id_member=" + id_member + ", adresa=" + adresa + "]";
 	}
 		
 }

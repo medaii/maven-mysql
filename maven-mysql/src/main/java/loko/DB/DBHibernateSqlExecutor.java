@@ -12,6 +12,7 @@ import loko.core.Mail;
 import loko.core.Member;
 import loko.core.Phone;
 import loko.core.RodneCislo;
+import loko.core.TrvaleBydliste;
 import loko.core.User;
 
 /**
@@ -31,6 +32,7 @@ public class DBHibernateSqlExecutor {
 				.addAnnotatedClass(User.class).addAnnotatedClass(Phone.class).addAnnotatedClass(Mail.class)
 				.addAnnotatedClass(RodneCislo.class)
 				.addAnnotatedClass(CshRegNumber.class)
+				.addAnnotatedClass(TrvaleBydliste.class)
 				.buildSessionFactory();
 	}
 	

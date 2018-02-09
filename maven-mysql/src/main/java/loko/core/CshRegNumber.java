@@ -31,6 +31,10 @@ public class CshRegNumber {
 	public CshRegNumber() {
 	}
 
+	public CshRegNumber(String regCislo) {
+		this.regCislo = regCislo;
+	}
+	
 	public CshRegNumber(int id, int id_member, String regCislo, Member member) {
 		this.id = id;
 		this.id_member = id_member;

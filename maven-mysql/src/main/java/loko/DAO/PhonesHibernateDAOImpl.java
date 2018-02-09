@@ -98,7 +98,8 @@ public class PhonesHibernateDAOImpl implements IFPhoneDAO {
 			
 			List<Member> members = session.createQuery("select i from Member i join fetch i.cshRegNumber "
 																									+ "join fetch i.rodneCislo "
-																									+ "join fetch i.phones").list();
+																									+ "join fetch i.phones "
+																									+ "join fetch i.trvaleBydliste").list();
 			for (Member member : members) {
 				if(!member.getPhones().isEmpty()) {
 					PhonesMeber phones = new PhonesMeber(member.getId());

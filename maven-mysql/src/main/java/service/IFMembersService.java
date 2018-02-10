@@ -3,14 +3,14 @@ package service;
 import java.util.List;
 import java.util.Map;
 
-import loko.core.Mail;
-import loko.core.MailsMember;
-import loko.core.Member;
-import loko.core.MemberFull;
-import loko.core.MemberList;
-import loko.core.Phone;
-import loko.core.PhonesMeber;
-import loko.core.User;
+import loko.entity.Mail;
+import loko.entity.Member;
+import loko.entity.Phone;
+import loko.entity.User;
+import loko.value.MailsMember;
+import loko.value.MemberFull;
+import loko.value.MemberList;
+import loko.value.PhonesMeber;
 
 public interface IFMembersService {
 

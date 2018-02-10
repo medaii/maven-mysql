@@ -6,8 +6,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-
-import loko.core.Member;
+import loko.entity.Member;
 /**
  * 
  * @author Erik Markoviè

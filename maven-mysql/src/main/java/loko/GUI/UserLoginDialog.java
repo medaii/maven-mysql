@@ -12,13 +12,14 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-
-import loko.core.User;
 import service.IFMembersService;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
+import loko.entity.User;
+
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;

@@ -1,8 +1,10 @@
 package loko.tableModel;
 
 import javax.swing.table.AbstractTableModel;
+
+import loko.entity.User;
+
 import java.util.List;
-import loko.core.User;
 /**
  * 
  * @author Erik Markoviè

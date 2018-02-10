@@ -8,7 +8,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import loko.core.Mail;
+import loko.entity.Mail;
 import service.IFMembersService;
 
 import javax.swing.JLabel;

@@ -10,11 +10,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import loko.DAO.IFUserDAO;
-import loko.DAO.UserDAOimpl;
-import loko.DB.DBHibernateSqlExecutor;
-import loko.DB.DBSqlExecutor;
-import loko.core.*;
+import loko.dao.IFUserDAO;
+import loko.dao.jdbc.impl.UserDAOimpl;
+import loko.db.executor.impl.DBHibernateSqlExecutor;
+import loko.db.executor.impl.DBSqlExecutor;
+import loko.entity.User;
+import loko.value.*;
 
 public class studentTest {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

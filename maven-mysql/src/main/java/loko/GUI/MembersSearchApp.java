@@ -8,11 +8,11 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import loko.core.MemberList;
-import loko.core.User;
+import loko.entity.User;
 import loko.loger.LoggerLoko;
 import loko.tableModel.MembersListTableModel;
 import loko.tableModel.UsersTableModel;
+import loko.value.MemberList;
 import service.IFMembersService;
 import service.MembersServiceImpl;
 

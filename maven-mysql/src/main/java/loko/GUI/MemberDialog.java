@@ -8,14 +8,13 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-
-import loko.core.Mail;
-import loko.core.MailsMember;
-import loko.core.MemberFull;
-import loko.core.Phone;
-import loko.core.PhonesMeber;
+import loko.entity.Mail;
+import loko.entity.Phone;
 import loko.tableModel.MailsTableModel;
 import loko.tableModel.PhonesTableModel;
+import loko.value.MailsMember;
+import loko.value.MemberFull;
+import loko.value.PhonesMeber;
 import service.IFMembersService;
 
 import javax.swing.JLabel;

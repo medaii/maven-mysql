@@ -7,9 +7,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import loko.DAO.DAOFactory;
-import loko.DAO.IFMailsDAO;
-import loko.DAO.MailsDAOImpl;
+import loko.dao.DAOFactory;
+import loko.dao.IFMailsDAO;
+import loko.dao.jdbc.impl.MailsDAOImpl;
 
 /**
  * JUNIT testy DAOFactory.

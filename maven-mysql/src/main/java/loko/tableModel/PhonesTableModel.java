@@ -3,7 +3,8 @@ package loko.tableModel;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
-import loko.core.Phone;
+
+import loko.entity.Phone;
 /**
  * 
  * @author Erik Markoviè

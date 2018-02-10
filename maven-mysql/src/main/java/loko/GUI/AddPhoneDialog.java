@@ -7,7 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import loko.core.Phone;
+
+import loko.entity.Phone;
 import service.IFMembersService;
 
 import javax.swing.JLabel;

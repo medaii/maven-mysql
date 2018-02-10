@@ -13,11 +13,11 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 
-import loko.DAO.DAOFactory;
-import loko.DAO.IFMailsDAO;
-import loko.core.Mail;
-import loko.core.MemberFull;
-import loko.core.Phone;
+import loko.dao.DAOFactory;
+import loko.dao.IFMailsDAO;
+import loko.entity.Mail;
+import loko.entity.Phone;
+import loko.value.MemberFull;
 import service.IFMembersService;
 
 import java.awt.event.ActionListener;

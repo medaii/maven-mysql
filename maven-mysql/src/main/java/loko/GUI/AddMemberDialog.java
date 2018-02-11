@@ -14,7 +14,7 @@ import java.awt.Font;
 import javax.swing.JTextField;
 
 import loko.dao.DAOFactory;
-import loko.dao.IFMailsDAO;
+import loko.dao.MailsDAO;
 import loko.entity.Mail;
 import loko.entity.Phone;
 import loko.value.MemberFull;
@@ -317,7 +317,7 @@ public class AddMemberDialog extends JDialog {
 									textFieldOdMail1.setText("");
 								}
 								Mail mail = new Mail(id_member, textFieldOdMail1.getText(), textFieldMail1.getText());
-								IFMailsDAO mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
+								MailsDAO mailsDAO = DAOFactory.createDAO(MailsDAO.class);
 								mailsDAO.addMail(mail);
 								LOGGER.info("Pøidán nový mail. id member: " + id_member + " mail: " + mail.toString());
 							}
@@ -326,7 +326,7 @@ public class AddMemberDialog extends JDialog {
 									textFieldOdMail2.setText("");
 								}
 								Mail mail = new Mail(id_member, textFieldOdMail2.getText(), textFieldMail2.getText());
-								IFMailsDAO mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
+								MailsDAO mailsDAO = DAOFactory.createDAO(MailsDAO.class);
 								mailsDAO.addMail(mail);
 								LOGGER.info("Pøidán nový mail. id member: " + id_member + " mail: " + mail.toString());
 							}

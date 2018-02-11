@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import loko.dao.IFMailsDAO;
+import loko.dao.MailsDAO;
 import loko.db.executor.DBHibernateSqlExecutor;
 import loko.entity.Mail;
 import loko.entity.Member;
@@ -19,7 +19,7 @@ import loko.value.MailsMember;
  * @author Erik Markoviè
  *
  */
-public class MailsHibernateDAOImpl implements IFMailsDAO {
+public class MailsHibernateDAOImpl implements MailsDAO {
 	private DBHibernateSqlExecutor dbHibernateSqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 

@@ -10,9 +10,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import loko.dao.DAOFactory;
-import loko.dao.IFMailsDAO;
-import loko.dao.IFMembersDAO;
-import loko.dao.IFPhoneDAO;
+import loko.dao.MailsDAO;
+import loko.dao.MembersDAO;
+import loko.dao.PhoneDAO;
 import loko.db.executor.DBHibernateSqlExecutor;
 import loko.entity.CshRegNumber;
 import loko.entity.Mail;
@@ -31,7 +31,7 @@ import loko.value.PhonesMeber;
  *
  */
 
-public class MembersHibernateDAOImpl implements IFMembersDAO {
+public class MembersHibernateDAOImpl implements MembersDAO {
 	private DBHibernateSqlExecutor dbHibernateSqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
@@ -262,8 +262,8 @@ public class MembersHibernateDAOImpl implements IFMembersDAO {
 	public List<MemberList> getAllMemberList(boolean active, int kategorie) {
 		List<MemberList> list = new ArrayList<>();
 
-		IFMailsDAO mailsDao = DAOFactory.createDAO(IFMailsDAO.class);
-		IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
+		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
+		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
 
 		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
 		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
@@ -413,8 +413,8 @@ public class MembersHibernateDAOImpl implements IFMembersDAO {
 		String word = "%" + name;
 		word += "%";
 		
-		IFMailsDAO mailsDao = DAOFactory.createDAO(IFMailsDAO.class);
-		IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
+		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
+		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
 
 		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
 		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();

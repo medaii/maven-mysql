@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import loko.dao.DAOFactory;
-import loko.dao.IFMailsDAO;
-import loko.dao.IFMembersDAO;
-import loko.dao.IFPhoneDAO;
-import loko.dao.IFUserDAO;
+import loko.dao.MailsDAO;
+import loko.dao.MembersDAO;
+import loko.dao.PhoneDAO;
+import loko.dao.UserDAO;
 import loko.entity.Mail;
 import loko.entity.Member;
 import loko.entity.Phone;
@@ -24,18 +24,18 @@ import loko.value.PhonesMeber;
  */
 public class MembersServiceImpl implements IFMembersService {
 
-	private IFMembersDAO membersDAO;
-	private IFMailsDAO mailsDAO;
-	private IFPhoneDAO phoneDAO;
-	private IFUserDAO userDAO;
+	private MembersDAO membersDAO;
+	private MailsDAO mailsDAO;
+	private PhoneDAO phoneDAO;
+	private UserDAO userDAO;
 
 	//membersDAO = DAOFactory.createDAO(IFMembersDAO.class);
 	
 	public MembersServiceImpl() {
-		membersDAO = (IFMembersDAO)DAOFactory.createDAO(IFMembersDAO.class);
-		this.mailsDAO = (IFMailsDAO)DAOFactory.createDAO(IFMailsDAO.class);
-		this.phoneDAO = (IFPhoneDAO)DAOFactory.createDAO(IFPhoneDAO.class);
-		this.userDAO = (IFUserDAO)DAOFactory.createDAO(IFUserDAO.class); 
+		membersDAO = (MembersDAO)DAOFactory.createDAO(MembersDAO.class);
+		this.mailsDAO = (MailsDAO)DAOFactory.createDAO(MailsDAO.class);
+		this.phoneDAO = (PhoneDAO)DAOFactory.createDAO(PhoneDAO.class);
+		this.userDAO = (UserDAO)DAOFactory.createDAO(UserDAO.class); 
 		
 	}
 	/* (non-Javadoc)

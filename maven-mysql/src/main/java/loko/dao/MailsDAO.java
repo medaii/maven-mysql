@@ -15,7 +15,7 @@ import loko.value.MailsMember;
  * @author Erik Markoviè
  *
  */
-public interface IFMailsDAO {
+public interface MailsDAO {
 
 	/**
 	 * Smazání øádku v tabulce clen_mail

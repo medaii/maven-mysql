@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import loko.dao.IFPhoneDAO;
+import loko.dao.PhoneDAO;
 import loko.db.executor.impl.DBSqlExecutor;
 import loko.entity.Phone;
 import loko.value.PhonesMeber;
@@ -16,7 +16,7 @@ import loko.value.PhonesMeber;
  *
  */
 
-public class PhonesDAOImpl implements IFPhoneDAO {
+public class PhonesDAOImpl implements PhoneDAO {
 	private DBSqlExecutor sqlExecutor = null;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	

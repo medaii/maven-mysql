@@ -6,7 +6,7 @@ import loko.entity.Member;
 import loko.value.MemberFull;
 import loko.value.MemberList;
 
-public interface IFMembersDAO {
+public interface MembersDAO {
 	
 	/**
 	 *  Smazazni zaznamu member z DB

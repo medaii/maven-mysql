@@ -24,16 +24,16 @@ public class DAOFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T createDAO(Class<T> daoClass) {
-		if(daoClass.isAssignableFrom(IFMailsDAO.class)) {
+		if(daoClass.isAssignableFrom(MailsDAO.class)) {
 			return (T) createMailsDao();
 		}
-		if (daoClass.isAssignableFrom(IFPhoneDAO.class)) {
+		if (daoClass.isAssignableFrom(PhoneDAO.class)) {
 			return (T) createPhonesDao();
 		}
-		if(daoClass.isAssignableFrom(IFMembersDAO.class)) {
+		if(daoClass.isAssignableFrom(MembersDAO.class)) {
 			return (T) createMembersDao();
 		}
-		if(daoClass.isAssignableFrom(IFUserDAO.class)) {
+		if(daoClass.isAssignableFrom(UserDAO.class)) {
 			return (T) createUserDao();
 		}
 		throw new IllegalArgumentException("Neznamy typ DAO " + daoClass.getName());

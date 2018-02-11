@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import loko.dao.DAOFactory;
-import loko.dao.IFMailsDAO;
-import loko.dao.IFMembersDAO;
-import loko.dao.IFPhoneDAO;
+import loko.dao.MailsDAO;
+import loko.dao.MembersDAO;
+import loko.dao.PhoneDAO;
 import loko.db.executor.impl.DBSqlExecutor;
 import loko.entity.Mail;
 import loko.entity.Member;
@@ -29,7 +29,7 @@ import loko.value.PhonesMeber;
  *
  */
 
-public class MembersDAOImpl implements IFMembersDAO {
+public class MembersDAOImpl implements MembersDAO {
 	private DBSqlExecutor sqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
@@ -45,8 +45,8 @@ public class MembersDAOImpl implements IFMembersDAO {
 	 */
 	public void deleteMember(int id) {
 		// vytvoreni pøistupu k mailùm a telefonum
-		IFMailsDAO mailsDao = DAOFactory.createDAO(IFMailsDAO.class);
-		IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
+		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
+		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
 		MailsMember mails = mailsDao.getMailsMember(id);
 		PhonesMeber phones = phoneDAO.getPhonesMember(id);
 		
@@ -237,8 +237,8 @@ public class MembersDAOImpl implements IFMembersDAO {
 		List<MemberList>  list = new ArrayList<>();
 		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
 		
-		IFMailsDAO mailsDao = DAOFactory.createDAO(IFMailsDAO.class);
-		IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
+		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
+		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
 		
 		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
 		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
@@ -368,8 +368,8 @@ public class MembersDAOImpl implements IFMembersDAO {
 		String word = "%" + name;
 		word +="%";
 		
-		IFMailsDAO mailsDao = DAOFactory.createDAO(IFMailsDAO.class);
-		IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
+		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
+		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
 		
 		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
 		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
@@ -558,7 +558,7 @@ public class MembersDAOImpl implements IFMembersDAO {
 	public static void main(String[] args) {
 	
 		// TODO Auto-generated method stub
-		IFMembersDAO membersDAO = DAOFactory.createDAO(IFMembersDAO.class);
+		MembersDAO membersDAO = DAOFactory.createDAO(MembersDAO.class);
 		
 		membersDAO.getMemberFull(168);
 	}

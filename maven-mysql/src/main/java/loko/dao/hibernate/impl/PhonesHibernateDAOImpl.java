@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import loko.dao.IFPhoneDAO;
+import loko.dao.PhoneDAO;
 import loko.db.executor.DBHibernateSqlExecutor;
 import loko.entity.Member;
 import loko.entity.Phone;
@@ -22,7 +22,7 @@ import loko.value.PhonesMeber;
  *
  */
 
-public class PhonesHibernateDAOImpl implements IFPhoneDAO {
+public class PhonesHibernateDAOImpl implements PhoneDAO {
 	private DBHibernateSqlExecutor dbHibernateSqlExecutor ;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 

@@ -11,7 +11,7 @@ import loko.value.PhonesMeber;
  * @author Erik Markoviè
  *
  */
-public interface IFPhoneDAO {
+public interface PhoneDAO {
 	/**
 	 * 
 	 * @param id - id telefonu, který se má smazat

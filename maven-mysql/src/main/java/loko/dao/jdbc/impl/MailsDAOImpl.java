@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import loko.dao.IFMailsDAO;
+import loko.dao.MailsDAO;
 import loko.db.executor.impl.DBSqlExecutor;
 import loko.entity.Mail;
 import loko.value.MailsMember;
@@ -16,7 +16,7 @@ import loko.value.MailsMember;
  * @author Erik Markoviè
  *
  */
-public class MailsDAOImpl implements IFMailsDAO {
+public class MailsDAOImpl implements MailsDAO {
 	private DBSqlExecutor sqlExecutor = null;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	

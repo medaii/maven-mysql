@@ -11,7 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import loko.dao.DAOFactory;
-import loko.dao.IFUserDAO;
+import loko.dao.UserDAO;
 import loko.dao.jdbc.impl.UserDAOimpl;
 import loko.db.executor.DBHibernateSqlExecutor;
 import loko.db.executor.impl.DBSqlExecutor;
@@ -51,7 +51,7 @@ public class studentTest {
 		*/
 		LOGGER.setLevel(Level.WARNING);
 		
-		IFUserDAO userDAO = (IFUserDAO)DAOFactory.createDAO(IFUserDAO.class); 
+		UserDAO userDAO = (UserDAO)DAOFactory.createDAO(UserDAO.class); 
 		
 		List<User> user = new ArrayList<User>();
 		

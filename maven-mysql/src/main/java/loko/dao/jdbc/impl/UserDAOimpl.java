@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import loko.dao.IFUserDAO;
+import loko.dao.UserDAO;
 import loko.db.executor.impl.DBSqlExecutor;
 import loko.entity.User;
 import service.PasswordUtils;
@@ -14,7 +14,7 @@ import service.PasswordUtils;
  * @author Erik Markoviè Prostredník mezi gui user a db user
  */
 
-public class UserDAOimpl implements IFUserDAO {
+public class UserDAOimpl implements UserDAO {
 	private DBSqlExecutor conn;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 

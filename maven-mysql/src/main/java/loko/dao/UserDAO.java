@@ -4,7 +4,7 @@ import java.util.List;
 
 import loko.entity.User;
 
-public interface IFUserDAO {
+public interface UserDAO {
 
 	
 	int addUser(User theUser);

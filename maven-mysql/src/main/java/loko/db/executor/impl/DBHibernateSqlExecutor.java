@@ -1,4 +1,4 @@
-package loko.db.executor;
+package loko.db.executor.impl;
 
 import java.util.logging.Logger;
 
@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import loko.db.executor.impl.IFDBHibernateSqlExecutor;
+import loko.db.executor.IFDBHibernateSqlExecutor;
 import loko.entity.CshRegNumber;
 import loko.entity.Mail;
 import loko.entity.Member;
@@ -114,9 +114,8 @@ public class DBHibernateSqlExecutor implements IFDBHibernateSqlExecutor {
 	 * 
 	 * @see loko.db.executor.impl.IFDBHibernateSqlExecutor#updateObject(T)
 	 */
-	// TODO zmìnit na void
 	@Override
-	public <T> int updateObject(T object) {
+	public <T> void updateObject(T object) {
 
 		// vytvoreni session
 		try (Session session = factory.getCurrentSession();) {
@@ -128,7 +127,6 @@ public class DBHibernateSqlExecutor implements IFDBHibernateSqlExecutor {
 
 			// commit transaction
 			session.getTransaction().commit();
-			return 1;
 
 		} catch (Exception e) {
 			throw new RuntimeException("Chyba pøi Aktualizaci objektu " + object.getClass().getName(), e);

@@ -1,7 +1,15 @@
-package loko.db.executor.impl;
+package loko.db.executor;
 
 
 import org.hibernate.SessionFactory;
+
+/**
+ * Rozhrani pro praci s DB pomoci Hibernate a nebo predání SessionFactory pro
+ * komunikaci s DB pomoci Hibernate
+ * 
+ * @author Erik Markoviè
+ *
+ */
 
 public interface IFDBHibernateSqlExecutor {
 
@@ -33,8 +41,7 @@ public interface IFDBHibernateSqlExecutor {
 	 * @param object -  entita, dle ní se má zmìnit záznam v DB
 	 * @return - 
 	 */
-	//TODO zmìnit na void
-	<T> int updateObject(T object);
+	<T> void updateObject(T object);
 
 	/**
 	 * 
@@ -44,6 +51,5 @@ public interface IFDBHibernateSqlExecutor {
 	 * @param objectClass  -  v DB
 	 */
 	<T> void deleteObject(int id, Class<T> objectClass);
-
 
 }

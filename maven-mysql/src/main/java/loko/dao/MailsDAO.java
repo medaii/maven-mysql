@@ -20,27 +20,30 @@ public interface MailsDAO {
 	/**
 	 * Smazání øádku v tabulce clen_mail
 	 * 
-	 * @param id - id mailu, který se má smazat
-	 * @throw - vyhození vyjímky pøi nerealizování mazání øádku 
+	 * @param id - id mailu, který se má smazat v DB
+	 * 
 	 */	
 	void deleteMail(int id);
 	
+	/**
+	 * 
+	 * @param mail -  Entita, která má být vložena do DB
+	 * @return nove id entity Mail
+	 */
 	int addMail(Mail mail);
 	
 	/**
 	 * 
-	 * @param mail
-	 *            - objekt ktery má být nahrán do DB
-	 * @param id
-	 *            - id mailu na DB
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
+	 * @param mail - Entita se zmìnìnými hodnotami, dle ní mají být zmìnìny údaje v DB
+	 * @param id  - id mailu v DB
+	 *
 	 */
 	int updateMail(Mail mail, int id);
 	
 	/**
-	 * vytvoreni listu
+	 * vytvoreni mapy mailù dle klíèe id member
 	 * 
-	 * @mails = vrati maily daneho clena
+	 * @mails = vrati maily daneho member
 	 * 
 	 */
 	Map<Integer, MailsMember> getAllMailMembers();
@@ -48,17 +51,17 @@ public interface MailsDAO {
 	/**
 	 * pro vracení mailu kokretní osobì
 	 * 
-	 * @param id_member
-	 *            - id èlena pro kterého chceme vrátit mail
-	 * @return
+	 * @param id_member - id èlena pro kterého chceme vrátit mail
+	 * 
+	 * @return - vrací objekt pro Model, kde jsou zobrazeny všechny maily vybraného Membra
 	 */
 	MailsMember getMailsMember(int id_member);
 	
 	/**
 	 * 
-	 * @param id
-	 *            - mailu na DB
-	 * @return vraci objekt mail
+	 * @param id - mailu na DB
+	 * 
+	 * @return vraci objekt Mail
 	 */
 	Mail getMail(int id);
 	

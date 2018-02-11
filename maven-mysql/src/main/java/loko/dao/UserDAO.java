@@ -4,14 +4,26 @@ import java.util.List;
 
 import loko.entity.User;
 
+/**
+ * Rozhrani pro pøístup k datùm z tabulky users.
+ * 
+ * @author Erik Markoviè
+ *
+ */
+
 public interface UserDAO {
 
-	
+	/**
+	 * 
+	 * @param theUser -  entita User, která má být pøidaná do tabulky users v DB
+	 * @return - vrací id nové entity z DB
+	 */
 	int addUser(User theUser);
+	
 	/**
 	 * zmena udaju v radku  v tabulce user
 	 * 
-	 * @param theUser
+	 * @param theUser -  zmìná entita, která se má promítnout do DB
 	 */
 	void updateUser(User theUser);
 
@@ -27,7 +39,7 @@ public interface UserDAO {
 	/**
 	 * vraci list user
 	 * 
-	 * @param admin - pri 1 vraci cely seznam, pri 0 vraci jen volajiciho userId
+	 * @param admin - pøi 1 vrací celý seznam, pøi 0 vrací jen volajicího userId
 	 * @param userId
 	 * @return
 	 */

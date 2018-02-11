@@ -6,6 +6,13 @@ import loko.entity.Member;
 import loko.value.MemberFull;
 import loko.value.MemberList;
 
+/**
+ * Rozhrani pro pøístup k datùm z tabulky clen_seznam.
+ * 
+ * @author Erik Markoviè
+ *
+ */
+
 public interface MembersDAO {
 	
 	/**

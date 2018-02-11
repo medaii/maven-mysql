@@ -7,16 +7,19 @@ import loko.entity.Phone;
 import loko.value.PhonesMeber;
 
 /**
+ * Rozhrani pro pøístup k datùm z tabulky clen_telefon.
  * 
  * @author Erik Markoviè
  *
  */
+
 public interface PhoneDAO {
 	/**
 	 * 
 	 * @param id - id telefonu, který se má smazat
-	 */
+	 */	
 	public void deletePhone(int id) ;
+	
 	/**
 	 * 
 	 * @param phone - pøidání telefonu do DB
@@ -36,23 +39,22 @@ public interface PhoneDAO {
 	/**
 	 * vytvoreni listu
 	 * 
-	 * @phones = vrati telefony daneho clena
+	 * @return - phones = vrati telefony daneho clena
 	 * 
 	 */
 	public Map<Integer, PhonesMeber> getAllPhonesMembers() ;
+	
 	/**
 	 * pro vracení phone kokretní osobì
 	 * 
-	 * @param id_member
-	 *            - id èlena pro kterého chceme vrátit telefon
-	 * @return
+	 * @param id_member  - id èlena pro kterého chceme vrátit telefon
+	 * @return - vrací objekt pro model GUI naplnìný telefony daného member
 	 */
 	public PhonesMeber getPhonesMember(int id_member) ;
 
 	/**
 	 * 
-	 * @param id
-	 *            - telefonu na DB
+	 * @param id - id entity phone požadovaný z DB
 	 * @return vraci objekt phone
 	 */
 	public Phone getPhone(int id);

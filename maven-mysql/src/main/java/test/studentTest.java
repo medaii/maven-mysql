@@ -1,22 +1,19 @@
 package test;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+
 
 import loko.dao.DAOFactory;
 import loko.dao.UserDAO;
 import loko.dao.jdbc.impl.UserDAOimpl;
-import loko.db.executor.DBHibernateSqlExecutor;
 import loko.db.executor.impl.DBSqlExecutor;
 import loko.entity.User;
-import loko.value.*;
+
 
 public class studentTest {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

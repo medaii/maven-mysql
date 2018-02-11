@@ -1,6 +1,5 @@
 package loko.db.executor.impl;
 
-import java.util.List;
 
 import org.hibernate.SessionFactory;
 

@@ -8,7 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import loko.dao.UserDAO;
-import loko.db.executor.DBHibernateSqlExecutor;
+import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.User;
 import service.PasswordUtils;
 
@@ -21,7 +21,7 @@ import service.PasswordUtils;
  */
 
 public class UserHibernateDAOimpl implements UserDAO {
-	private DBHibernateSqlExecutor HSqlExecutor;
+	private DBHibernateSqlExecutorImpl HSqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	// konstruktor
@@ -30,7 +30,7 @@ public class UserHibernateDAOimpl implements UserDAO {
 
 	}
 
-	public UserHibernateDAOimpl(DBHibernateSqlExecutor conn) {
+	public UserHibernateDAOimpl(DBHibernateSqlExecutorImpl conn) {
 		HSqlExecutor = conn;
 	}
 

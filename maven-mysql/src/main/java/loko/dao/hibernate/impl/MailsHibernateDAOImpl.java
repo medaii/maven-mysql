@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import loko.dao.MailsDAO;
-import loko.db.executor.DBHibernateSqlExecutor;
+import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.Mail;
 import loko.entity.Member;
 import loko.value.MailsMember;
@@ -20,11 +20,11 @@ import loko.value.MailsMember;
  *
  */
 public class MailsHibernateDAOImpl implements MailsDAO {
-	private DBHibernateSqlExecutor dbHibernateSqlExecutor;
+	private DBHibernateSqlExecutorImpl dbHibernateSqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	//konstruktor
-	public MailsHibernateDAOImpl(DBHibernateSqlExecutor dbHibernateSqlExecutor) {
+	public MailsHibernateDAOImpl(DBHibernateSqlExecutorImpl dbHibernateSqlExecutor) {
 		this.dbHibernateSqlExecutor = dbHibernateSqlExecutor;
 	}
 

@@ -11,7 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import loko.dao.PhoneDAO;
-import loko.db.executor.DBHibernateSqlExecutor;
+import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.Member;
 import loko.entity.Phone;
 import loko.value.PhonesMeber;
@@ -23,10 +23,10 @@ import loko.value.PhonesMeber;
  */
 
 public class PhonesHibernateDAOImpl implements PhoneDAO {
-	private DBHibernateSqlExecutor dbHibernateSqlExecutor ;
+	private DBHibernateSqlExecutorImpl dbHibernateSqlExecutor ;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-	public PhonesHibernateDAOImpl(DBHibernateSqlExecutor dbHibernateSqlExecutor) {
+	public PhonesHibernateDAOImpl(DBHibernateSqlExecutorImpl dbHibernateSqlExecutor) {
 		this.dbHibernateSqlExecutor = dbHibernateSqlExecutor;
 	}
 

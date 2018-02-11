@@ -7,7 +7,7 @@ import loko.dao.hibernate.impl.MailsHibernateDAOImpl;
 import loko.dao.hibernate.impl.MembersHibernateDAOImpl;
 import loko.dao.hibernate.impl.PhonesHibernateDAOImpl;
 import loko.dao.hibernate.impl.UserHibernateDAOimpl;
-import loko.db.executor.DBHibernateSqlExecutor;
+import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 
 /**
  * Tovarna pro vytvareni DAO implementaci
@@ -44,27 +44,27 @@ public class DAOFactory {
 	 * @return
 	 */
 	private static MailsHibernateDAOImpl createMailsDao() {
-		return new MailsHibernateDAOImpl(DBHibernateSqlExecutor.getInstance());
+		return new MailsHibernateDAOImpl(DBHibernateSqlExecutorImpl.getInstance());
 	}
 	/**
 	 * Vrati novou instanci DAO pro praci s telefony.
 	 * @return
 	 */
 	private static PhonesHibernateDAOImpl createPhonesDao() {
-		return new PhonesHibernateDAOImpl(DBHibernateSqlExecutor.getInstance());
+		return new PhonesHibernateDAOImpl(DBHibernateSqlExecutorImpl.getInstance());
 	}
 	/**
 	 * Vrati nobou instanci DAO pro praci s members
 	 * @return
 	 */
 	private static MembersHibernateDAOImpl createMembersDao() {
-		return new MembersHibernateDAOImpl(DBHibernateSqlExecutor.getInstance());
+		return new MembersHibernateDAOImpl(DBHibernateSqlExecutorImpl.getInstance());
 	}
 	/**
 	 * Vrati nobou instanci DAO pro praci s users
 	 * @return
 	 */
 	private static UserHibernateDAOimpl createUserDao() {
-		return new UserHibernateDAOimpl(DBHibernateSqlExecutor.getInstance());
+		return new UserHibernateDAOimpl(DBHibernateSqlExecutorImpl.getInstance());
 	}
 }

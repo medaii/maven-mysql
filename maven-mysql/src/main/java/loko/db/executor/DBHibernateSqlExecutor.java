@@ -11,7 +11,7 @@ import org.hibernate.SessionFactory;
  *
  */
 
-public interface IFDBHibernateSqlExecutor {
+public interface DBHibernateSqlExecutor {
 
 	/**
 	 * Vraci instanci SessionFactory

@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import loko.db.executor.IFDBHibernateSqlExecutor;
+import loko.db.executor.DBHibernateSqlExecutor;
 import loko.entity.CshRegNumber;
 import loko.entity.Mail;
 import loko.entity.Member;
@@ -23,12 +23,12 @@ import loko.entity.User;
  * @author Erik
  *
  */
-public class DBHibernateSqlExecutor implements IFDBHibernateSqlExecutor {
+public class DBHibernateSqlExecutorImpl implements DBHibernateSqlExecutor {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private SessionFactory factory;
-	private volatile static DBHibernateSqlExecutor instance = null;
+	private volatile static DBHibernateSqlExecutorImpl instance = null;
 
-	private DBHibernateSqlExecutor() {
+	private DBHibernateSqlExecutorImpl() {
 		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
 		factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Member.class)
 				.addAnnotatedClass(User.class).addAnnotatedClass(Phone.class).addAnnotatedClass(Mail.class)
@@ -37,9 +37,9 @@ public class DBHibernateSqlExecutor implements IFDBHibernateSqlExecutor {
 	}
 
 	// vrací instanci na DBHibernateSqlExecutor
-	public synchronized static DBHibernateSqlExecutor getInstance() {
+	public synchronized static DBHibernateSqlExecutorImpl getInstance() {
 		if (instance == null) {
-			instance = new DBHibernateSqlExecutor();
+			instance = new DBHibernateSqlExecutorImpl();
 		}
 		return instance;
 	}

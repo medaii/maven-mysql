@@ -16,7 +16,7 @@ import loko.dao.DAOFactory;
 import loko.dao.MailsDAO;
 import loko.dao.MembersDAO;
 import loko.dao.PhoneDAO;
-import loko.db.executor.DBHibernateSqlExecutor;
+import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.CshRegNumber;
 import loko.entity.Mail;
 import loko.entity.Member;
@@ -35,11 +35,11 @@ import loko.value.PhonesMeber;
  */
 
 public class MembersHibernateDAOImpl implements MembersDAO {
-	private DBHibernateSqlExecutor dbHibernateSqlExecutor;
+	private DBHibernateSqlExecutorImpl dbHibernateSqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	// vytvoøení konstruktoru
-	public MembersHibernateDAOImpl(DBHibernateSqlExecutor dbHibernateSqlExecutor) {
+	public MembersHibernateDAOImpl(DBHibernateSqlExecutorImpl dbHibernateSqlExecutor) {
 		this.dbHibernateSqlExecutor = dbHibernateSqlExecutor;
 	}
 

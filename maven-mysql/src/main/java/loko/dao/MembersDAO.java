@@ -10,57 +10,65 @@ public interface MembersDAO {
 	
 	/**
 	 *  Smazazni zaznamu member z DB
-	 * @param id - id zaznamu
+	 * @param id - id entity
 	 */
-	
 	public void deleteMember(int id);
+	
 	/**
 	 * 
-	 * @param member
-	 * @return nové id
+	 * @param memberFull -  objekt pro pro model v GUI využitý pro uložení editovaných nebo novì zadaných údajù do DB
+	 * @return id nové entity Member
 	 */
 	public int addMemberFull(MemberFull member);
+	
 	/**
 	 * 
-	 * @param member
-	 *            - objekt ktery má být nahrán do DB
-	 * @param id
-	 *            - id member na DB
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
-	 * id, kjmeno, pjmeno, datum_narozeni, poznamka, aktivni, id_odd_kategorie, zacal
+	 * @param member - Entita, kde byli zmìnìny údaje, které mají být nahrany do DB
+	 * @param id - id member na DB
+	 * 
+	 * 
 	 */
-	public int updateMember(Member member, int id);
+	public void updateMember(Member member, int id);
+	
 	/**
 	 * 
-	 * @param memberfull
-	 *            - objekt ktery má být nahrán do DB
-	 * @param id
-	 *            - id member na DB
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
-	 * id, kjmeno, pjmeno, datum_narozeni, poznamka, aktivni, id_odd_kategorie, zacal
+	 * @param memberfull - objekt pro pro model v GUI využitý pro uložení editovaných nebo novì zadaných údajù do DB
+	 * @param id - id member na DB
 	 */
-	public int updateMember(MemberFull member, int id);
+	public void updateMember(MemberFull member, int id);
+	
 	/**
 	 * Vrací list tabulky clen seznam z DB
-	 * @return
+	 * @return - List naplneny entitami Member z DB
 	 */
 	public List<Member> getAllMember();
+	
 	/**
-	 * Vrací seznam èlenù s kontakty
-	 * @return
+	 * Vrací seznam èlenù s kontakty (tabulky Phone a Mail)
+	 * @return - vraci list objektu MemberList využitý pro model GUI
 	 */
 	public List<MemberList> getAllMemberList(boolean active, int kategorie);
-	public List<MemberList> searchAllMembers(String name, boolean active,int kategorie) ;
+	
 	/**
-	 * vrací vybraného èlena 
-	 * @param id
-	 * @return
+	 * 
+	 * @param name - hledaný èast text v sloupcich køesního jména nebo pøíjmení
+	 * @param active - filtr aktivních èlenù
+	 * @param kategorie - filtr vìkové kategorie
+	 * @return - vrací list objektu MemberList pro model GUI
+	 */
+	public List<MemberList> searchAllMembers(String name, boolean active,int kategorie) ;
+	
+	/**
+	 * vrací vybranou entitu Member 
+	 * @param id - id entity Member
+	 * @return vraci Member
 	 */
 	public Member getMember(int id);
+	
 	/**
 	 * vrací vybraného èlena s rodným èíslem, trvalím bydlištìm a èíslem registraèního prùkazu
-	 * @param id
-	 * @return
+	 * @param id - id entity Member
+	 * @return - objekt MemberFull pro model GUI
 	 */
 	public MemberFull getMemberFull(int id);
 }

@@ -22,9 +22,9 @@ public interface IFMembersService {
 
 	int addMemberFull(MemberFull member);
 
-	int updateMember(Member member, int id);
+	void updateMember(Member member, int id);
 
-	int updateMember(MemberFull member, int id);
+	void updateMember(MemberFull member, int id);
 
 	List<Member> getAllMember();
 
@@ -43,7 +43,7 @@ public interface IFMembersService {
 
 	int addPhone(Phone phone);
 
-	int updatePhone(Phone phone, int id);
+	void updatePhone(Phone phone, int id);
 
 	Map<Integer, PhonesMeber> getAllPhonesMembers();
 
@@ -58,7 +58,7 @@ public interface IFMembersService {
 
 	int addMail(Mail mail);
 
-	int updateMail(Mail mail, int id);
+	void updateMail(Mail mail, int id);
 
 	Map<Integer, MailsMember> getAllMailMembers();
 

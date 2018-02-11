@@ -35,7 +35,7 @@ public interface MembersDAO {
 	 * @param memberfull - objekt pro pro model v GUI využitý pro uložení editovaných nebo novì zadaných údajù do DB
 	 * @param id - id member na DB
 	 */
-	public void updateMember(MemberFull member, int id);
+	public void updateMemberFull(MemberFull member, int id);
 	
 	/**
 	 * Vrací list tabulky clen seznam z DB

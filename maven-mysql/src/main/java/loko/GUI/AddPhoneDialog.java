@@ -123,13 +123,15 @@ private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
 								phone.setName(textFieldJmeno.getText());
 								phone.setPhone(textFieldTelefon.getText());
 							 // kontrola uložení
-								if(membersService.updatePhone(phone, phone.getId()) < 1) {
-										LOGGER.warning("Chyba zpisu v DB a záznam telefonu nezmìnìn!");
-										JOptionPane.showMessageDialog(null, "Chyba zápisu nezmìnìno!");
+								try {
+									membersService.updatePhone(phone, phone.getId());
+								} 
+								catch (Exception e2) {
+									LOGGER.warning("Chyba zpisu v DB a záznam telefonu nezmìnìn!"+ e2);
+									JOptionPane.showMessageDialog(null, "Chyba zápisu nezmìnìno!");
 									return;
-								}
-							}
-							
+								}								
+							}							
 							//zavreni okna a otevreni editace
 							setVisible(false);
 							dispose();

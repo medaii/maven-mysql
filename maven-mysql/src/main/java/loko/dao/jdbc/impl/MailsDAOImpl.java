@@ -49,19 +49,14 @@ public class MailsDAOImpl implements MailsDAO {
 
 	/**
 	 * 
-	 * @param mail
-	 *            - objekt ktery má být nahrán do DB
-	 * @param id
-	 *            - id mailu na DB
-	 * @return - int vrací poèet zmìnìných øádku nebo -1 pøi chybì
+	 * @param mail  - objekt ktery má být nahrán do DB
+	 * @param id - id mailu na DB
 	 */
-	public int updateMail(Mail mail, int id) {
-
+	public void updateMail(Mail mail, int id) {
 		String dotaz = "update clen_mail" + " set id_osoby = ?, nazev = ?, mail = ?" + " where id = ?";
 		String[] hodnoty = { String.valueOf(mail.getId_member()), mail.getName(), mail.getMail(), String.valueOf(id) };
-		int resurm = sqlExecutor.setDotaz(dotaz, hodnoty);
+		sqlExecutor.setDotaz(dotaz, hodnoty);
 
-		return resurm;
 	}
 
 	/**

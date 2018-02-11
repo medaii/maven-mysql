@@ -55,13 +55,11 @@ public class PhonesDAOImpl implements PhoneDAO {
 	 *            - id phone na DB
 	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
 	 */
-	public int updatePhone(Phone phone, int id) {
+	public void updatePhone(Phone phone, int id) {
 
 		String dotaz = "update clen_mobil" + " set id_osoby = ?, nazev = ?, telefon = ?" + " where id = ?";
 		String[] hodnoty = { String.valueOf(phone.getId_member()), phone.getName(), phone.getPhone(), String.valueOf(id) };
-		int resurm = sqlExecutor.setDotaz(dotaz, hodnoty);
-
-		return resurm;
+		sqlExecutor.setDotaz(dotaz, hodnoty);
 	}
 
 	/**

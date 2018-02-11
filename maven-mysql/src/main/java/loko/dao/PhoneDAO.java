@@ -27,13 +27,11 @@ public interface PhoneDAO {
 
 	/**
 	 * 
-	 * @param phone
-	 *            - objekt ktery má být nahrán do DB
-	 * @param id
-	 *            - id phone na DB
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
+	 * @param phone  - objekt ktery má být nahrán do DB
+	 * @param id  - id phone na DB
+	 * 
 	 */
-	public int updatePhone(Phone phone, int id) ;
+	public void updatePhone(Phone phone, int id) ;
 
 	/**
 	 * vytvoreni listu

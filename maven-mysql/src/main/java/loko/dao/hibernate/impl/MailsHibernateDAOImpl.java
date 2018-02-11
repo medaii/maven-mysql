@@ -67,9 +67,9 @@ public class MailsHibernateDAOImpl implements MailsDAO {
 	 *          - id mailu na DB
 	 * @return - int vrací poèet zmìnìných øádku nebo -1 pøi chybì
 	 */
-	public int updateMail(Mail mail, int id) {
+	public void updateMail(Mail mail, int id) {
 		mail.setId(id);
-		return dbHibernateSqlExecutor.updateObject(mail);
+		dbHibernateSqlExecutor.updateObject(mail);
 	}
 
 	/**

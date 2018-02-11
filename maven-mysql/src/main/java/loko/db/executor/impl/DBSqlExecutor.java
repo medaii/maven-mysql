@@ -138,7 +138,7 @@ public class DBSqlExecutor {
 	 * hodnoty - parametry sql
 	 */
 	
-	public int setDotaz(String dotaz, String[] hodnoty) {
+	public void setDotaz(String dotaz, String[] hodnoty) {
 		  try(PreparedStatement rs = dbConnectionSimpleManager.getConnection().prepareStatement(dotaz)) {
 			  //doplnìní hodnot
 			  for (int i = 0; i < hodnoty.length; i++) {
@@ -146,11 +146,10 @@ public class DBSqlExecutor {
 			}
 				LOGGER.info("Nastavení øádku " + dotaz);
 			 //provedení pøíkazu 
-			return rs.executeUpdate();
+				rs.executeUpdate();
 			  
 		} catch (SQLException e) {
-			LOGGER.warning("Chyba pøi obnovì øádku " + e);
-			return -1;
+			throw new RuntimeException("Chyba pøi vykonavaní SQL set pøíkazu.", e);
 		}
 		  
 	}

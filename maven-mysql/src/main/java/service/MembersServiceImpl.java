@@ -60,16 +60,16 @@ public class MembersServiceImpl implements IFMembersService {
 	 * @see service.IFMembersService#updateMember(loko.core.Member, int)
 	 */
 	@Override
-	public int updateMember(Member member, int id) {
-		return membersDAO.updateMember(member, id);
+	public void updateMember(Member member, int id) {
+		membersDAO.updateMember(member, id);
 	}
 
 	/* (non-Javadoc)
 	 * @see service.IFMembersService#updateMember(loko.core.MemberFull, int)
 	 */
 	@Override
-	public int updateMember(MemberFull member, int id) {
-		return membersDAO.updateMember(member, id);
+	public void updateMember(MemberFull member, int id) {
+		membersDAO.updateMemberFull(member, id);
 	}
 
 	/* (non-Javadoc)
@@ -134,8 +134,8 @@ public class MembersServiceImpl implements IFMembersService {
 	 * @see service.IFMembersService#updatePhone(loko.core.Phone, int)
 	 */
 	@Override
-	public int updatePhone(Phone phone, int id) {
-		return phoneDAO.updatePhone(phone, id);
+	public void updatePhone(Phone phone, int id) {
+		 phoneDAO.updatePhone(phone, id);
 	}
 
 	/* (non-Javadoc)
@@ -184,8 +184,8 @@ public class MembersServiceImpl implements IFMembersService {
 	 * @see service.IFMembersService#updateMail(loko.core.Mail, int)
 	 */
 	@Override
-	public int updateMail(Mail mail, int id) {
-		return mailsDAO.updateMail(mail, id);
+	public void updateMail(Mail mail, int id) {
+		mailsDAO.updateMail(mail, id);
 	}
 
 	/* (non-Javadoc)

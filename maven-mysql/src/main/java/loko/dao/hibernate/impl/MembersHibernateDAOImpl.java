@@ -6,6 +6,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.management.RuntimeErrorException;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -133,8 +136,8 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 	 *         id, kjmeno, pjmeno, datum_narozeni, poznamka, aktivni,
 	 *         id_odd_kategorie, zacal
 	 */
-	public int updateMember(Member member, int id) {
-		return dbHibernateSqlExecutor.updateObject(member);
+	public void updateMember(Member member, int id) {
+		dbHibernateSqlExecutor.updateObject(member);
 	}
 
 	/**
@@ -148,7 +151,7 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
 	 * 
 	 */
-	public int updateMember(MemberFull memberFull, int id) {
+	public void updateMemberFull(MemberFull memberFull, int id) {
 
 		// zavolani si instance sessionfactory
 		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
@@ -212,11 +215,9 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 			// commit transaction
 			session.getTransaction().commit();
 
-			return member.getId();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (RuntimeErrorException e) {
 			LOGGER.warning("Chyba zápisu memberFull do DB!");
-			return 0;
+			throw new RuntimeException("Chyba zápisu memberFull do DB!",e);
 		}
 	}
 

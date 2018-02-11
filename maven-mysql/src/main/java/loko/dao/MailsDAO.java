@@ -38,7 +38,7 @@ public interface MailsDAO {
 	 * @param id  - id mailu v DB
 	 *
 	 */
-	int updateMail(Mail mail, int id);
+	void updateMail(Mail mail, int id);
 	
 	/**
 	 * vytvoreni mapy mailù dle klíèe id member

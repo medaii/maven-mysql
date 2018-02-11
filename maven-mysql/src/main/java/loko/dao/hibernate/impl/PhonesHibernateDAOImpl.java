@@ -75,9 +75,9 @@ public class PhonesHibernateDAOImpl implements PhoneDAO {
 	 *          - id phone na DB
 	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
 	 */
-	public int updatePhone(Phone phone, int id) {
+	public void updatePhone(Phone phone, int id) {
 		phone.setId(id);
-		return dbHibernateSqlExecutor.updateObject(phone);
+		dbHibernateSqlExecutor.updateObject(phone);
 	}
 
 	/**

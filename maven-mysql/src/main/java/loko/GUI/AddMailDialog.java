@@ -106,9 +106,11 @@ public class AddMailDialog extends JDialog {
 								mail.setMail(textFieldMail.getText());
 								
 								// kontrola uložení
-								if(membersService.updateMail(mail, mail.getId()) < 1) {
-										LOGGER.warning("Chyba zápisu do DB a mail nezmìnìn!");
-										JOptionPane.showMessageDialog(null, "Nezmìnìno!");
+								try {
+									membersService.updateMail(mail, mail.getId());
+								} catch (RuntimeException e2) {
+									LOGGER.warning("Chyba zápisu do DB a mail nezmìnìn!" + e);
+									JOptionPane.showMessageDialog(null, "Nezmìnìno!");
 									return;
 								}
 							}

@@ -11,7 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import loko.dao.IFPhoneDAO;
-import loko.db.executor.impl.DBHibernateSqlExecutor;
+import loko.db.executor.DBHibernateSqlExecutor;
 import loko.entity.Member;
 import loko.entity.Phone;
 import loko.value.PhonesMeber;
@@ -36,9 +36,8 @@ public class PhonesHibernateDAOImpl implements IFPhoneDAO {
 	 *          - id telefonu, který se má smazat
 	 * @return - vrací poèet smazaných øádku nebo -1 pøi chybì
 	 */
-	public int deletePhone(int id) {
-		Phone phone = new Phone();
-		return dbHibernateSqlExecutor.deleteObject(id, phone);
+	public void deletePhone(int id) {
+		dbHibernateSqlExecutor.deleteObject(id, Phone.class);
 	}
 
 	/**

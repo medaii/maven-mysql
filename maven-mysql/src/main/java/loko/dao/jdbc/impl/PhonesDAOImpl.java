@@ -30,10 +30,10 @@ public class PhonesDAOImpl implements IFPhoneDAO {
 	 *            - id telefonu, který se má smazat
 	 * @return - vrací poèet smazaných øádku nebo -1 pøi chybì
 	 */
-	public int deletePhone(int id) {
+	public void deletePhone(int id) {
 
 		String dotaz = "DELETE FROM clen_mobil " + "WHERE id = ?";
-		return sqlExecutor.deleteRow(dotaz, id);
+		sqlExecutor.deleteRow(dotaz, id);
 	}
 	/**
 	 * 

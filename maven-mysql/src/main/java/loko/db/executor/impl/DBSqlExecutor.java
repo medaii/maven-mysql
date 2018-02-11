@@ -84,18 +84,16 @@ public class DBSqlExecutor {
 	 * dotaz sql pøíkaz
 	 * id nastavení jedièného parametru
 	 */
-	public int deleteRow(String dotaz, int id) {
+	public void deleteRow(String dotaz, int id) {
 		
 		try(PreparedStatement myStmt =dbConnectionSimpleManager.getConnection().prepareStatement(dotaz)) { 
 			// set param
 			myStmt.setInt(1, id);
 			// execute SQL
 			LOGGER.info("Smazání øádku z DB " + dotaz + " id: " + id);
-			return myStmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			LOGGER.warning("Chyba pøi mazání øádku " + dotaz + " id: " + id + "chyba " + e);
-			return -1;
+			throw new RuntimeException("Chyba pøi delete objektu id - " + id, e);
 		}
 	}
 	//vrací poèet nalezených øádku 

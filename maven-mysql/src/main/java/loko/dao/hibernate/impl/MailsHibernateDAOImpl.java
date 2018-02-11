@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import loko.dao.IFMailsDAO;
-import loko.db.executor.impl.DBHibernateSqlExecutor;
+import loko.db.executor.DBHibernateSqlExecutor;
 import loko.entity.Mail;
 import loko.entity.Member;
 import loko.value.MailsMember;
@@ -34,8 +34,8 @@ public class MailsHibernateDAOImpl implements IFMailsDAO {
 	 *          - id mailu, který se má smazat
 	 * @return - vrací poèet smazaných øádku nebo -1 pøi chybì
 	 */
-	public int deleteMail(int id) {
-		return dbHibernateSqlExecutor.deleteObject(id, new Mail());
+	public void deleteMail(int id) {
+		dbHibernateSqlExecutor.deleteObject(id, Mail.class);
 	}
 
 	public int addMail(Mail mail) {

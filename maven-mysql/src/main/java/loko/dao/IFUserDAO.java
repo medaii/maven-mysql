@@ -9,23 +9,20 @@ public interface IFUserDAO {
 	
 	int addUser(User theUser);
 	/**
-	 * zmena udaju v radku User
+	 * zmena udaju v radku  v tabulce user
 	 * 
 	 * @param theUser
-	 * @return 
 	 */
-	int updateUser(User theUser);
+	void updateUser(User theUser);
 
 	/**
 	 * Zmìna hesla uživatele
 	 * 
-	 * @param theUser
-	 *          mìnìny uživatel
-	 * @param newPassword
-	 *          nové heslo
-	 * @return
+	 * @param theUser - mìnìny uživatel
+	 * @param newPassword - nové heslo
+	 * @
 	 */
-	int changePassword(User theUser, String newPassword);
+	void changePassword(User theUser, String newPassword);
 
 	/**
 	 * vraci list user

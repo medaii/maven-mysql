@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import loko.dao.IFUserDAO;
-import loko.db.executor.impl.DBHibernateSqlExecutor;
+import loko.db.executor.DBHibernateSqlExecutor;
 import loko.entity.User;
 import service.PasswordUtils;
 
 /**
- * uziti HIBERNATE Prostredník mezi gui user a db user
+ * uziti HIBERNATE pro pøístup k tabulce user v DB
  * 
  * @author Erik Markoviè
  * 
@@ -31,27 +34,25 @@ public class UserHibernateDAOimpl implements IFUserDAO {
 		HSqlExecutor = conn;
 	}
 
-	/*
+	/**
 	 * Update zaznamu v DB
 	 * 
-	 * @ resum - vraci vetsi nez 0, kdyz update probehl uspesne
+	 * @param theUser - aktualizace zaznamu v DB dle entity theUser
 	 */
 	@Override
-	public int updateUser(User theUser) {
+	public void updateUser(User theUser) {
 
 		// resum vetsi nez 0, kdyz update probehl uspesne
-		int resurm = HSqlExecutor.setDotaz(theUser, User.class);
-
-		return resurm;
+		HSqlExecutor.updateObject(theUser);
+	
 	}
 
-	/*
-	 * Update hesla v DB
+	/**
+	 * Update hesla v Db
 	 * 
-	 * @ resum - vraci vetsi nez 0, kdyz update probehl uspesne
 	 */
 	@Override
-	public int changePassword(User theUser, String newPassword) {
+	public void changePassword(User theUser, String newPassword) {
 		// Heslo v prosteho textu
 		String plainTextPassword = newPassword;
 
@@ -61,7 +62,7 @@ public class UserHibernateDAOimpl implements IFUserDAO {
 		theUser.setPassword(encryptedPassword);
 		// update the password in the database
 
-		return updateUser(theUser);
+		updateUser(theUser);
 	}
 
 	/**
@@ -72,22 +73,31 @@ public class UserHibernateDAOimpl implements IFUserDAO {
 	 */
 	@Override
 	public List<User> getUsers(boolean admin, int userId) {
+		// list ktery naplnime z DB
 		List<User> list = new ArrayList<User>();
+		
+		// zavolani instance sessionFactoru
+		SessionFactory factory = HSqlExecutor.getSessionFactory();
 
-		String sql = null;
-		if (admin) {
-			// get all users
-			sql = "from User order by lastName";
-		} else {
-			// only the current user
-			sql = "from User where id=" + userId + " order by lastName";
+		// vytrvoreni session
+		try (Session session = factory.getCurrentSession();) {
+			// start a transaction
+			session.beginTransaction();
+			// dotaz
+			if(admin) {
+				list = session.createQuery("select i from User i ").list();
+			}
+			else {
+				list = session.createQuery("select i from User where id=:id order by lastName").setParameter("id", userId).list();
+			}
+			// commit transaction
+			session.getTransaction().commit();
+
+		} catch (Exception e) {
+			LOGGER.warning("Chyba zápisu!");
 		}
-		// naètení dat z databáze
-		HSqlExecutor.getData(sql, list, User.class);
-
 		return list;
 	}
-
 	/**
 	 * Porovnani zadaneho hesla ve formulari s heslem v DB
 	 * 
@@ -110,7 +120,7 @@ public class UserHibernateDAOimpl implements IFUserDAO {
 	 */
 	@Override
 	public int addUser(User theUser) {
-		int id = HSqlExecutor.setObject(theUser);
+		int id = HSqlExecutor.insertObject(theUser);
 
 		return id;
 	}

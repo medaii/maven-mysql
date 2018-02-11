@@ -44,8 +44,8 @@ public class MembersServiceImpl implements IFMembersService {
 	
 	// mmembers service
 	@Override
-	public int deleteMember(int id) {
-		return membersDAO.deleteMember(id);
+	public void deleteMember(int id) {
+		membersDAO.deleteMember(id);
 	}
 
 	/* (non-Javadoc)
@@ -118,8 +118,8 @@ public class MembersServiceImpl implements IFMembersService {
 	
 	// phone service
 	@Override
-	public int deletePhone(int id) {
-		return phoneDAO.deletePhone(id);
+	public void deletePhone(int id) {
+		phoneDAO.deletePhone(id);
 	}
 
 	/* (non-Javadoc)
@@ -166,8 +166,8 @@ public class MembersServiceImpl implements IFMembersService {
 	 * @see service.IFMembersService#deleteMail(int)
 	 */
 	@Override
-	public int deleteMail(int id) {
-		return mailsDAO.deleteMail(id);
+	public void deleteMail(int id) {
+		mailsDAO.deleteMail(id);
 	}
 
 	/* (non-Javadoc)
@@ -218,15 +218,15 @@ public class MembersServiceImpl implements IFMembersService {
 	
 	//user service
 	@Override
-	public int updateUser(User theUser) {
-		return userDAO.updateUser(theUser);
+	public void updateUser(User theUser) {
+		userDAO.updateUser(theUser);
 	}
 	/* (non-Javadoc)
 	 * @see service.IFMembersService#changePassword(loko.core.User, java.lang.String)
 	 */
 	@Override
-	public int changePassword(User theUser, String newPassword) {
-		return userDAO.changePassword(theUser, newPassword);
+	public void changePassword(User theUser, String newPassword) {
+		userDAO.changePassword(theUser, newPassword);
 	}
 	/* (non-Javadoc)
 	 * @see service.IFMembersService#getUsers(boolean, int)

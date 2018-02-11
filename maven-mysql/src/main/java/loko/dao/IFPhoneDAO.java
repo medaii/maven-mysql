@@ -14,15 +14,14 @@ import loko.value.PhonesMeber;
 public interface IFPhoneDAO {
 	/**
 	 * 
-	 * @param id
-	 *            - id telefonu, který se má smazat
-	 * @return - vrací poèet smazaných øádku nebo -1 pøi chybì
+	 * @param id - id telefonu, který se má smazat
 	 */
-	public int deletePhone(int id) ;
+	public void deletePhone(int id) ;
 	/**
 	 * 
 	 * @param phone - pøidání telefonu do DB
-	 * @return
+	 *
+	 * @return - vrací id nového záznamu
 	 */
 	public int addPhone(Phone phone);
 

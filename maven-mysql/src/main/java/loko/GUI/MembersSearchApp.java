@@ -309,15 +309,16 @@ public class MembersSearchApp  extends JFrame{
 				int id_member = tempmemberList.getId();
 				// smazaní zaznamu
 				String zprava = "id: " + id_member;
-				if(membersService.deleteMember(id_member) > 0) {
+				try {
+					membersService.deleteMember(id_member);
 					LOGGER.warning("Smazán záznam èlena id:" + id_member);
 					zprava += " byl smazán.";
 					//refresh tabulky
 					refreshMembersView();
-				}
-				else {
-						LOGGER.warning("záznam nebyl úspìšnì smazán");
-						zprava += " se nepodaøilo smazat";
+				} 
+				catch (RuntimeException eDeleteMember) {
+					LOGGER.warning("záznam nebyl úspìšnì smazán. Nastala chyba " + eDeleteMember);
+					zprava += " se nepodaøilo smazat. Chyba " + eDeleteMember.getMessage();
 				}
 				JOptionPane.showMessageDialog(null,
 						zprava,"Member smazán",

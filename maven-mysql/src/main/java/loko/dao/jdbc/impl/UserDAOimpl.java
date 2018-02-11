@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import loko.dao.IFUserDAO;
-import loko.db.executor.impl.DBHibernateSqlExecutor;
 import loko.db.executor.impl.DBSqlExecutor;
 import loko.entity.User;
 import service.PasswordUtils;
@@ -17,8 +16,6 @@ import service.PasswordUtils;
 
 public class UserDAOimpl implements IFUserDAO {
 	private DBSqlExecutor conn;
-	private DBHibernateSqlExecutor HSqlExecutor;
-	private int metodConnection = 0;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	// konstruktor
@@ -26,53 +23,31 @@ public class UserDAOimpl implements IFUserDAO {
 		conn = dbSqlExecutor; // inteface pro db
 
 	}
-
-	public UserDAOimpl(DBHibernateSqlExecutor conn) {
-		this.metodConnection = 1;
-		HSqlExecutor = conn;
-	}
-
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Aktualizace záznamu User v DB
 	 * 
-	 * @see loko.DAO.IFUserDAO#updateUser(loko.core.User)
+	 * @param theUser
 	 */
 	@Override
-	public int updateUser(User theUser) {
-		int resurm;
-		String dotaz;
+	public void updateUser(User theUser) {
 		int isAdmin = theUser.isAdmin() ? 1 : 0;
-		switch (metodConnection) {
-		case 1:
-			resurm = HSqlExecutor.setDotaz(theUser, User.class);
-
-			break;
-		case 2:
-			dotaz = "update User" + " set firstName = '" + theUser.getFirstName() + "', lastName = '" + theUser.getLastName()
-					+ "', email ='" + theUser.getEmail() + "' , admin='" + isAdmin + "' where id =" + theUser.getId();
-			resurm = HSqlExecutor.setDotaz(dotaz, User.class);
-			break;
-
-		default:
-
-			dotaz = "update users" + " set first_name = ?, last_name = ?, email = ?, is_admin=?" + " where id = ?";
-			String[] hodnoty = { theUser.getFirstName(), theUser.getLastName(), theUser.getEmail(), String.valueOf(isAdmin),
-					String.valueOf(theUser.getId()) };
-			resurm = conn.setDotaz(dotaz, hodnoty);
-			break;
-		}
-
-		return resurm;
-
+		String dotaz = "update users" + " set first_name = ?, last_name = ?, email = ?, is_admin=?" + " where id = ?";
+		String[] hodnoty = { theUser.getFirstName(), theUser.getLastName(), theUser.getEmail(), String.valueOf(isAdmin),
+				String.valueOf(theUser.getId()) };
+		conn.setDotaz(dotaz, hodnoty);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Zmìna hesla uživatele
 	 * 
-	 * @see loko.DAO.IFUserDAO#changePassword(loko.core.User, java.lang.String)
+	 * @param theUser -  User, u kterého se mìní heslo 
+	 * 
+	 * @param newPassword - nové heslo
+	 * 
+	 * 
 	 */
 	@Override
-	public int changePassword(User theUser, String newPassword) {
+	public void changePassword(User theUser, String newPassword) {
 		// get plain text password
 		String plainTextPassword = newPassword;
 
@@ -82,14 +57,16 @@ public class UserDAOimpl implements IFUserDAO {
 		// update the password in the database
 		String dotaz = "update users" + " set password=? " + " where id=?";
 		String[] hodnoty = { encryptedPassword, String.valueOf(theUser.getId()) };
-		if (conn.setDotaz(dotaz, hodnoty) > 0) {
-			return 1;
+		try{
+				conn.setDotaz(dotaz, hodnoty);
 		}
-		return -1;
+		catch (RuntimeException e) {
+			throw new RuntimeException("Chyba pøi zmìne hesla uživatele " + theUser, e);
+		}
 	}
 
-	/*
-	 * pøevedení dat z DB do objedktu User
+	/**
+	 * pøevedení dat z DB v typu String[] do objedktu User
 	 */
 	private User convertRowToUser(String[] temp) {
 		User tempUser;
@@ -116,10 +93,13 @@ public class UserDAOimpl implements IFUserDAO {
 		return tempUser;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * @param admin - administratorské práva
 	 * 
-	 * @see loko.DAO.IFUserDAO#getUsers(boolean, int)
+	 * @param userId - id user
+	 * 
+	 * @param return - vrací list tabulky User
+	 * 
 	 */
 	@Override
 	public List<User> getUsers(boolean admin, int userId) {
@@ -127,50 +107,24 @@ public class UserDAOimpl implements IFUserDAO {
 
 		String sql = null;
 		if (admin) {
-			// get all users
-			switch (metodConnection) {
-			case 1:
-				sql = "from User order by lastName";
-				break;
-
-			default:
-				sql = "select * from users order by last_name";
-				break;
-			}
-
+			// vrací všechny users
+			sql = "select * from users order by last_name";
 		} else {
-			// only the current user
-			switch (metodConnection) {
-			case 1:
-				sql = "from User where id=" + userId + " order by lastName";
-				break;
-
-			default:
-				sql = "select * from users where id=" + userId + " order by last_name";
-				break;
-			}
+			// jen vybraný user
+			sql = "select * from users where id=" + userId + " order by last_name";
 
 		}
 		// naètení dat z databáze
-		switch (metodConnection) {
-		case 1:
-			HSqlExecutor.getData(sql, list, User.class);
-			break;
+		getDataJDBCmetod(list, sql);
 
-		default:
-			getDataJDBCmetod(list, sql);
-			break;
-		}
 		return list;
 	}
 
 	/**
 	 * zpracováni pri JDBC
 	 * 
-	 * @param list
-	 *          kam poslat data
-	 * @param sql
-	 *          pøíkaz vykonání
+	 * @param list do listu se uloží data z DB
+	 * @param sql pøíkaz sql
 	 */
 	private void getDataJDBCmetod(List<User> list, String sql) {
 		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
@@ -195,7 +149,7 @@ public class UserDAOimpl implements IFUserDAO {
 	/**
 	 * Porovnani zadaneho hesla ve formulari s heslem v DB
 	 * 
-	 * @result boolean shoda hash hesel
+	 * @param result boolean shoda hash hesel
 	 */
 	@Override
 	public boolean authenticate(byte[] password, int id) {

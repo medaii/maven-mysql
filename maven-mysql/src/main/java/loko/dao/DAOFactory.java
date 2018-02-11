@@ -7,7 +7,7 @@ import loko.dao.hibernate.impl.MailsHibernateDAOImpl;
 import loko.dao.hibernate.impl.MembersHibernateDAOImpl;
 import loko.dao.hibernate.impl.PhonesHibernateDAOImpl;
 import loko.dao.hibernate.impl.UserHibernateDAOimpl;
-import loko.db.executor.impl.DBHibernateSqlExecutor;
+import loko.db.executor.DBHibernateSqlExecutor;
 
 /**
  * Tovarna pro vytvareni DAO implementaci

@@ -135,21 +135,18 @@ public class ChangePassword extends JDialog {
 								//LOGGER.setLevel(Level.INFO);
 
 								// kontrola, že bylo uspìšnì uloženo do DB
-								if (membersService.changePassword(user, newPassword) > 0) {
+								try {
+									membersService.changePassword(user, newPassword);
 									LOGGER.info("Zmìmìno heslo u uživatele id:" + user.getId());
 									JOptionPane.showMessageDialog(null, "Heslo zmìnìno.");
 									setVisible(false);
-								}
-
-								// chyba pøi uložení do DB
-								else {
-									LOGGER.info("Nezdaøilo se zmìnit heslo u uživatele id:" + user.getId());
+								} catch (RuntimeException e2) {
+									LOGGER.warning("Nezdaøilo se zmìnit heslo u uživatele id:" + user.getId() + ". Nastala chyba " 
+																			+ e2.getMessage());
 									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna hesla.");
-									LOGGER.warning("Chyba uložení hesla do DB u user - " + user.getId());
 									return;
 								}
 							}
-
 							// chybnì zadané nové heslo
 							else {
 								JOptionPane.showMessageDialog(null, "Potvzení nového hesla se neshoduje s novým heslem.");

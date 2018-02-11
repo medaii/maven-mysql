@@ -18,7 +18,7 @@ public interface IFMembersService {
 	 * servis MembersDAO metod
 	 */
 
-	int deleteMember(int id);
+	void deleteMember(int id);
 
 	int addMemberFull(MemberFull member);
 
@@ -39,7 +39,7 @@ public interface IFMembersService {
 	/**
 	 * servis PhoneDAO
 	 */
-	int deletePhone(int id);
+	void deletePhone(int id);
 
 	int addPhone(Phone phone);
 
@@ -54,7 +54,7 @@ public interface IFMembersService {
 	/**
 	 * servis MailDAO
 	 */
-	int deleteMail(int id);
+	void deleteMail(int id);
 
 	int addMail(Mail mail);
 
@@ -69,9 +69,14 @@ public interface IFMembersService {
 	/**
 	 * metody UserDAO
 	 */
-	int updateUser(User theUser);
+	
+	/**
+	 * 
+	 * @param theUser - Entita u které byli provedené zmìny
+	 */
+	void updateUser(User theUser);
 
-	int changePassword(User theUser, String newPassword);
+	void changePassword(User theUser, String newPassword);
 
 	List<User> getUsers(boolean admin, int userId);
 

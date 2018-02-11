@@ -34,10 +34,10 @@ public class MailsDAOImpl implements IFMailsDAO {
 	 *            - id mailu, který se má smazat
 	 * @return - vrací poèet smazaných øádku nebo -1 pøi chybì
 	 */
-	public int deleteMail(int id) {
+	public void deleteMail(int id) {
 
 		String dotaz = "DELETE FROM clen_mail " + "WHERE id = ?";
-		return sqlExecutor.deleteRow(dotaz, id);
+		sqlExecutor.deleteRow(dotaz, id);
 	}
 
 	public int addMail(Mail mail) {

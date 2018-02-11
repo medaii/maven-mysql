@@ -13,7 +13,7 @@ import loko.dao.DAOFactory;
 import loko.dao.IFMailsDAO;
 import loko.dao.IFMembersDAO;
 import loko.dao.IFPhoneDAO;
-import loko.db.executor.impl.DBHibernateSqlExecutor;
+import loko.db.executor.DBHibernateSqlExecutor;
 import loko.entity.CshRegNumber;
 import loko.entity.Mail;
 import loko.entity.Member;
@@ -49,11 +49,11 @@ public class MembersHibernateDAOImpl implements IFMembersDAO {
 	 *          - èlena
 	 * @return
 	 */
-	public int deleteMember(int id) {
+	public void deleteMember(int id) {
 		// vyuziti vztahu mezi tabulkami a cascade typ ALL
 		// smazáním radku v tabulce clen_seznam se smažou ostatní zaznamy v DB, které
 		// jsou spojeny primarním klièem member
-		return dbHibernateSqlExecutor.deleteObject(id, new Member());
+		dbHibernateSqlExecutor.deleteObject(id, Member.class);
 	}
 
 	/**

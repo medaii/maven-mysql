@@ -7,7 +7,13 @@ import loko.value.MemberFull;
 import loko.value.MemberList;
 
 public interface IFMembersDAO {
-	public int deleteMember(int id);
+	
+	/**
+	 *  Smazazni zaznamu member z DB
+	 * @param id - id zaznamu
+	 */
+	
+	public void deleteMember(int id);
 	/**
 	 * 
 	 * @param member

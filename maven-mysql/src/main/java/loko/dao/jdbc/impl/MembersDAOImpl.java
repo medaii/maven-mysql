@@ -43,7 +43,7 @@ public class MembersDAOImpl implements IFMembersDAO {
 	 * @param id -  Ëlena
 	 * @return
 	 */
-	public int deleteMember(int id) {
+	public void deleteMember(int id) {
 		// vytvoreni p¯istupu k mail˘m a telefonum
 		IFMailsDAO mailsDao = DAOFactory.createDAO(IFMailsDAO.class);
 		IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
@@ -52,49 +52,68 @@ public class MembersDAOImpl implements IFMembersDAO {
 		
 		if (mails != null) {
 			for (Mail mail : mails.getMails()) {
-				if(mailsDao.deleteMail(mail.getId()) > 0) {
-					LOGGER.warning("Mail id - " + mail.getId() + " smaz·n.");
+				try{
+					mailsDao.deleteMail(mail.getId());
+					LOGGER.info("Mail id - " + mail.getId() + " smaz·n.");
 				}
-				else {
-
-					LOGGER.warning("CHYBA. Mail id - " + mail.getId() + " nenÌ smaz·n.");
+				catch (Exception e) {
+					String message = "CHYBA. Mail id - " + mail.getId() + " nenÌ smaz·n.";
+					LOGGER.warning(message);
+					throw new RuntimeException(message, e);					
 				}
 			}
 		}
 		if (phones != null) {
 			for (Phone phone : phones.getPhones()) {
-				if(phoneDAO.deletePhone(phone.getId()) > 0) {
-					LOGGER.warning("Telefon id - " + phone.getId() + " smaz·n.");
+				try{
+					phoneDAO.deletePhone(phone.getId());
+					LOGGER.info("Telefon id - " + phone.getId() + " smaz·n.");
 				}
-				else {
-
-					LOGGER.warning("CHYBA. Telefon id - " + phone.getId() + " nenÌ smaz·n.");
-				}
+				catch (Exception e) {
+					String message = "CHYBA. Telefon id - " + phone.getId() + " nenÌ smaz·n.";
+					LOGGER.warning(message);
+					throw new RuntimeException(message, e);					
+				}			
 			}
 		}
 		//smaz·nÌ trvalÈho bydliötÏ
 		String dotaz = "DELETE FROM clen_trvala_adresa " + "WHERE id_osoby = ?";
 		String zprava;
-		zprava = (sqlExecutor.deleteRow(dotaz, id)> 0)?"Trvale bysliötÏ smaz·no. id Ëlena:" + id :
-																										"TrvalÈ bydliötÏ nesmaz·no id Ëlena:" + id;
-		LOGGER.warning(zprava);
+		try {
+			sqlExecutor.deleteRow(dotaz, id);
+			zprava ="Trvale bysliötÏ smaz·no. id Ëlena:" + id;
+		} catch (Exception e) {
+			zprava = "TrvalÈ bydliötÏ nesmaz·no id Ëlena:" + id;
+			throw new RuntimeException(zprava, e);
+		}		
+		LOGGER.info(zprava);
 		
 		//smazanÌ rodnÈho ËÌsla
 		dotaz = "DELETE FROM clen_rodne_cislo " + "WHERE id_osoby = ?";
-		zprava = (sqlExecutor.deleteRow(dotaz, id)> 0)?"RodnÈ ËÌslo smaz·no. id Ëlena:" + id:
-																									"RodnÈ ËÌslo bydliötÏ nesmaz·no id Ëlena:" + id;
+		try {
+			sqlExecutor.deleteRow(dotaz, id);
+			zprava = "RodnÈ ËÌslo smaz·no. id Ëlena:" + id;
+		} catch (Exception e) {			
+			zprava = "RodnÈ ËÌslo bydliötÏ nesmaz·no id Ëlena:" + id;
+			throw new RuntimeException(zprava, e);
+		}
 		LOGGER.warning(zprava);
 		
 		//smazanÌ ËÌsla registrace
 		dotaz = "DELETE FROM cshRegC " + "WHERE id_osoby = ?";
-		zprava = (sqlExecutor.deleteRow(dotaz, id)> 0)?"»Ìslo registrace smaz·no. id Ëlena:" + id:
-																									"»Ìslo registrace nesmaz·no. id Ëlena:" + id;
+		try {
+			sqlExecutor.deleteRow(dotaz, id);
+			zprava = "»Ìslo registrace smaz·no. id Ëlena:" + id;
+		} 
+		catch (Exception e) {
+			zprava = "»Ìslo registrace nesmaz·no. id Ëlena:" + id;
+			throw new RuntimeException(zprava, e);
+		}
 		LOGGER.warning(zprava);
 		
 		//smazanÌ Ëlena ze seznamu
-		dotaz = "DELETE FROM clen_seznam " + "WHERE id = ?";
-		return sqlExecutor.deleteRow(dotaz, id);
-
+		dotaz = "DELETE FROM clen_seznam " + "WHERE id = ?";	
+		sqlExecutor.deleteRow(dotaz, id);
 	}
 	/**
 	 * 

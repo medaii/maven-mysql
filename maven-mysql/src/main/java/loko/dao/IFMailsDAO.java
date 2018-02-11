@@ -10,19 +10,20 @@ import loko.entity.Mail;
 import loko.value.MailsMember;
 
 /**
- * Rozhrani pro praci s maily.
+ * Rozhrani pro pøístup k datùm z tabulky clen_mail.
+ * 
  * @author Erik Markoviè
  *
  */
 public interface IFMailsDAO {
 
 	/**
+	 * Smazání øádku v tabulce clen_mail
 	 * 
-	 * @param id
-	 *            - id mailu, který se má smazat
-	 * @return - vrací poèet smazaných øádku nebo -1 pøi chybì
-	 */
-	int deleteMail(int id);
+	 * @param id - id mailu, který se má smazat
+	 * @throw - vyhození vyjímky pøi nerealizování mazání øádku 
+	 */	
+	void deleteMail(int id);
 	
 	int addMail(Mail mail);
 	

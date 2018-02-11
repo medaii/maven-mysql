@@ -7,14 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import loko.dao.IFUser;
 
 /*
  * typ podle tabulky user v DB
  */
 @Entity
 @Table(name="users")
-public class User implements IFUser {
+public class User{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
@@ -55,76 +54,60 @@ public class User implements IFUser {
 		this.email = email;
 		this.admin = admin;
 	}
-	@Override
+	
 	public int getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(int id) {
 		this.id = id;
 		
 	}
 
-	@Override
 	public String getLastName() {
 		return lastName;
 	}
 
-	@Override
 	public void setLastName(String lastName) {
 		this.lastName =  lastName;
 	}
 
-	@Override
 	public String getFirstName() {
 		return firstName;
 	}
 
-	@Override
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
-	@Override
 	public String getEmail() {
 		return email;
 	}
 
-	@Override
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	@Override
 	public boolean isAdmin() {
 		return admin;
 	}
 
-	@Override
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
 
-	@Override
 	public String getPassword() {
 		return password;
 	}
 
-	@Override
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
 	@Override
-	public String toString() {
-		return "User [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", email=" + email + ", admin="
-				+ admin + ", password=" + password + "]";
-	}
-
-/*	@Override
 	public String toString() {
 		return lastName + " " + firstName;
 	}
-*/
+
 	
 }

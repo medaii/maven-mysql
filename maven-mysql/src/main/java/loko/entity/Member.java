@@ -16,16 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
-import loko.dao.IFMember;
 
 //vytvoøení datového týpu
 @Entity
 @Table(name="clen_seznam")
-public class Member implements IFMember {
+public class Member {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -94,83 +90,67 @@ public class Member implements IFMember {
 		this.enterDate = member.getEnterDate();
 	}
 	
-	@Override
 	public int getId() {
 		return id;
 	}
 
-	@Override
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	@Override
 	public String getFirstName() {
 		return firstName;
 	}
 
-	@Override
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
-	@Override
 	public String getLastName() {
 		return lastName;
 	}
 
-	@Override
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
-	@Override
 	public Date getBirthDay() {
 		
 		return birthDay;
 	}
 
-	@Override
 	public void setBirtDay(Date birthDay) {
 		this.birthDay = birthDay;
 	}
 
-	@Override
 	public String getNote() {
 		return note;
 	}
 
-	@Override
 	public void setNote(String note) {
 		this.note = note;
 	}
 
-	@Override
 	public int getActive() {
 		return active;
 	}
 
-	@Override
 	public void setActive(int active) {
 		this.active = active;
 	}
 
-	@Override
 	public int getId_odd_kategorie() {
 		return id_odd_kategorie;
 	}
 
-	@Override
 	public void setId_odd_kategorie(int id_odd_kategorie) {
 		this.id_odd_kategorie = id_odd_kategorie;
 	}
 
-	@Override
 	public Date getEnterDate() {
 		return enterDate;
 	}
 
-	@Override
 	public void setEnterDate(Date enterDate) {
 		this.enterDate = enterDate;
 	}
@@ -237,53 +217,5 @@ public class Member implements IFMember {
 	public String toString() {
 		return  lastName + " " + firstName + "\n";
 	}
-	public static void main(String[] args) {
-		// vytvoøení instrance na hibernateFactory, který nám pøidìlí session
-		System.out.println("a");
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml")
-																							.addAnnotatedClass(Member.class)
-																							.addAnnotatedClass(Mail.class)
-																							.addAnnotatedClass(RodneCislo.class)
-																							.addAnnotatedClass(CshRegNumber.class)
-																							.addAnnotatedClass(Phone.class)
-																							.buildSessionFactory();) {
-			System.out.println("n");
-			// create session
-			Session session = factory.getCurrentSession();
-
-			// start a transaction
-			session.beginTransaction();
-
-			// dotaz
-			//Mail mail = session.get(Mail.class,1);
-			
-			Member member = session.get(Member.class, 1);
-			List<Mail> mails = member.getMails();
-			RodneCislo rodneCislo = member.getRodneCislo();
-			
-			List<Phone> phones = member.getPhones();
-			Phone phone = session.get(Phone.class, 240);
-			
-			//member.add(phone);
-			
-			Mail mail2 = session.get(Mail.class, 201);
-			
-			
-			//Member member = mail.getMember();
-			System.out.println("sout" + member + " - " + mails + rodneCislo + " - c - "+ member.getCshRegNumber());
-			System.out.println("Tel.-" + phones);
-			System.out.println(mail2 + " " + mail2.getId_member());
-			
-			session.delete(phone);
-			
-			// commit transaction			
-			session.getTransaction().commit();
-			
-			
-		} catch (Exception e) {
-			
-		}
-		
-		
-	}
+	
 }

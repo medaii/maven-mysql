@@ -4,8 +4,6 @@ package loko.dao.hibernate.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
-
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,6 +15,7 @@ import loko.entity.Phone;
 import loko.value.PhonesMeber;
 
 /**
+ * Implementace pro pøístup k datùm z tabulky clen_telefon pomoci Hibernate.
  * 
  * @author Erik Markovic
  *
@@ -24,28 +23,17 @@ import loko.value.PhonesMeber;
 
 public class PhonesHibernateDAOImpl implements PhoneDAO {
 	private DBHibernateSqlExecutorImpl dbHibernateSqlExecutor ;
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	public PhonesHibernateDAOImpl(DBHibernateSqlExecutorImpl dbHibernateSqlExecutor) {
 		this.dbHibernateSqlExecutor = dbHibernateSqlExecutor;
 	}
 
-	/**
-	 * 
-	 * @param id
-	 *          - id telefonu, který se má smazat
-	 * @return - vrací poèet smazaných øádku nebo -1 pøi chybì
-	 */
+	@Override
 	public void deletePhone(int id) {
 		dbHibernateSqlExecutor.deleteObject(id, Phone.class);
 	}
 
-	/**
-	 * 
-	 * @param phone
-	 *          - pøidání telefonu do DB
-	 * @return
-	 */
+	@Override
 	public int addPhone(Phone phone) {
 		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
 
@@ -53,6 +41,7 @@ public class PhonesHibernateDAOImpl implements PhoneDAO {
 			// start a transaction
 			session.beginTransaction();
 			// dotaz
+			// telefon musi byt pridan k entite member
 			Member member = session.get(Member.class, phone.getId_member());
 			member.add(phone);
 			int id = (int) session.save(phone);
@@ -61,32 +50,17 @@ public class PhonesHibernateDAOImpl implements PhoneDAO {
 			return id;
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.warning("Chyba zápisu!");
-			return 0;
+			//TODO pøidat zachycení vyjímky v GUI
+			throw new RuntimeException("Chyba pøi vytvoøení nového zaznamu Phone " + phone, e);
 		}
 	}
 
-	/**
-	 * 
-	 * @param phone
-	 *          - objekt ktery má být nahrán do DB
-	 * @param id
-	 *          - id phone na DB
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
-	 */
+	@Override
 	public void updatePhone(Phone phone, int id) {
-		phone.setId(id);
 		dbHibernateSqlExecutor.updateObject(phone);
 	}
-
-	/**
-	 * vytvoreni listu
-	 * 
-	 * @phones = Vraci hash list klic je id clena a obsah je list telefonu
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
+	
+	@Override
 	public Map<Integer, PhonesMeber> getAllPhonesMembers() {
 		Map<Integer, PhonesMeber> map = new HashMap<>();
 
@@ -96,10 +70,12 @@ public class PhonesHibernateDAOImpl implements PhoneDAO {
 			session.beginTransaction();
 			// dotaz
 			
-			List<Member> members = session.createQuery("select i from Member i join fetch i.cshRegNumber "
+			@SuppressWarnings("unchecked")
+			List<Member> list = session.createQuery("select i from Member i join fetch i.cshRegNumber "
 																									+ "join fetch i.rodneCislo "
 																									+ "join fetch i.phones "
 																									+ "join fetch i.trvaleBydliste").list();
+			List<Member> members = list;
 			for (Member member : members) {
 				if(!member.getPhones().isEmpty()) {
 					PhonesMeber phones = new PhonesMeber(member.getId());
@@ -113,18 +89,12 @@ public class PhonesHibernateDAOImpl implements PhoneDAO {
 
 		} 
 		catch (Exception e) {
-			LOGGER.warning("Chyba zápisu!");
+			throw new RuntimeException("Chyba pøi vyètení telefoního seznamu daného èlena z DB", e);
 		}
 		return map;
 	}
 
-	/**
-	 * pro vracení phone kokretní osobì
-	 * 
-	 * @param id_member
-	 *          - id èlena pro kterého chceme vrátit telefon
-	 * @return
-	 */
+	@Override
 	public PhonesMeber getPhonesMember(int id_member) {
 
 		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
@@ -139,29 +109,19 @@ public class PhonesHibernateDAOImpl implements PhoneDAO {
 			Member member = session.get(Member.class, id_member);
 			List<Phone> phones = member.getPhones();
 
-			// List<Phone> phones2 = phones.stream().collect(toList());
 			phonesMember.setPhones(phones);
 
 			// commit tranzakce
 			session.getTransaction().commit();
-
-			// ulozeni tel. cisel do PhonesMember
-			// System.out.println(phones2);
-
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Chyba pri spojeni member s phone");
 		}
-
 		return phonesMember;
 	}
 
-	/**
-	 * 
-	 * @param id
-	 *          - telefonu na DB
-	 * @return vraci objekt phone
-	 */
+	@Override
 	public Phone getPhone(int id) {
 		Phone phone = (Phone) dbHibernateSqlExecutor.getObject(id, Phone.class);
 		return phone;

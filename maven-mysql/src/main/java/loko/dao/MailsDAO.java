@@ -26,6 +26,7 @@ public interface MailsDAO {
 	void deleteMail(int id);
 	
 	/**
+	 * Pøidaní entity Mail do DB
 	 * 
 	 * @param mail -  Entita, která má být vložena do DB
 	 * @return nove id entity Mail
@@ -33,6 +34,7 @@ public interface MailsDAO {
 	int addMail(Mail mail);
 	
 	/**
+	 * Aktualizace zaznamu entity Mail v DB
 	 * 
 	 * @param mail - Entita se zmìnìnými hodnotami, dle ní mají být zmìnìny údaje v DB
 	 * @param id  - id mailu v DB
@@ -58,6 +60,7 @@ public interface MailsDAO {
 	MailsMember getMailsMember(int id_member);
 	
 	/**
+	 * Vrácení požadované entity Mail z DB
 	 * 
 	 * @param id - mailu na DB
 	 * 

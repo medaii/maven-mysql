@@ -15,6 +15,7 @@ import loko.entity.Member;
 import loko.value.MailsMember;
 
 /**
+ * Iplementace pro pøístup k datùm z tabulky clen_mail pomoci Hibernate.
  * 
  * @author Erik Markoviè
  *
@@ -23,62 +24,45 @@ public class MailsHibernateDAOImpl implements MailsDAO {
 	private DBHibernateSqlExecutorImpl dbHibernateSqlExecutor;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-	//konstruktor
+	// konstruktor
 	public MailsHibernateDAOImpl(DBHibernateSqlExecutorImpl dbHibernateSqlExecutor) {
 		this.dbHibernateSqlExecutor = dbHibernateSqlExecutor;
 	}
 
-	/**
-	 * 
-	 * @param id
-	 *          - id mailu, který se má smazat
-	 * @return - vrací poèet smazaných øádku nebo -1 pøi chybì
-	 */
+	@Override
 	public void deleteMail(int id) {
 		dbHibernateSqlExecutor.deleteObject(id, Mail.class);
 	}
 
+	@Override
 	public int addMail(Mail mail) {
 		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
 
 		try (Session session = factory.getCurrentSession();) {
 			// start a transaction
 			session.beginTransaction();
+
 			// dotaz
 			Member member = session.get(Member.class, mail.getId_member());
 			member.add(mail);
 			int id = (int) session.save(mail);
-			// commit transaction
+
+			// Vykonani transakce
 			session.getTransaction().commit();
 			return id;
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.warning("Chyba zápisu! " + e);
-			return 0;
+			// TODO dodìlat zachycení v GUI
+			throw new RuntimeException("Chyba pøi ukladání mailu do DB - " + mail, e);
 		}
 	}
 
-	/**
-	 * 
-	 * @param mail
-	 *          - objekt ktery má být nahrán do DB
-	 * @param id
-	 *          - id mailu na DB
-	 * @return - int vrací poèet zmìnìných øádku nebo -1 pøi chybì
-	 */
+	@Override
 	public void updateMail(Mail mail, int id) {
-		mail.setId(id);
 		dbHibernateSqlExecutor.updateObject(mail);
 	}
 
-	/**
-	 * vytvoreni listu
-	 * 
-	 * @mails = vrati maily daneho clena Map<Integer, MailsMember>
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
+	@Override
 	public Map<Integer, MailsMember> getAllMailMembers() {
 		Map<Integer, MailsMember> map = new HashMap<>();
 
@@ -90,11 +74,10 @@ public class MailsHibernateDAOImpl implements MailsDAO {
 
 			// dotaz
 
-			List<Member> members = session
-					.createQuery(
-							"select i from Member i join fetch i.cshRegNumber " + "join fetch i.rodneCislo " 
-									+ "join fetch i.mails " + "join fetch i.trvaleBydliste")
-					.list();
+			@SuppressWarnings("unchecked")
+			List<Member> list = session.createQuery("select i from Member i join fetch i.cshRegNumber "
+					+ "join fetch i.rodneCislo " + "join fetch i.mails " + "join fetch i.trvaleBydliste").list();
+			List<Member> members = list;
 			for (Member member : members) {
 				if (!member.getMails().isEmpty()) {
 					MailsMember mails = new MailsMember(member.getId());
@@ -112,13 +95,7 @@ public class MailsHibernateDAOImpl implements MailsDAO {
 		return map;
 	}
 
-	/**
-	 * pro vracení mailu kokretní osobì
-	 * 
-	 * @param id_member
-	 *          - id èlena pro kterého chceme vrátit mail
-	 * @return MailsMember
-	 */
+	@Override
 	public MailsMember getMailsMember(int id_member) {
 		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
 		MailsMember mailsMember = new MailsMember(id_member);
@@ -137,26 +114,15 @@ public class MailsHibernateDAOImpl implements MailsDAO {
 
 			// commit tranzakce
 			session.getTransaction().commit();
-
-			// ulozeni tel. cisel do PhonesMember
-			// System.out.println(phones2);
-
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Chyba pri spojeni member s mail");
+			throw new RuntimeException("Chyba pri spojeni member s mail", e);
 		}
-
 		return mailsMember;
 	}
 
-	/**
-	 * 
-	 * @param id
-	 *          - mailu na DB
-	 * @return vraci objekt mail
-	 */
+	@Override
 	public Mail getMail(int id) {
-			return (Mail)dbHibernateSqlExecutor.getObject(id, Mail.class);
+		return (Mail) dbHibernateSqlExecutor.getObject(id, Mail.class);
 	}
 
 }

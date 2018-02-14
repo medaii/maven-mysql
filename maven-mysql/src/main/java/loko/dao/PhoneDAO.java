@@ -15,12 +15,14 @@ import loko.value.PhonesMeber;
 
 public interface PhoneDAO {
 	/**
+	 * Provede smazání entity Phone v DB
 	 * 
 	 * @param id - id telefonu, který se má smazat
 	 */	
 	public void deletePhone(int id) ;
 	
 	/**
+	 * Provede pøidání entity Phone do DB
 	 * 
 	 * @param phone - pøidání telefonu do DB
 	 *
@@ -29,6 +31,7 @@ public interface PhoneDAO {
 	public int addPhone(Phone phone);
 
 	/**
+	 * Uloží entitu Phone do DB
 	 * 
 	 * @param phone  - objekt ktery má být nahrán do DB
 	 * @param id  - id phone na DB
@@ -37,7 +40,7 @@ public interface PhoneDAO {
 	public void updatePhone(Phone phone, int id) ;
 
 	/**
-	 * vytvoreni listu
+	 * Vytvoøení pøepravky Map<Integer, PhonesMeber>
 	 * 
 	 * @return - phones = vrati telefony daneho clena
 	 * 
@@ -45,14 +48,15 @@ public interface PhoneDAO {
 	public Map<Integer, PhonesMeber> getAllPhonesMembers() ;
 	
 	/**
-	 * pro vracení phone kokretní osobì
+	 * Vracení pøepravky PhonesMember, která obsahuje všechny telefoní èísla k dané entitì Member
 	 * 
-	 * @param id_member  - id èlena pro kterého chceme vrátit telefon
+	 * @param id_member  - id èlena pro kterého chceme vrátit telefony
 	 * @return - vrací objekt pro model GUI naplnìný telefony daného member
 	 */
 	public PhonesMeber getPhonesMember(int id_member) ;
 
 	/**
+	 * Vrátí požadovanou entitu z DB, dle id Phone
 	 * 
 	 * @param id - id entity phone požadovaný z DB
 	 * @return vraci objekt phone

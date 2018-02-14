@@ -6,6 +6,7 @@ import java.util.List;
 import loko.entity.Phone;
 
 /**
+ * Pøepravka hodnot Member a listu entit Phone, který k danému Membru mají vztah
  * 
  * @author Erik Markoviè
  *

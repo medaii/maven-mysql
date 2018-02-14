@@ -7,7 +7,9 @@ import java.util.List;
 import loko.entity.Mail;
 import loko.entity.Member;
 import loko.entity.Phone;
+
 /**
+ * Pøepravka hodnot Member a seznamu mailù a seznamu telefonù
  * 
  * @author Erik Markoviè
  *
@@ -16,35 +18,31 @@ public class MemberList {
 	private int id;
 	private String firstName;
 	private String lastName;
-	private Date birthDay;	
+	private Date birthDay;
 
 	private List<Mail> mails = new ArrayList<>();
 	private List<Phone> phones = new ArrayList<>();
-	
 
 	public MemberList(int id, String firstName, String lastName, Date birthDay, List<Mail> mails, List<Phone> phones) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthDay = birthDay;
-		if (mails!= null) {
+		if (mails != null) {
 			this.mails = mails;
-		}
-		else {
+		} else {
 			Mail mail = new Mail(id, "", "");
 			this.mails.add(mail);
 		}
-		if (phones!= null) {
+		if (phones != null) {
 			this.phones = phones;
-		}
-		else {
+		} else {
 			Phone phone = new Phone(id, "", "");
 			this.phones.add(phone);
 		}
-		
-		
-		
+
 	}
+
 	public MemberList(Member member, List<Mail> mails, List<Phone> phones) {
 		this.id = member.getId();
 		this.firstName = member.getFirstName();
@@ -53,7 +51,7 @@ public class MemberList {
 		this.mails = mails;
 		this.phones = phones;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -104,6 +102,6 @@ public class MemberList {
 
 	@Override
 	public String toString() {
-		return  lastName + " " + firstName + " - " + mails + "\n";
+		return lastName + " " + firstName + " - " + mails + "\n";
 	}
 }

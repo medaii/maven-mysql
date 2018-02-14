@@ -4,16 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import loko.entity.Mail;
-
+/**
+ * Pøepravka entit Mail spojene s id Member
+ * 
+ * @author Dave
+ *
+ */
 public class MailsMember {
 
 
 	private int id_meber;
+	
 	private List<Mail> mails = new ArrayList<>();	
 	
 	public MailsMember(int id_meber) {
 		this.id_meber = id_meber;
 	}
+	
 	public MailsMember(int id_meber, Mail mails) {
 		this.id_meber = id_meber;
 		setMails(mails);

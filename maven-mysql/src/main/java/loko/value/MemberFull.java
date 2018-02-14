@@ -7,9 +7,10 @@ import loko.entity.Member;
 import loko.entity.RodneCislo;
 import loko.entity.TrvaleBydliste;
 /**
+ * Pøepravka hodnot Member, Rodného èísla, trvalého bydlištì, èísla registraèního prùkazu ÈSH
+ * 	( Member pøidaný o rodné èíslo, trvale bydlištì. èíslo registraèního prùkazu)
  * 
  * @author Erik Markoviè
- * Member pøidaný o rodné èíslo, trvale bydlištì. èíslo registraèního prùkazu
  */
 public class MemberFull {
 	private int id;

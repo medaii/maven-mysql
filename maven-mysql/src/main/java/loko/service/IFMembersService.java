@@ -1,4 +1,4 @@
-package service;
+package loko.service;
 
 import java.util.List;
 import java.util.Map;

@@ -10,11 +10,11 @@ import javax.swing.JFrame;
 
 import loko.entity.User;
 import loko.loger.LoggerLoko;
+import loko.service.IFMembersService;
+import loko.service.MembersServiceImpl;
 import loko.tableModel.MembersListTableModel;
 import loko.tableModel.UsersTableModel;
 import loko.value.MemberList;
-import service.IFMembersService;
-import service.MembersServiceImpl;
 
 import java.awt.BorderLayout;
 import javax.swing.JTabbedPane;

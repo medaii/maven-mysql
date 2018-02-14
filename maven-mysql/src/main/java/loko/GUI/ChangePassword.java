@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import loko.entity.User;
-import service.IFMembersService;
+import loko.service.IFMembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -119,7 +119,7 @@ public class ChangePassword extends JDialog {
 																																	,user.getId());
 							} 
 							catch (UnsupportedEncodingException e1) {
-								// TODO Auto-generated catch block
+								// TODO doplnit zapracování vyjímky
 								e1.printStackTrace();
 							}
 

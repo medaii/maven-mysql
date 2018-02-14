@@ -10,12 +10,12 @@ import javax.swing.border.EmptyBorder;
 
 import loko.entity.Mail;
 import loko.entity.Phone;
+import loko.service.IFMembersService;
 import loko.tableModel.MailsTableModel;
 import loko.tableModel.PhonesTableModel;
 import loko.value.MailsMember;
 import loko.value.MemberFull;
 import loko.value.PhonesMeber;
-import service.IFMembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

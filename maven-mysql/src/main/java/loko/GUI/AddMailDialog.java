@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import loko.entity.Mail;
-import service.IFMembersService;
+import loko.service.IFMembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

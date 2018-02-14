@@ -10,7 +10,7 @@ import org.hibernate.SessionFactory;
 import loko.dao.UserDAO;
 import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.User;
-import service.PasswordUtils;
+import loko.service.PasswordUtils;
 
 /**
  * uziti HIBERNATE pro pøístup k tabulce user v DB

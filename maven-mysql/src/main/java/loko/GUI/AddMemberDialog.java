@@ -17,8 +17,8 @@ import loko.dao.DAOFactory;
 import loko.dao.MailsDAO;
 import loko.entity.Mail;
 import loko.entity.Phone;
+import loko.service.IFMembersService;
 import loko.value.MemberFull;
-import service.IFMembersService;
 
 import java.awt.event.ActionListener;
 import java.sql.Date;

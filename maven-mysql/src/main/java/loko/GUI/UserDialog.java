@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import loko.entity.User;
-import service.IFMembersService;
+import loko.service.IFMembersService;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

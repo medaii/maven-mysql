@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import loko.entity.User;
-import loko.service.IFMembersService;
+import loko.service.UserService;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -44,7 +44,7 @@ public class UserDialog extends JDialog {
 	/**
 	 * Otevøení nového okna vytvoøení nového uživatele nebo editaci.
 	 */
-	public UserDialog(User user, IFMembersService membersService, MembersSearchApp membersSearchApp, boolean isAdmin,
+	public UserDialog(User user, UserService userService, MembersSearchApp membersSearchApp, boolean isAdmin,
 			boolean addUser) {
 		this.user = user;
 		if (addUser) {
@@ -152,7 +152,7 @@ public class UserDialog extends JDialog {
 							if (!(firstName.isEmpty() || firstName == "") || !(lastName.isEmpty() || firstName == "")
 									|| !(mail.isEmpty() || mail == "")) {
 								User theUser = new User(lastName, firstName, mail, admin, "java");
-								if (membersService.addUser(theUser) > 0) {
+								if (userService.addUser(theUser) > 0) {
 
 								} else {
 									LOGGER.warning("Chyba pøi uložení objektu do DB user - " + user.toString());
@@ -167,7 +167,7 @@ public class UserDialog extends JDialog {
 							// uložení zmeny do databáze
 							User theUser = new User(user.getId(), lastName, firstName, mail, admin);
 							try {
-								membersService.updateUser(theUser);
+								userService.updateUser(theUser);
 								LOGGER.info("Zmìna udaje uživatele zmìnìna id uživate: " + theUser.getId());
 							}
 							// chyba pøi ukladání zmìn do DB

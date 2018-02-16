@@ -1,4 +1,4 @@
-package loko.service;
+package loko.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,18 +8,18 @@ import loko.dao.DAOFactory;
 import loko.dao.MailsDAO;
 import loko.dao.MembersDAO;
 import loko.dao.PhoneDAO;
-import loko.dao.UserDAO;
 import loko.entity.CshRegNumber;
 import loko.entity.Mail;
 import loko.entity.Member;
 import loko.entity.Phone;
 import loko.entity.RodneCislo;
 import loko.entity.TrvaleBydliste;
-import loko.entity.User;
+import loko.service.MembersService;
 import loko.value.MailsMember;
 import loko.value.MemberFull;
 import loko.value.MemberList;
 import loko.value.PhonesMeber;
+
 /**
  *
  * Servisní tøída pro DAO (obstaravající skupinu seznam èlenù)
@@ -28,26 +28,24 @@ import loko.value.PhonesMeber;
  *
  *
  */
-public class MembersServiceImpl implements IFMembersService {
-	
+public class MembersServiceImpl implements MembersService {
+
 	// instance na DAO dle entit
 	private MembersDAO membersDAO;
 	private MailsDAO mailsDAO;
 	private PhoneDAO phoneDAO;
-	private UserDAO userDAO;
 
-	// instance se žádají od factory, která posle instanci na DAO pomoci JDBC nebo Hibernate
+	// instance se žádají od factory, která posle instanci na DAO pomoci JDBC nebo
+	// Hibernate
 	public MembersServiceImpl() {
-		membersDAO = (MembersDAO)DAOFactory.createDAO(MembersDAO.class);
-		this.mailsDAO = (MailsDAO)DAOFactory.createDAO(MailsDAO.class);
-		this.phoneDAO = (PhoneDAO)DAOFactory.createDAO(PhoneDAO.class);
-		this.userDAO = (UserDAO)DAOFactory.createDAO(UserDAO.class); 
-		
+		membersDAO = (MembersDAO) DAOFactory.createDAO(MembersDAO.class);
+		this.mailsDAO = (MailsDAO) DAOFactory.createDAO(MailsDAO.class);
+		this.phoneDAO = (PhoneDAO) DAOFactory.createDAO(PhoneDAO.class);
 	}
 	/*
 	 * metody poskytnute MembersDAO
 	 */
-	
+
 	@Override
 	public void deleteMember(int id) {
 		membersDAO.deleteMember(id);
@@ -55,19 +53,18 @@ public class MembersServiceImpl implements IFMembersService {
 
 	@Override
 	public int addMemberFull(MemberFull memberFull) {
-		//vytvoøení z pøepravky MemberFull entitu Member
-		Member member = new Member(memberFull.getFirstName(), memberFull.getLastName(),memberFull.getBirthDay(),
-																memberFull.getNote(),memberFull.getActive(),memberFull.getId_odd_kategorie(),
-																memberFull.getEnterDate());
-		//vytvoøení entity Rodné èíslo
+		// vytvoøení z pøepravky MemberFull entitu Member
+		Member member = new Member(memberFull.getFirstName(), memberFull.getLastName(), memberFull.getBirthDay(),
+				memberFull.getNote(), memberFull.getActive(), memberFull.getId_odd_kategorie(), memberFull.getEnterDate());
+		// vytvoøení entity Rodné èíslo
 		RodneCislo rodneCislo = new RodneCislo(memberFull.getRodneCislo());
-		
-		//vytvoøení entity Trvalé bydlištì
+
+		// vytvoøení entity Trvalé bydlištì
 		TrvaleBydliste trvaleBydliste = new TrvaleBydliste(memberFull.getTrvaleBydliste());
-		
-		//vytvoøení entity CSHregistracniCislo
+
+		// vytvoøení entity CSHregistracniCislo
 		CshRegNumber cshRegNumber = new CshRegNumber(memberFull.getChfRegistrace());
-		
+
 		return membersDAO.addMemberFull(member, rodneCislo, trvaleBydliste, cshRegNumber);
 	}
 
@@ -78,21 +75,20 @@ public class MembersServiceImpl implements IFMembersService {
 
 	@Override
 	public void updateMember(MemberFull memberFull) {
-			//vytvoøení z pøepravky MemberFull entitu Member
-			Member member = new Member(memberFull.getId(),memberFull.getFirstName(), memberFull.getLastName(),memberFull.getBirthDay(),
-																	memberFull.getNote(),memberFull.getActive(),memberFull.getId_odd_kategorie(),
-																	memberFull.getEnterDate());
-			
-			//vytvoøení entity Rodné èíslo
-			RodneCislo rodneCislo = new RodneCislo(memberFull.getRodneCislo());
-			
-			//vytvoøení entity Trvalé bydlištì
-			TrvaleBydliste trvaleBydliste = new TrvaleBydliste(memberFull.getTrvaleBydliste());
-			
-			//vytvoøení entity CSHregistracniCislo
-			CshRegNumber cshRegNumber = new CshRegNumber(memberFull.getChfRegistrace());
-		
-		
+		// vytvoøení z pøepravky MemberFull entitu Member
+		Member member = new Member(memberFull.getId(), memberFull.getFirstName(), memberFull.getLastName(),
+				memberFull.getBirthDay(), memberFull.getNote(), memberFull.getActive(), memberFull.getId_odd_kategorie(),
+				memberFull.getEnterDate());
+
+		// vytvoøení entity Rodné èíslo
+		RodneCislo rodneCislo = new RodneCislo(memberFull.getRodneCislo());
+
+		// vytvoøení entity Trvalé bydlištì
+		TrvaleBydliste trvaleBydliste = new TrvaleBydliste(memberFull.getTrvaleBydliste());
+
+		// vytvoøení entity CSHregistracniCislo
+		CshRegNumber cshRegNumber = new CshRegNumber(memberFull.getChfRegistrace());
+
 		membersDAO.updateMemberFull(member, rodneCislo, trvaleBydliste, cshRegNumber);
 	}
 
@@ -104,14 +100,13 @@ public class MembersServiceImpl implements IFMembersService {
 	@Override
 	public List<MemberList> getAllMemberList(int kategorie) {
 		List<MemberList> list = new ArrayList<>();
-		//naètení listu entit Member dle vybrané kategorie
+		// naètení listu entit Member dle vybrané kategorie
 		List<Member> members = membersDAO.getAllMemberList(kategorie);
-		
-		
-		//nactení k vybraným entitám Member telefony
+
+		// nactení k vybraným entitám Member telefony
 		Map<Integer, MailsMember> mailsMap = mailsDAO.getAllMailMembers();
-		
-		//nactení k vybraným entitám Member maily		
+
+		// nactení k vybraným entitám Member maily
 		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
 		for (Member member : members) {
 			if (member == null) {
@@ -136,21 +131,21 @@ public class MembersServiceImpl implements IFMembersService {
 				MemberList memberList = new MemberList(member, mails, phones);
 				list.add(memberList);
 			}
-		}		
+		}
 		return list;
 	}
 
 	@Override
 	public List<MemberList> searchAllMembers(String name, int kategorie) {
 		List<MemberList> list = new ArrayList<>();
-		
-		//naètení listu entit Member dle vybrané kategorie
-		List<Member> members = membersDAO.searchAllMembers(name,kategorie);
-				
-		//nactení k vybraným entitám Member telefony
+
+		// naètení listu entit Member dle vybrané kategorie
+		List<Member> members = membersDAO.searchAllMembers(name, kategorie);
+
+		// nactení k vybraným entitám Member telefony
 		Map<Integer, MailsMember> mailsMap = mailsDAO.getAllMailMembers();
-		
-		//nactení k vybraným entitám Member maily		
+
+		// nactení k vybraným entitám Member maily
 		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
 		for (Member member : members) {
 			if (member == null) {
@@ -175,9 +170,9 @@ public class MembersServiceImpl implements IFMembersService {
 				MemberList memberList = new MemberList(member, mails, phones);
 				list.add(memberList);
 			}
-		}		
+		}
 		return list;
-		
+
 	}
 
 	@Override
@@ -191,9 +186,9 @@ public class MembersServiceImpl implements IFMembersService {
 	}
 
 	/*
-	 * Metody poskytující  PhoneDAO
+	 * Metody poskytující PhoneDAO
 	 */
-	
+
 	@Override
 	public void deletePhone(int id) {
 		phoneDAO.deletePhone(id);
@@ -206,8 +201,8 @@ public class MembersServiceImpl implements IFMembersService {
 
 	@Override
 	public void updatePhone(Phone phone, int id) {
-		//TODO vyøešit nadbiteènost parametru id
-		 phoneDAO.updatePhone(phone, id);
+		// TODO vyøešit nadbiteènost parametru id
+		phoneDAO.updatePhone(phone, id);
 	}
 
 	@Override
@@ -225,8 +220,8 @@ public class MembersServiceImpl implements IFMembersService {
 		return phoneDAO.getPhone(id);
 	}
 
-	//Metody poskytující  MailDAO	
-	
+	// Metody poskytující MailDAO
+
 	@Override
 	public void deleteMail(int id) {
 		mailsDAO.deleteMail(id);
@@ -236,7 +231,6 @@ public class MembersServiceImpl implements IFMembersService {
 	public int addMail(Mail mail) {
 		return mailsDAO.addMail(mail);
 	}
-
 
 	@Override
 	public void updateMail(Mail mail, int id) {
@@ -253,38 +247,8 @@ public class MembersServiceImpl implements IFMembersService {
 		return mailsDAO.getMailsMember(id_member);
 	}
 
-
 	@Override
 	public Mail getMail(int id) {
 		return mailsDAO.getMail(id);
-	}
-	
-	//user service
-	//TODO pøesunout do samostatného servisu
-
-	@Override
-	public void updateUser(User theUser) {
-		userDAO.updateUser(theUser);
-	}
-
-	@Override
-	public void changePassword(User theUser, String newPassword) {
-		userDAO.changePassword(theUser, newPassword);
-	}
-	
-
-	@Override
-	public List<User> getUsers(boolean admin, int userId) {
-		return userDAO.getUsers(admin, userId);
-	}
-
-	@Override
-	public boolean authenticate(byte[] password,int id) {
-		return userDAO.authenticate(password, id);
-	}
-
-	@Override
-	public int addUser(User theUser) {		
-		return userDAO.addUser(theUser);
 	}
 }

@@ -10,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import loko.entity.Mail;
 import loko.entity.Phone;
-import loko.service.IFMembersService;
+import loko.service.MembersService;
 import loko.tableModel.MailsTableModel;
 import loko.tableModel.PhonesTableModel;
 import loko.value.MailsMember;
@@ -56,7 +56,7 @@ public class MemberDialog extends JDialog {
 	private JDateChooser dateChooser;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	private IFMembersService membersService;
+	private MembersService membersService;
 	private MemberFull memberFull;
 	private PhonesMeber phones;
 	private MailsMember mails;
@@ -78,7 +78,7 @@ public class MemberDialog extends JDialog {
 	 * Vytvoøení okna MemberDialog.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public MemberDialog(int id_member,IFMembersService membersService, MembersSearchApp membersSearchApp) {
+	public MemberDialog(int id_member,MembersService membersService, MembersSearchApp membersSearchApp) {
 		this.setModal(true);
 		
 		//nastavení názvu okna

@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import loko.entity.User;
-import loko.service.IFMembersService;
+import loko.service.UserService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -39,7 +39,7 @@ public class ChangePassword extends JDialog {
 	/**
 	 * Otevøení okna pro zmìnu hesla User.
 	 */
-	public ChangePassword(User user, IFMembersService membersService, MembersSearchApp membersSearchApp,
+	public ChangePassword(User user, UserService userService, MembersSearchApp membersSearchApp,
 			boolean isAdmin) {
 		this.setModal(true);
 
@@ -115,7 +115,7 @@ public class ChangePassword extends JDialog {
 
 								// Kontrola hesla s heslem zakodovaným v DB
 								// volání DAO pro validaci password
-								isValidPassword = membersService.authenticate(new String(passwordOld.getPassword()).getBytes("UTF-8")
+								isValidPassword = userService.authenticate(new String(passwordOld.getPassword()).getBytes("UTF-8")
 																																	,user.getId());
 							} 
 							catch (UnsupportedEncodingException e1) {
@@ -136,14 +136,14 @@ public class ChangePassword extends JDialog {
 
 								// kontrola, že bylo uspìšnì uloženo do DB
 								try {
-									membersService.changePassword(user, newPassword);
+									userService.changePassword(user, newPassword);
 									LOGGER.info("Zmìmìno heslo u uživatele id:" + user.getId());
 									JOptionPane.showMessageDialog(null, "Heslo zmìnìno.");
 									setVisible(false);
 								} catch (RuntimeException e2) {
 									LOGGER.warning("Nezdaøilo se zmìnit heslo u uživatele id:" + user.getId() + ". Nastala chyba " 
 																			+ e2.getMessage());
-									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna hesla.");
+									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna hesla. Nastala chyba " + e2.getMessage());
 									return;
 								}
 							}

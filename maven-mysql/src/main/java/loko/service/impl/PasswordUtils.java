@@ -1,4 +1,4 @@
-package loko.service;
+package loko.service.impl;
 
 import java.io.UnsupportedEncodingException;
 

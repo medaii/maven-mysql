@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import loko.entity.Mail;
-import loko.service.IFMembersService;
+import loko.service.MembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -36,7 +36,7 @@ public class AddMailDialog extends JDialog {
 	/**
 	 * Vytvoøení okna
 	 */
-	public AddMailDialog(int id_member,Boolean newMail,IFMembersService membersService, MemberDialog memberDialog,Mail mail) {
+	public AddMailDialog(int id_member,Boolean newMail,MembersService membersService, MemberDialog memberDialog,Mail mail) {
 		memberDialog.setVisible(false);
 		if (newMail && (mail!=null)) {
 			setTitle("P\u0159id\u00E1n\u00ED mailu");

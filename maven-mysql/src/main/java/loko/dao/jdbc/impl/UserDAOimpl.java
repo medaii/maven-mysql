@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import loko.dao.UserDAO;
 import loko.db.executor.impl.DBSqlExecutor;
 import loko.entity.User;
-import loko.service.PasswordUtils;
+import loko.service.impl.PasswordUtils;
 
 /**
  * 

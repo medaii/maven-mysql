@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import loko.entity.Phone;
-import loko.service.IFMembersService;
+import loko.service.MembersService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -37,7 +37,7 @@ private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
 	/**
 	 * Create the dialog.
 	 */
-	public AddPhoneDialog(int id_member,Boolean newPhone,IFMembersService membersService, MemberDialog memberDialog, Phone phone) {		
+	public AddPhoneDialog(int id_member,Boolean newPhone,MembersService membersService, MemberDialog memberDialog, Phone phone) {		
 		memberDialog.setVisible(false);
 		// nastaveni názvu okna
 		if (newPhone && (phone!=null)) {

@@ -10,8 +10,9 @@ import javax.swing.JFrame;
 
 import loko.entity.User;
 import loko.loger.LoggerLoko;
-import loko.service.IFMembersService;
-import loko.service.MembersServiceImpl;
+import loko.service.MembersService;
+import loko.service.UserService;
+import loko.service.impl.UserServiceImpl;
 import loko.tableModel.MembersListTableModel;
 import loko.tableModel.UsersTableModel;
 import loko.value.MemberList;
@@ -59,8 +60,11 @@ public class MembersSearchApp  extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 4801718700352877970L;
-	private IFMembersService membersService; // instance na service tridu
-	//private IFPhoneDAO phoneDAO;
+	
+	// instance na servisní rozhraní
+	private MembersService membersService; 
+	private UserService userService;
+	
 	private JFrame frame;
 	private int userId;
 	private boolean admin;
@@ -97,7 +101,7 @@ public class MembersSearchApp  extends JFrame{
 					UserLoginDialog dialog = new UserLoginDialog();
 					
 					//inicializace servisni tøidy a uživatelského listu
-					dialog.setMembersService(new MembersServiceImpl());
+					dialog.setMembersService(new UserServiceImpl());
 					dialog.populateUsers();
 					
 					// zobrazení okna pro pøihlášení
@@ -118,8 +122,9 @@ public class MembersSearchApp  extends JFrame{
 	 * Vytvoøení hlavního okna aplikace po pøihlašení
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public MembersSearchApp(IFMembersService membersService,int theUserId, boolean theAdmin) {
+	public MembersSearchApp(MembersService membersService,UserService userService, int theUserId, boolean theAdmin) {
 		this.membersService = membersService;
+		this.userService = userService;
 			userId = theUserId;
 			admin = theAdmin;
 			
@@ -414,7 +419,7 @@ public class MembersSearchApp  extends JFrame{
 					return;
 				}
 				User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
-				ChangePassword dialog = new ChangePassword(user, membersService,MembersSearchApp.this, admin );
+				ChangePassword dialog = new ChangePassword(user, userService,MembersSearchApp.this, admin );
 				dialog.setVisible(true);
 			}
 		});
@@ -485,7 +490,7 @@ public class MembersSearchApp  extends JFrame{
 	 */
 	private void editUser(int row) {
 		User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
-		UserDialog dialog = new UserDialog(user, membersService,MembersSearchApp.this, admin, false );
+		UserDialog dialog = new UserDialog(user, userService,MembersSearchApp.this, admin, false );
 		dialog.setVisible(true);
 	}
 	/**
@@ -494,7 +499,7 @@ public class MembersSearchApp  extends JFrame{
 	 */
 	private void addUser() {
 		User user = new User();
-		UserDialog dialog = new UserDialog(user, membersService,MembersSearchApp.this, admin, true );
+		UserDialog dialog = new UserDialog(user, userService,MembersSearchApp.this, admin, true );
 		dialog.setVisible(true);
 	}
 	/**
@@ -528,7 +533,7 @@ public class MembersSearchApp  extends JFrame{
 	public void refreshUsersView() {
 
 		try {
-			List<User> users = membersService.getUsers(admin, userId);
+			List<User> users = userService.getUsers(admin, userId);
 
 			// Vytvoøení tabulky s uživately
 			UsersTableModel model = new UsersTableModel(users);

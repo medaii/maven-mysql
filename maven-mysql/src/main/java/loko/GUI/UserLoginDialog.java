@@ -17,7 +17,8 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
 import loko.entity.User;
-import loko.service.IFMembersService;
+import loko.service.UserService;
+import loko.service.impl.MembersServiceImpl;
 
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JPasswordField;
@@ -37,29 +38,28 @@ public class UserLoginDialog extends JDialog {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private final JPanel contentPanel = new JPanel();
 
-	private IFMembersService membersService; // servisni trida pro DAO
-	//private EmployeeDAO employeeDAO;
-	//private IFUserDAO userDAO; // pro testovaní pøidat = new UserDAO();	
-
+	//service user
+	UserService userService;
+	
 	private JPasswordField passwordField;
 	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxUser;
 	
 	
-	public void setMembersService(IFMembersService membersService) {		
-		this.membersService = membersService;		
+	public void setMembersService(UserService userService) {		
+		this.userService = userService;		
 	}
 	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void populateUsers() {
-		if(membersService != null) {
+		if(userService != null) {
 			// vytvoøí pole a naslednì naplni box
-			List<User> users = membersService.getUsers(true, 0);
+			List<User> users = userService.getUsers(true, 0);
 			comboBoxUser.setModel(new DefaultComboBoxModel(users.toArray(new User[0]))); // vytvoøeni pole s udaji user a do listu pridaní vrácené hodnoty z .toString
 		}
 		else {
-			LOGGER.warning("Neni instance na servisní tøídu.");			
+			throw new RuntimeException("Neni instance na servisní tøidu pro UserDAO.");	
 		}
 	}
 
@@ -160,7 +160,7 @@ public class UserLoginDialog extends JDialog {
 			// naètení password
 			// Kontrola hesla s heslem zakodovaným v DB
 			// volání Service pro validaci password user
-			boolean isValidPassword = membersService.authenticate(new String(passwordField.getPassword()).getBytes("UTF-8"), userId);
+			boolean isValidPassword = userService.authenticate(new String(passwordField.getPassword()).getBytes("UTF-8"), userId);
 			
 			if (isValidPassword) {
 				// validace v poøádku, skrytí okna a spuštìní membersearch okna
@@ -168,7 +168,7 @@ public class UserLoginDialog extends JDialog {
 				setVisible(false);
 
 				// Neni otevøení okna membersearch (hlavní okno)
-				MembersSearchApp frame = new MembersSearchApp(membersService,userId, admin);
+				MembersSearchApp frame = new MembersSearchApp(new MembersServiceImpl(),userService,userId, admin);
 				frame.setLoggedInUserName(theUser.getFirstName(), theUser.getLastName());
 				frame.refreshMembersView();
 				
@@ -188,14 +188,9 @@ public class UserLoginDialog extends JDialog {
 			}
 		}
 		catch (Exception exc) {
-			// zalogování
-			LOGGER.warning("Vyhozeni vyjímky pøi kontrole pøihlašovacích údajù - " + exc.toString());
-			// vypis do konzole
-			exc.printStackTrace();
-			// vyskakovací okno, že nastala chyba behem logování
 			JOptionPane.showMessageDialog(this, "Error during login.", "Error",
 					JOptionPane.ERROR_MESSAGE);
-			
+			throw new RuntimeException("Nastala chyba pøi logovaní - " + exc.toString(), exc);
 		}
 	}
 }

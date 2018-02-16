@@ -17,7 +17,7 @@ import loko.dao.DAOFactory;
 import loko.dao.MailsDAO;
 import loko.entity.Mail;
 import loko.entity.Phone;
-import loko.service.IFMembersService;
+import loko.service.MembersService;
 import loko.value.MemberFull;
 
 import java.awt.event.ActionListener;
@@ -65,7 +65,7 @@ public class AddMemberDialog extends JDialog {
 	 * Vytvoøení okna.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public AddMemberDialog(IFMembersService membersService,MembersSearchApp membersSearchApp) {
+	public AddMemberDialog(MembersService membersService,MembersSearchApp membersSearchApp) {
 		
 		setBounds(100, 100, 737, 598);
 		getContentPane().setLayout(new BorderLayout());

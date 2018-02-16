@@ -36,7 +36,9 @@ public interface IFMembersService {
 	public void deleteMember(int id);
 
 	/**
-	 * Pøijmutí pøepravky MemberFull, kde jsou hodnoty pro tvorbu nových entit Member, CSHRegNumber, RodneCislo,
+	 * Uložení nových entit Member, CSHRegNumber, RodneCislo,
+	 * 					 TrvaleBydliste do DB pomoci  pøepravky MemberFull,
+	 * 					 kde jsou hodnoty pro tvorbu nových entit Member, CSHRegNumber, RodneCislo,
 	 * 					 TrvaleBydliste.
 	 * 
 	 * @param - MemberFull je pøepravka hodnot pro entity Member, CSHRegNumber, RodneCislo,
@@ -46,8 +48,11 @@ public interface IFMembersService {
 	
 	/**
 	 * Aktualizace udaju v entite Member v DB
+	 * 
+	 * @param member - zmìnìna entita Member, která má být uložena do DB
+	 * 
 	 */
-	public void updateMember(Member member, int id);
+	public void updateMember(Member member);
 	
 	/**
 	 * Aktualizace údajù pomoci pøepravky v entitách Member, CSHRegNumber, RodneCislo,
@@ -56,7 +61,7 @@ public interface IFMembersService {
 	 * 					 TrvaleBydliste.
 	 *  
 	 */
-	public void updateMember(MemberFull member, int id);
+	public void updateMember(MemberFull member);
 
 	/**
 	 * Pro nactení všech èlenù v seznamu èlenù v DB
@@ -66,16 +71,14 @@ public interface IFMembersService {
 	public List<Member> getAllMember();
 	
 	/**
-	 * Pro naètení entit Member, Mail, Phone dle parametru active z DB
+	 * Pro naètení entit Member, Mail, Phone dle parametru kategorie z DB
 	 * 
-	 * @param active - pri true vypíše jen aktivní èleny
-	 * 
-	 * @param kategorie - možnost filtru dle vìkové kategorie
+	 * @param kategorie - možnost filtru dle vìkové kategorie nebo aktivity
 	 * 
 	 *@return - vraci pøepravku MemberList, který obsahuje Member, Mail a Phone
 	 *
 	 */
-	public List<MemberList> getAllMemberList(boolean active, int kategorie);
+	public List<MemberList> getAllMemberList(int kategorie);
 	
 	/**
 	 * Funkce vraci seznam èlenu dle hledaných znaku v køesním jménì nebo pøíjmení
@@ -86,7 +89,7 @@ public interface IFMembersService {
 	 * 
 	 * @param kategorie -  možnost filtru dle vìkové kategorie
 	 */
-	public List<MemberList> searchAllMembers(String name, boolean active, int kategorie);
+	public List<MemberList> searchAllMembers(String name, int kategorie);
 	
 	/**
 	 * Vrací entitu Member z DB

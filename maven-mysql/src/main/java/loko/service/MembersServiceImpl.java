@@ -1,5 +1,6 @@
 package loko.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,9 +9,12 @@ import loko.dao.MailsDAO;
 import loko.dao.MembersDAO;
 import loko.dao.PhoneDAO;
 import loko.dao.UserDAO;
+import loko.entity.CshRegNumber;
 import loko.entity.Mail;
 import loko.entity.Member;
 import loko.entity.Phone;
+import loko.entity.RodneCislo;
+import loko.entity.TrvaleBydliste;
 import loko.entity.User;
 import loko.value.MailsMember;
 import loko.value.MemberFull;
@@ -50,18 +54,46 @@ public class MembersServiceImpl implements IFMembersService {
 	}
 
 	@Override
-	public int addMemberFull(MemberFull member) {
-		return membersDAO.addMemberFull(member);
+	public int addMemberFull(MemberFull memberFull) {
+		//vytvoøení z pøepravky MemberFull entitu Member
+		Member member = new Member(memberFull.getFirstName(), memberFull.getLastName(),memberFull.getBirthDay(),
+																memberFull.getNote(),memberFull.getActive(),memberFull.getId_odd_kategorie(),
+																memberFull.getEnterDate());
+		//vytvoøení entity Rodné èíslo
+		RodneCislo rodneCislo = new RodneCislo(memberFull.getRodneCislo());
+		
+		//vytvoøení entity Trvalé bydlištì
+		TrvaleBydliste trvaleBydliste = new TrvaleBydliste(memberFull.getTrvaleBydliste());
+		
+		//vytvoøení entity CSHregistracniCislo
+		CshRegNumber cshRegNumber = new CshRegNumber(memberFull.getChfRegistrace());
+		
+		return membersDAO.addMemberFull(member, rodneCislo, trvaleBydliste, cshRegNumber);
 	}
 
 	@Override
-	public void updateMember(Member member, int id) {
-		membersDAO.updateMember(member, id);
+	public void updateMember(Member member) {
+		membersDAO.updateMember(member);
 	}
 
 	@Override
-	public void updateMember(MemberFull member, int id) {
-		membersDAO.updateMemberFull(member, id);
+	public void updateMember(MemberFull memberFull) {
+			//vytvoøení z pøepravky MemberFull entitu Member
+			Member member = new Member(memberFull.getId(),memberFull.getFirstName(), memberFull.getLastName(),memberFull.getBirthDay(),
+																	memberFull.getNote(),memberFull.getActive(),memberFull.getId_odd_kategorie(),
+																	memberFull.getEnterDate());
+			
+			//vytvoøení entity Rodné èíslo
+			RodneCislo rodneCislo = new RodneCislo(memberFull.getRodneCislo());
+			
+			//vytvoøení entity Trvalé bydlištì
+			TrvaleBydliste trvaleBydliste = new TrvaleBydliste(memberFull.getTrvaleBydliste());
+			
+			//vytvoøení entity CSHregistracniCislo
+			CshRegNumber cshRegNumber = new CshRegNumber(memberFull.getChfRegistrace());
+		
+		
+		membersDAO.updateMemberFull(member, rodneCislo, trvaleBydliste, cshRegNumber);
 	}
 
 	@Override
@@ -70,14 +102,82 @@ public class MembersServiceImpl implements IFMembersService {
 	}
 
 	@Override
-	public List<MemberList> getAllMemberList(boolean active, int kategorie) {
-		return membersDAO.getAllMemberList(active, kategorie);
+	public List<MemberList> getAllMemberList(int kategorie) {
+		List<MemberList> list = new ArrayList<>();
+		//naètení listu entit Member dle vybrané kategorie
+		List<Member> members = membersDAO.getAllMemberList(kategorie);
+		
+		
+		//nactení k vybraným entitám Member telefony
+		Map<Integer, MailsMember> mailsMap = mailsDAO.getAllMailMembers();
+		
+		//nactení k vybraným entitám Member maily		
+		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
+		for (Member member : members) {
+			if (member == null) {
+				throw new RuntimeException("Neinicializován list s Member.");
+			} else {
+
+				List<Mail> mails;
+				List<Phone> phones;
+				if (mailsMap.containsKey(member.getId())) {
+					MailsMember mailsMember = mailsMap.get(member.getId());
+					mails = mailsMember.getMails();
+				} else {
+					mails = null;
+				}
+				if (phoneMap.containsKey(member.getId())) {
+					PhonesMeber phonesMember = phoneMap.get(member.getId());
+					phones = phonesMember.getPhones();
+				} else {
+					phones = null;
+				}
+
+				MemberList memberList = new MemberList(member, mails, phones);
+				list.add(memberList);
+			}
+		}		
+		return list;
 	}
 
 	@Override
-	public List<MemberList> searchAllMembers(String name, boolean active, int kategorie) {
-		//TODO dodìlat v implementaci filtrace dle parametru active a kategorie
-		return membersDAO.searchAllMembers(name, active, kategorie);
+	public List<MemberList> searchAllMembers(String name, int kategorie) {
+		List<MemberList> list = new ArrayList<>();
+		
+		//naètení listu entit Member dle vybrané kategorie
+		List<Member> members = membersDAO.searchAllMembers(name,kategorie);
+				
+		//nactení k vybraným entitám Member telefony
+		Map<Integer, MailsMember> mailsMap = mailsDAO.getAllMailMembers();
+		
+		//nactení k vybraným entitám Member maily		
+		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
+		for (Member member : members) {
+			if (member == null) {
+				throw new RuntimeException("Neinicializován list s Member.");
+			} else {
+
+				List<Mail> mails;
+				List<Phone> phones;
+				if (mailsMap.containsKey(member.getId())) {
+					MailsMember mailsMember = mailsMap.get(member.getId());
+					mails = mailsMember.getMails();
+				} else {
+					mails = null;
+				}
+				if (phoneMap.containsKey(member.getId())) {
+					PhonesMeber phonesMember = phoneMap.get(member.getId());
+					phones = phonesMember.getPhones();
+				} else {
+					phones = null;
+				}
+
+				MemberList memberList = new MemberList(member, mails, phones);
+				list.add(memberList);
+			}
+		}		
+		return list;
+		
 	}
 
 	@Override

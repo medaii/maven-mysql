@@ -1,10 +1,9 @@
 package loko.dao.hibernate.impl;
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.management.RuntimeErrorException;
@@ -12,23 +11,17 @@ import javax.management.RuntimeErrorException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import loko.dao.DAOFactory;
-import loko.dao.MailsDAO;
+
 import loko.dao.MembersDAO;
-import loko.dao.PhoneDAO;
 import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.CshRegNumber;
-import loko.entity.Mail;
 import loko.entity.Member;
-import loko.entity.Phone;
 import loko.entity.RodneCislo;
 import loko.entity.TrvaleBydliste;
-import loko.value.MailsMember;
 import loko.value.MemberFull;
-import loko.value.MemberList;
-import loko.value.PhonesMeber;
 
 /**
+ * Implementace pro pøístup k datùm z tabulky clen_seznam pomoci Hibernate.
  * 
  * @author Erik Markoviè
  *
@@ -43,15 +36,7 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 		this.dbHibernateSqlExecutor = dbHibernateSqlExecutor;
 	}
 
-	/**
-	 * 
-	 * metoda maže záznam o èlenovy a jeho další udaje jako telefon, mail, trvale
-	 * bydlištì, rodné èíslo, cshreg
-	 * 
-	 * @param id
-	 *          - èlena
-	 * @return
-	 */
+	@Override
 	public void deleteMember(int id) {
 		// vyuziti vztahu mezi tabulkami a cascade typ ALL
 		// smazáním radku v tabulce clen_seznam se smažou ostatní zaznamy v DB, které
@@ -59,16 +44,9 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 		dbHibernateSqlExecutor.deleteObject(id, Member.class);
 	}
 
-	/**
-	 * 
-	 * @param memberFull
-	 *          - MemberFull využivano pro tvorbu Modelu v SWING proto posila tento
-	 *          objekt, ktery obsahuje hodnoty pro objekt Member, RodneCislo,
-	 *          TrvaleBydliste,CshRegNumber
-	 * 
-	 * @return nové id
-	 */
-	public int addMemberFull(MemberFull memberFull) {
+	@Override
+	public int addMemberFull(Member member, RodneCislo rodneCislo, TrvaleBydliste trvaleBydliste,
+			CshRegNumber cshRegNumber) {
 
 		// zavolani si instance sessionfactory
 		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
@@ -77,39 +55,23 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 			// start a transaction
 			session.beginTransaction();
 
-			Member member;
-			RodneCislo rodneCislo;
-			TrvaleBydliste trvaleBydliste;
-			CshRegNumber cshRegNumber;
-			// vytvoreni member
-			member = new Member(memberFull.getFirstName(), memberFull.getLastName(), memberFull.getBirthDay(),
-					memberFull.getNote(), memberFull.getActive(), memberFull.getId_odd_kategorie(), memberFull.getEnterDate());
+			// vytvoreni member v DB
+
 			session.save(member); // cascade nastaveny na all, ale moznost, ze nebude zadane ani jedno z
 														// nasledujicich udaju
 
 			// vytvoreni rodného èísla
-			if (memberFull.getRodneCislo() != null) {
-				rodneCislo = new RodneCislo(memberFull.getRodneCislo());
-				// pridani do member
-				rodneCislo.setMember(member);
-				session.save(rodneCislo);
-			}
+			rodneCislo.setMember(member);
+			session.save(rodneCislo);
 
 			// vytvoreni registraciního èísla
-			if (memberFull.getChfRegistrace() != null) {
-				cshRegNumber = new CshRegNumber(memberFull.getChfRegistrace());
-				// pridani do member
-				cshRegNumber.setMember(member);
-				session.save(cshRegNumber);
-			}
+			cshRegNumber.setMember(member);
+			session.save(cshRegNumber);
 
 			// vytvoreni trvalého bydlištì
-			if (memberFull.getTrvaleBydliste() != null) {
-				trvaleBydliste = new TrvaleBydliste(memberFull.getTrvaleBydliste());
-				// pridani do member
-				trvaleBydliste.setMember(member);
-				session.save(trvaleBydliste);
-			}
+			// pridani do member
+			trvaleBydliste.setMember(member);
+			session.save(trvaleBydliste);
 
 			// commit transaction
 			session.getTransaction().commit();
@@ -117,41 +79,19 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 			return member.getId(); // vraci nove id pro otevreni noveho okna k editaci
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.warning("Chyba zápisu memberFull do DB!");
-			return 0;
+			throw new RuntimeException(
+					"Chyba pøi uložení nového èlena - " + member + rodneCislo + trvaleBydliste + cshRegNumber, e);
 		}
 	}
 
-	/**
-	 * 
-	 * @param member
-	 *          - objekt ktery ma nahradit stavajici radek v DB
-	 * 
-	 * @param id
-	 *          - id member na DB
-	 * 
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
-	 * 
-	 *         id, kjmeno, pjmeno, datum_narozeni, poznamka, aktivni,
-	 *         id_odd_kategorie, zacal
-	 */
-	public void updateMember(Member member, int id) {
+	@Override
+	public void updateMember(Member member) {
 		dbHibernateSqlExecutor.updateObject(member);
 	}
 
-	/**
-	 * 
-	 * @param memberFull
-	 *          - MemberFull využivano pro tvorbu Modelu v SWING proto posila tento
-	 *          objekt, ktery obsahuje hodnoty pro objekt Member, RodneCislo,
-	 *          TrvaleBydliste,CshRegNumber
-	 * @param id
-	 *          - id member na DB
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì
-	 * 
-	 */
-	public void updateMemberFull(MemberFull memberFull, int id) {
+	@Override
+	public void updateMemberFull(Member tempMember, RodneCislo tempRodneCislo, TrvaleBydliste tempTrvaleBydliste,
+			CshRegNumber tempCshRegNumber) {
 
 		// zavolani si instance sessionfactory
 		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
@@ -160,73 +100,69 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 			// start a transaction
 			session.beginTransaction();
 
-			Member tempMember;
-			Member member = session.get(Member.class, id);
-			RodneCislo rodneCislo;
-			TrvaleBydliste trvaleBydliste;
-			CshRegNumber cshRegNumber;
-
-			// vytvoreni editovaneho member
-			tempMember = new Member(memberFull.getId(), memberFull.getFirstName(), memberFull.getLastName(),
-					memberFull.getBirthDay(), memberFull.getNote(), memberFull.getActive(), memberFull.getId_odd_kategorie(),
-					memberFull.getEnterDate());
-			
-			// update v DB
-			member.setMember(tempMember);
-
-			// vytvoreni rodného èísla
-			if (memberFull.getRodneCislo() != null) {
-				rodneCislo = member.getRodneCislo();
-				// kdyz jeste zaznam neexistuje
-				if (rodneCislo == null) {
-					rodneCislo = new RodneCislo();
-					rodneCislo.setMember(member);
-				}
-
-				rodneCislo.setRodne_cislo(memberFull.getRodneCislo());
-				session.saveOrUpdate(rodneCislo);
-			}
-
-			// vytvoreni registraciního èísla
-			if (memberFull.getChfRegistrace() != null) {
-				cshRegNumber = member.getCshRegNumber();
-				// kdyz jeste zaznam neexistuje
-				if (cshRegNumber == null) {
-					cshRegNumber = new CshRegNumber();
-					cshRegNumber.setMember(member);
-				}
-
-				cshRegNumber.setRegCislo(memberFull.getChfRegistrace());
-				session.saveOrUpdate(cshRegNumber);
-			}
-
-			// vytvoreni trvalého bydlištì
-			if (memberFull.getTrvaleBydliste() != null) {
-				trvaleBydliste = member.getTrvaleBydliste();
-				// kdyz jeste zaznam neexistuje
-				if (trvaleBydliste == null) {
-					trvaleBydliste = new TrvaleBydliste();
-					trvaleBydliste.setMember(member);
-				}
-				trvaleBydliste.setAdresa(memberFull.getTrvaleBydliste());
-				session.saveOrUpdate(trvaleBydliste);
-			}
+			// zmìna entity Member
+			session.saveOrUpdate(tempMember);
 
 			// commit transaction
 			session.getTransaction().commit();
 
 		} catch (RuntimeErrorException e) {
-			LOGGER.warning("Chyba zápisu memberFull do DB!");
-			throw new RuntimeException("Chyba zápisu memberFull do DB!",e);
+			LOGGER.warning("Chyba zápisu Member do DB!");
+			throw new RuntimeException("Chyba zápisu Member do DB!" + tempMember, e);
+		}
+
+		try (Session session = factory.getCurrentSession();) {
+			// start a transaction
+			session.beginTransaction();
+
+			// naèteni entity Member
+			Member member = session.get(Member.class, tempMember.getId());
+
+			// nastaveni rodneho èísla
+			RodneCislo rodneCislo = member.getRodneCislo();
+			if (rodneCislo == null) {
+				member.setRodneCislo(tempRodneCislo);
+				rodneCislo = tempRodneCislo;
+			} else {
+				rodneCislo.setRodne_cislo(tempRodneCislo.getRodne_cislo());
+			}
+
+			// nastavení trvalého bydlištì
+			TrvaleBydliste trvaleBydliste = member.getTrvaleBydliste();
+			if (trvaleBydliste == null) {
+				member.setTrvaleBydliste(tempTrvaleBydliste);
+				trvaleBydliste = tempTrvaleBydliste;
+			} else {
+				trvaleBydliste.setAdresa(tempTrvaleBydliste.getAdresa());
+			}
+
+			// nastavení CSH registrace
+			CshRegNumber cshRegNumber = member.getCshRegNumber();
+			if (cshRegNumber == null) {
+				member.setCshRegNumber(tempCshRegNumber);
+				;
+				cshRegNumber = tempCshRegNumber;
+			} else {
+				cshRegNumber.setRegCislo(tempCshRegNumber.getRegCislo());
+			}
+
+			// uložení zmìn
+			session.saveOrUpdate(rodneCislo);
+			session.saveOrUpdate(trvaleBydliste);
+			session.saveOrUpdate(cshRegNumber);
+
+			// commit transaction
+			session.getTransaction().commit();
+
+		} catch (RuntimeErrorException e) {
+			LOGGER.warning("Chyba zápisu Rodného èísla, trvalého bydlištì a èísla registrace do DB!");
+			throw new RuntimeException("Chyba zápisu Rodného èísla, trvalého bydlištì a èísla registrace do DB!"
+					+ tempRodneCislo + tempTrvaleBydliste + tempCshRegNumber, e);
 		}
 	}
 
-	/**
-	 * Vrací list tabulky clen seznam z DB
-	 * 
-	 * @return
-	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public List<Member> getAllMember() {
 		// list ktery naplnime z DB
 		List<Member> list = new ArrayList<>();
@@ -246,247 +182,101 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 			session.getTransaction().commit();
 
 		} catch (Exception e) {
-			LOGGER.warning("Chyba zápisu!");
+			throw new RuntimeException("Chyba pøi dotzu pro list entit Member", e);
 		}
 		return list;
 	}
 
-	/**
-	 * Vrací seznam èlenù s kontakty
-	 * 
-	 * @active - natavi kriterie, jestli je clen aktivni
-	 * 
-	 * @kategorie - nastavi kriteria pro vek
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public List<MemberList> getAllMemberList(boolean active, int kategorie) {
-		List<MemberList> list = new ArrayList<>();
-
-		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
-		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
-
-		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
-		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
-
-		
-		
+	// TODO - pøi kategorii 6 se mìní active na false - zmìnit impl GUI
+	// TODO pøesunout èást do servisu vracet jen list Member
+	@Override
+	public List<Member> getAllMemberList(int kategorie) {
 		List<Member> members;
-		//date pro filtraci		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		int nowYear = cal.get(Calendar.YEAR);
-		int nowMonth = cal.get(Calendar.MONTH);
 		
-		
-		java.util.Date dateEnd = new java.util.Date();
-		cal.set(Calendar.YEAR, nowYear - 1000);
-		java.util.Date dateStart = cal.getTime();
-		cal.set(Calendar.YEAR, nowYear +1000);
-		
-		if (kategorie > 0) {
-			// entity nastavene date z java.until proto tento zpusob
-			// vytvoreni formatu
-			
-			switch (kategorie) {
-			case 1:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 18);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 19);
-				}
-				break;
-				
-			case 2:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 18);
-					dateEnd = cal.getTime();
-				} else {
-					dateEnd = cal.getTime();
-				}
-			
-				break;
-			case 3:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 18);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 19);
-				}
-				dateStart = cal.getTime();
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 14);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 15);
-				}
-				dateEnd = cal.getTime();
-
-				break;
-			case 4:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 14);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 15);
-				}
-				dateStart = cal.getTime();
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 10);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 11);
-				}
-				dateEnd = cal.getTime();
-				break;
-			case 5:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 10);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 11);
-				}
-				dateStart = cal.getTime();
-
-				break;
-			default:
-				cal.set(Calendar.YEAR, nowYear - 1000);
-				dateEnd = cal.getTime();
-				break;
-			}
-		}
-		
+		//vytvoøení intervalu dle kategorie
+		Interval interval = getInterval(kategorie);
 		
 		// zavolani instance sessionFactoru
-			SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
-			// vytrvoreni session
-			try (Session session = factory.getCurrentSession();) {
-				// start a transaction
-				session.beginTransaction();
-				// dotaz
-				String dotaz1 = "select distinct i from Member i join fetch i.cshRegNumber " + "join fetch i.rodneCislo "
-					
-						+ "join fetch i.trvaleBydliste "
-						+  "where i.birthDay between :start and :end ";
-				if(active) {
-					dotaz1 += "AND i.active = 1 ";
-					System.out.println(dotaz1);
-				}
-				members = session.createQuery( dotaz1 + "ORDER BY i.birthDay ASC")
-							.setParameter("start", dateStart).setParameter("end", dateEnd).list();
-				
-				for (Member member : members) {
-					if (member == null) {
-						LOGGER.warning("Chybné pole");
-					} else {
+		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
+		
+		// vytrvoreni session
+		try (Session session = factory.getCurrentSession();) {
+			
+			// start a transaction
+			session.beginTransaction();
+			// dotaz
+			String dotaz1 = "select distinct i from Member i join fetch i.cshRegNumber " + "join fetch i.rodneCislo "
 
-						List<Mail> mails;
-						List<Phone> phones;
-						if (mailsMap.containsKey(member.getId())) {
-							MailsMember mailsMember = mailsMap.get(member.getId());
-							mails = mailsMember.getMails();
-						} else {
-							mails = null;
-						}
-						if (phoneMap.containsKey(member.getId())) {
-							PhonesMeber phonesMember = phoneMap.get(member.getId());
-							phones = phonesMember.getPhones();
-						} else {
-							phones = null;
-						}
+					+ "join fetch i.trvaleBydliste " + "where i.birthDay between :start and :end ";
+			if (kategorie != 6) {
+				dotaz1 += "AND i.active = 1 ";
 
-						MemberList memberList = new MemberList(member, mails, phones);
-						list.add(memberList);
-					}
-				}
-				
-				// commit transaction
-				session.getTransaction().commit();
 			}
-			catch (Exception e) {
-				LOGGER.warning("Chyba zápisu!" + e);
-			}
-		return list;
+			@SuppressWarnings("unchecked")
+			List<Member> list2 = session.createQuery(dotaz1 + "ORDER BY i.birthDay ASC")
+																.setParameter("start", interval.getDateStart())
+																.setParameter("end", interval.getDateEnd()).list();
+			members = list2;
+
+			// commit transaction
+			session.getTransaction().commit();
+		
+		} catch (Exception e) {
+			throw new RuntimeException("Chyba vypisu èlenù.",e);
+		}
+		//vrací list members dle kategorie
+		return members;
 	}
 
-	/**
-	 * list pro vyhledavani v seznamu dle jmena clena
-	 */
-	public List<MemberList> searchAllMembers(String name, boolean active, int kategorie) {
+
+	@Override
+	public List<Member> searchAllMembers(String name, int kategorie) {
+		List<Member> list = new ArrayList<>();
 		
-		List<MemberList> list = new ArrayList<>();
+		//vytvoøení intervalu dle kategorie
+		Interval interval = getInterval(kategorie);
+		
 		String word = "%" + name;
 		word += "%";
-		
-		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
-		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
 
-		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
-		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
+		// zavolani instance sessionFactoru
+		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
+		// vytrvoreni session
+		try (Session session = factory.getCurrentSession();) {
+			// start a transaction
+			session.beginTransaction();
+			// dotaz
 
-	// zavolani instance sessionFactoru
-				SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
-				// vytrvoreni session
-				try (Session session = factory.getCurrentSession();) {
-					// start a transaction
-					session.beginTransaction();
-					// dotaz
-					
-					String dotaz1 = "select distinct i from Member i join fetch i.cshRegNumber " + "join fetch i.rodneCislo "						
-							+ "join fetch i.trvaleBydliste "
-							+  "where i.firstName like :word or i.lastName like :word ";
+			String dotaz1 = "select distinct i from Member i join fetch i.cshRegNumber " + "join fetch i.rodneCislo "
+					+ "join fetch i.trvaleBydliste " + "where i.birthDay between :start and :end "
+					+ "and (i.firstName like :word or i.lastName like :word) ";
+			
+			//jestli neaktivni zobrazit
+			if (kategorie != 6) {
+				dotaz1 += "AND i.active = 1 ";
 
-					@SuppressWarnings("unchecked")
-					List<Member> members = session.createQuery( dotaz1 + "ORDER BY i.birthDay ASC")
-								.setParameter("word", word).list();
-					
-					for (Member member : members) {
-						if (member == null) {
-							LOGGER.warning("Chybné pole");
-						} else {
-
-							List<Mail> mails;
-							List<Phone> phones;
-							if (mailsMap.containsKey(member.getId())) {
-								MailsMember mailsMember = mailsMap.get(member.getId());
-								mails = mailsMember.getMails();
-							} else {
-								mails = null;
-							}
-							if (phoneMap.containsKey(member.getId())) {
-								PhonesMeber phonesMember = phoneMap.get(member.getId());
-								phones = phonesMember.getPhones();
-							} else {
-								phones = null;
-							}
-
-							MemberList memberList = new MemberList(member, mails, phones);
-							list.add(memberList);
-						}
-					}
-					
-					// commit transaction
-					session.getTransaction().commit();
-				} 
-				catch (Exception e) {
-					LOGGER.warning("Chyba zápisu!" + e);
-				}
+			}
+			
+			@SuppressWarnings("unchecked")
+			List<Member> members = session.createQuery(dotaz1 + "ORDER BY i.birthDay ASC")
+														.setParameter("start", interval.getDateStart())
+														.setParameter("end", interval.getDateEnd())													
+														.setParameter("word", word).list();
+			list = members;
+			// commit transaction
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			throw new RuntimeException("Chyba ètení z DB list entit Member." + e);
+		}
 		return list;
 	}
 
-	/**
-	 * vrací vybraného èlena
-	 * 
-	 * @param id
-	 * @return Member
-	 */
+	@Override
 	public Member getMember(int id) {
 		return (Member) dbHibernateSqlExecutor.getObject(id, Member.class);
 	}
 
-	/**
-	 * vrací vybraného èlena s rodným èíslem, trvalím bydlištìm a èíslem
-	 * registraèního prùkazu
-	 * 
-	 * @param id
-	 * @return
-	 */
+	@Override
 	public MemberFull getMemberFull(int id) {
 
 		// zavolani instance sessionFactoru
@@ -503,25 +293,128 @@ public class MembersHibernateDAOImpl implements MembersDAO {
 			CshRegNumber cshRegNumber = member.getCshRegNumber();
 			// commit transaction
 			session.getTransaction().commit();
-			
+
 			// kontrola praznych objektu
-			if(rodneCislo==null) {
+			if (rodneCislo == null) {
 				rodneCislo = new RodneCislo();
 			}
-			if(trvaleBydliste==null) {
+			if (trvaleBydliste == null) {
 				trvaleBydliste = new TrvaleBydliste();
 			}
-			if(cshRegNumber==null) {
+			if (cshRegNumber == null) {
 				cshRegNumber = new CshRegNumber();
 			}
-			
-			return new MemberFull(member, rodneCislo, cshRegNumber, trvaleBydliste);
-			
-		} catch (Exception e) {
-			LOGGER.warning("Chyba zápisu!");
-			return null;
-		}
-		
-	}
 
+			return new MemberFull(member, rodneCislo, cshRegNumber, trvaleBydliste);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Chyba pøi práci s databází a vyèítaní MemberFull z id member - " + id,e);
+		}
+
+	}
+	
+	
+	private Interval getInterval(int kategorie) {
+	// date pro filtraci
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.MONTH, Calendar.JANUARY);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			int nowYear = cal.get(Calendar.YEAR);
+			int nowMonth = cal.get(Calendar.MONTH);
+
+			java.util.Date dateEnd = new java.util.Date();
+			cal.set(Calendar.YEAR, nowYear - 1000);
+			java.util.Date dateStart = cal.getTime();
+			cal.set(Calendar.YEAR, nowYear + 1000);
+
+			if (kategorie > 0) {
+				// entity nastavene date z java.until proto tento zpusob
+				// vytvoreni formatu
+
+				switch (kategorie) {
+				case 1:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 18);
+						dateEnd = cal.getTime();
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 19);
+						dateEnd = cal.getTime();
+					}
+					break;
+
+				case 2:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 18);
+						dateStart = cal.getTime();
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 19);
+						dateStart = cal.getTime();
+					}
+					break;
+				case 3:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 18);
+
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 19);
+					}
+					dateStart = cal.getTime();
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 14);
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 15);
+					}
+					dateEnd = cal.getTime();
+
+					break;
+				case 4:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 14);
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 15);
+					}
+					dateStart = cal.getTime();
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 10);
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 11);
+					}
+					dateEnd = cal.getTime();
+					break;
+				case 5:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 10);
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 11);
+					}
+					dateStart = cal.getTime();
+
+					break;
+				default:
+					cal.set(Calendar.YEAR, nowYear - 1000);
+					dateStart = cal.getTime();
+					break;
+				}
+			}
+
+		return new Interval(dateStart, dateEnd);
+	}
+	
+	private class Interval {
+		private java.util.Date dateStart;
+		private java.util.Date dateEnd;
+		
+		public Interval(Date dateStart, Date dateEnd) {
+			this.dateStart = dateStart;
+			this.dateEnd = dateEnd;
+		}
+
+		public java.util.Date getDateStart() {
+			return dateStart;
+		}
+
+		public java.util.Date getDateEnd() {
+			return dateEnd;
+		}
+	}
 }

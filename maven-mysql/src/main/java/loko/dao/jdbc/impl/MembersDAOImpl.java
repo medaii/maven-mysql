@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
+
 
 import loko.dao.DAOFactory;
 import loko.dao.MailsDAO;
@@ -21,7 +21,6 @@ import loko.entity.RodneCislo;
 import loko.entity.TrvaleBydliste;
 import loko.value.MailsMember;
 import loko.value.MemberFull;
-import loko.value.MemberList;
 import loko.value.PhonesMeber;
 
 /**
@@ -39,15 +38,7 @@ public class MembersDAOImpl implements MembersDAO {
 		this.sqlExecutor = sqlExecutor;
 	}
 
-	/**
-	 * 
-	 * metoda maže záznam o èlenovy a jeho další udaje jako telefon, mail, trvale
-	 * bydlištì, rodné èíslo, cshreg
-	 * 
-	 * @param id
-	 *          - èlena
-	 * @return
-	 */
+	@Override
 	public void deleteMember(int id) {
 		// vytvoreni pøistupu k mailùm a telefonum
 		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
@@ -118,12 +109,8 @@ public class MembersDAOImpl implements MembersDAO {
 		sqlExecutor.deleteRow(dotaz, id);
 	}
 
-	/**
-	 * 
-	 * @param member
-	 * @return nové id
-	 */
-	public int addMemberFull(MemberFull member) {
+	@Override
+	public int addMemberFull(Member member, RodneCislo rodneCislo, TrvaleBydliste trvaleBydliste, CshRegNumber cshRegNumber) {
 		String dotaz = "insert into clen_seznam"
 				+ " (kjmeno, pjmeno, datum_narozeni, poznamka, aktivni, id_odd_kategorie, zacal)"
 				+ " values (?, ?, ?, ?, ?, ?, ?)";
@@ -135,71 +122,60 @@ public class MembersDAOImpl implements MembersDAO {
 
 		if (id > 0) {
 			dotaz = "insert into clen_rodne_cislo" + " (id_osoby, rodne_cislo)" + " values (?, ?)";
-			String[] hodnotyRC = { String.valueOf(id), member.getRodneCislo() };
+			String[] hodnotyRC = { String.valueOf(id), rodneCislo.getRodne_cislo() };
 			int idRC = sqlExecutor.insertDotaz(dotaz, hodnotyRC);
 			LOGGER.info("Vytvoøeno nové rodné èíslo id:" + idRC + "k èlenovy id:" + id);
 			dotaz = "insert into clen_trvala_adresa" + " (id_osoby, adresa)" + " values (?, ?)";
-			String[] hodnotyTR = { String.valueOf(id), member.getTrvaleBydliste() };
+			String[] hodnotyTR = { String.valueOf(id), trvaleBydliste.getAdresa() };
 			int idTR = sqlExecutor.insertDotaz(dotaz, hodnotyTR);
 			LOGGER.info("Vytvoøeno nové trvalé bydlištì id:" + idTR + "k èlenovy id:" + id);
 
 			dotaz = "insert into cshRegC" + " (id_osoby, regCislo)" + " values (?, ?)";
-			String[] hodnotyReg = { String.valueOf(id), member.getChfRegistrace() };
+			String[] hodnotyReg = { String.valueOf(id),cshRegNumber.getRegCislo() };
 			int idReg = sqlExecutor.insertDotaz(dotaz, hodnotyReg);
 			LOGGER.info("Vytvoøeno nové èíslo registrace ÈSH id:" + idReg + "k èlenovy id:" + id);
+		}
+		else {
+			throw new RuntimeException("Chyba pøi zapisu nového zaznamu Member " + member);
 		}
 		return id;
 	}
 
-	/**
-	 * 
-	 * @param member
-	 *          - objekt ktery má být nahrán do DB
-	 * @param id
-	 *          - id member na DB
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì id, kjmeno, pjmeno,
-	 *         datum_narozeni, poznamka, aktivni, id_odd_kategorie, zacal
-	 */
-	public void updateMember(Member member, int id) {
+	@Override
+	public void updateMember(Member member) {
 		String dotaz = "update clen_seznam" + " set kjmeno = ?, pjmeno = ?, datum_narozeni = ? , poznamka = ?, aktivni = ?"
 				+ ", id_odd_kategorie = ? , zacal = ? where id = ?";
 		String[] hodnoty = { member.getFirstName(), member.getLastName(), String.valueOf(member.getBirthDay()),
 				member.getNote(), String.valueOf(member.getActive()), String.valueOf(member.getId_odd_kategorie()),
-				String.valueOf(member.getEnterDate()), String.valueOf(id) };
+				String.valueOf(member.getEnterDate()), String.valueOf(member.getId()) };
 		sqlExecutor.setDotaz(dotaz, hodnoty);
 	}
 
-	/**
-	 * 
-	 * @param memberfull
-	 *          - objekt ktery má být nahrán do DB
-	 * @param id
-	 *          - id member na DB
-	 * @return - vrací poèet zmìnìných øádku nebo -1 pøi chybì id, kjmeno, pjmeno,
-	 *         datum_narozeni, poznamka, aktivni, id_odd_kategorie, zacal
-	 */
-	public void updateMemberFull(MemberFull member, int id) {
+
+	@Override
+	public void updateMemberFull(Member tempMember, RodneCislo tempRodneCislo, TrvaleBydliste tempTrvaleBydliste,
+			CshRegNumber tempCshRegNumber) {
 		String dotaz = "update clen_seznam" + " set kjmeno = ?, pjmeno = ?, datum_narozeni = ? , poznamka = ?, aktivni = ?"
 				+ ", id_odd_kategorie = ? , zacal = ? where id = ?";
-		String[] hodnoty = { member.getFirstName(), member.getLastName(), String.valueOf(member.getBirthDay()),
-				member.getNote(), String.valueOf(member.getActive()), String.valueOf(member.getId_odd_kategorie()),
-				String.valueOf(member.getEnterDate()), String.valueOf(id) };
+		String[] hodnoty = { tempMember.getFirstName(), tempMember.getLastName(), String.valueOf(tempMember.getBirthDay()),
+				tempMember.getNote(), String.valueOf(tempMember.getActive()), String.valueOf(tempMember.getId_odd_kategorie()),
+				String.valueOf(tempMember.getEnterDate()), String.valueOf(tempMember.getId()) };
 		try {
 			sqlExecutor.setDotaz(dotaz, hodnoty);
 			// zapis rodneho cisla
 			try {
 				dotaz = "update clen_rodne_cislo" + " set rodne_cislo = ?" + " where id_osoby = ?";
-				String[] hodnotyRC = { member.getRodneCislo(), String.valueOf(id) };
+				String[] hodnotyRC = { tempRodneCislo.getRodne_cislo(), String.valueOf(tempMember.getId()) };
 				sqlExecutor.setDotaz(dotaz, hodnotyRC);
 				// zapis trvaleho bydliste
 				try {
 					dotaz = "update clen_trvala_adresa" + " set adresa = ?" + " where id_osoby = ?";
-					String[] hodnotyTR = { member.getTrvaleBydliste(), String.valueOf(id) };
+					String[] hodnotyTR = { tempTrvaleBydliste.getAdresa(), String.valueOf(tempMember.getId()) };
 					sqlExecutor.setDotaz(dotaz, hodnotyTR);
 					// zapis cisla registrace
 					try {
 						dotaz = "update cshRegC" + " set regCislo = ?" + " where id_osoby = ?";
-						String[] hodnotyRegC = { member.getChfRegistrace(), String.valueOf(id) };
+						String[] hodnotyRegC = { tempCshRegNumber.getRegCislo(), String.valueOf(tempMember.getId()) };
 						sqlExecutor.setDotaz(dotaz, hodnotyRegC);
 					} catch (RuntimeException e) {
 						throw new RuntimeException("Chyba pøi vykonavaní SQL set pøíkazu u objektu." + CshRegNumber.class.getName(),
@@ -233,7 +209,7 @@ public class MembersDAOImpl implements MembersDAO {
 		for (String[] a : r) {
 			Member temp = convertRowToMember(a);
 			if (temp == null) {
-				LOGGER.warning("Chybné pole");
+				throw new RuntimeException("Chyba pøi dotazu na databázi " + dotaz);
 			} else {
 				list.add(temp);
 			}
@@ -242,181 +218,62 @@ public class MembersDAOImpl implements MembersDAO {
 		return list;
 	}
 
-	/**
-	 * Vrací seznam èlenù s kontakty
-	 * 
-	 * @return
-	 */
-	public List<MemberList> getAllMemberList(boolean active, int kategorie) {
-		List<MemberList> list = new ArrayList<>();
+	@Override
+	public List<Member> getAllMemberList(int kategorie) {
+		List<Member> members = new ArrayList<>();
+		
 		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
 
-		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
-		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
-
-		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
-		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
 		String dotaz;
 		String where = "";
-		if (active) {
-			where += "WHERE aktivni= 1 ";
+		
+		Interval interval = getInterval(kategorie);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		where = "WHERE datum_narozeni < '" + sdf.format(interval.getDateStart()) 
+					+ "' AND datum_narozeni > '" + sdf.format(interval.getDateEnd()) + "' ";
+		if (kategorie != 6) {
+			where += "AND aktivni= 1 ";
 		}
-		if (kategorie > 0) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Calendar cal = Calendar.getInstance();
-			int nowYear = cal.get(Calendar.YEAR);
-			int nowMonth = cal.get(Calendar.MONTH);
-			cal.set(Calendar.MONTH, Calendar.JANUARY);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			// String date = sdf.format(cal.getTime());
-
-			switch (kategorie) {
-			case 1:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 18);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 19);
-				}
-				where += "AND datum_narozeni < '" + sdf.format(cal.getTime()) + "' ";
-				break;
-			case 2:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 18);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 19);
-				}
-				where += "AND datum_narozeni > '" + sdf.format(cal.getTime()) + "' ";
-				break;
-			case 3:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 18);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 19);
-				}
-				where += "AND datum_narozeni > '" + sdf.format(cal.getTime()) + "' ";
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 14);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 15);
-				}
-				where += "AND datum_narozeni < '" + sdf.format(cal.getTime()) + "' ";
-
-				break;
-			case 4:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 14);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 15);
-				}
-				where += "AND datum_narozeni > '" + sdf.format(cal.getTime()) + "' ";
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 10);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 11);
-				}
-				where += "AND datum_narozeni < '" + sdf.format(cal.getTime()) + "' ";
-				break;
-			case 5:
-				if (nowMonth > 6) {
-					cal.set(Calendar.YEAR, nowYear - 10);
-				} else {
-					cal.set(Calendar.YEAR, nowYear - 11);
-				}
-				where += "AND datum_narozeni > '" + sdf.format(cal.getTime()) + "' ";
-
-				break;
-			default:
-				break;
-			}
-		}
-		if (active && kategorie != 6) {
-			dotaz = "Select * from clen_seznam " + where + " ORDER BY clen_seznam.datum_narozeni ASC";
-
-		} else {
-			dotaz = "Select * from clen_seznam ORDER BY clen_seznam.datum_narozeni ASC";
-		}
-
+		
+		dotaz = "Select * from clen_seznam " + where +"ORDER BY clen_seznam.datum_narozeni ASC";
+			
 		sqlExecutor.getData(dotaz, r);
 
 		for (String[] a : r) {
 			Member member = convertRowToMember(a);
-
-			if (member == null) {
-				LOGGER.warning("Chybné pole");
-			} else {
-
-				List<Mail> mails;
-				List<Phone> phones;
-				if (mailsMap.containsKey(member.getId())) {
-					MailsMember mailsMember = mailsMap.get(member.getId());
-					mails = mailsMember.getMails();
-				} else {
-					mails = null;
-				}
-				if (phoneMap.containsKey(member.getId())) {
-					PhonesMeber phonesMember = phoneMap.get(member.getId());
-					phones = phonesMember.getPhones();
-				} else {
-					phones = null;
-				}
-
-				MemberList memberList = new MemberList(member, mails, phones);
-				list.add(memberList);
-			}
+			members.add(member);			
 		}
-
-		return list;
+		return members;
 	}
 
-	public List<MemberList> searchAllMembers(String name, boolean active, int kategorie) {
-		List<MemberList> list = new ArrayList<>();
+	public List<Member> searchAllMembers(String name, int kategorie) {
+		List<Member> list = new ArrayList<>();
 		String word = "%" + name;
 		word += "%";
 
-		MailsDAO mailsDao = DAOFactory.createDAO(MailsDAO.class);
-		PhoneDAO phoneDAO = DAOFactory.createDAO(PhoneDAO.class);
-
-		Map<Integer, MailsMember> mailsMap = mailsDao.getAllMailMembers();
-		Map<Integer, PhonesMeber> phoneMap = phoneDAO.getAllPhonesMembers();
-
+		String where = "";
+		
+		Interval interval = getInterval(kategorie);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		where = "WHERE datum_narozeni < '" + sdf.format(interval.getDateStart()) 
+					+ "' AND datum_narozeni > '" + sdf.format(interval.getDateEnd()) + "' "
+					+	"AND (kjmeno like '" + word + "' OR pjmeno like '" + word + "') ";
+		if (kategorie != 6) {
+			where += "AND aktivni= 1 ";
+		}
+		
 		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
 		String dotaz;
-		if (active) {
-			dotaz = "Select * from clen_seznam" + " where (kjmeno like '" + word + "' OR pjmeno like '" + word
-					+ "') AND aktivni = 1 ";
-		} else {
-			dotaz = "Select * from clen_seznam" + " where kjmeno like '" + word + "' OR pjmeno like '" + word + "' ";
-
-		}
-
+		
+		dotaz = "Select * from clen_seznam " + where +"ORDER BY clen_seznam.datum_narozeni ASC";
+		
 		sqlExecutor.getData(dotaz, r);
 
 		for (String[] a : r) {
 			Member member = convertRowToMember(a);
-
-			if (member == null) {
-				LOGGER.warning("Chybné pole");
-			} else {
-				List<Mail> mails = new ArrayList<>();
-				List<Phone> phones;
-				if (mailsMap.containsKey(member.getId())) {
-					MailsMember mailsMember = mailsMap.get(member.getId());
-					mails = mailsMember.getMails();
-				} else {
-					Mail mail = new Mail(member.getId(), "", "");
-					mails.add(mail);
-				}
-				if (phoneMap.containsKey(member.getId())) {
-					PhonesMeber phonesMember = phoneMap.get(member.getId());
-					phones = phonesMember.getPhones();
-				} else {
-					phones = null;
-				}
-				LOGGER.fine("Mail" + mails);
-
-				MemberList memberList = new MemberList(member, mails, phones);
-				list.add(memberList);
-			}
+			list.add(member);
 		}
 
 		return list;
@@ -439,14 +296,8 @@ public class MembersDAOImpl implements MembersDAO {
 
 		return member;
 	}
-
-	/**
-	 * vrací vybraného èlena s rodným èíslem, trvalím bydlištìm a èíslem
-	 * registraèního prùkazu
-	 * 
-	 * @param id
-	 * @return
-	 */
+	
+	@Override
 	public MemberFull getMemberFull(int id) {
 		MemberFull memberFull = null;
 		ArrayList<String[]> r = new ArrayList<>();// databaze vráti výsledek do listu
@@ -475,6 +326,7 @@ public class MembersDAOImpl implements MembersDAO {
 	}
 
 	/**
+	 * Namapuje data z tabulky do entity Member
 	 * 
 	 * @param temp
 	 * @return jednoduchy objekt member
@@ -560,12 +412,108 @@ public class MembersDAOImpl implements MembersDAO {
 
 		return true;
 	}
+	
+	
+	private Interval getInterval(int kategorie) {
+	// date pro filtraci
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.MONTH, Calendar.JANUARY);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			int nowYear = cal.get(Calendar.YEAR);
+			int nowMonth = cal.get(Calendar.MONTH);
 
-	public static void main(String[] args) {
+			java.util.Date dateEnd = new java.util.Date();
+			cal.set(Calendar.YEAR, nowYear - 1000);
+			java.util.Date dateStart = cal.getTime();
+			cal.set(Calendar.YEAR, nowYear + 1000);
 
-		// TODO Auto-generated method stub
-		MembersDAO membersDAO = DAOFactory.createDAO(MembersDAO.class);
+			if (kategorie > 0) {
+				// entity nastavene date z java.until proto tento zpusob
+				// vytvoreni formatu
 
-		membersDAO.getMemberFull(168);
+				switch (kategorie) {
+				case 1:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 18);
+						dateEnd = cal.getTime();
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 19);
+						dateEnd = cal.getTime();
+					}
+					break;
+
+				case 2:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 18);
+						dateStart = cal.getTime();
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 19);
+						dateStart = cal.getTime();
+					}
+					break;
+				case 3:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 18);
+
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 19);
+					}
+					dateStart = cal.getTime();
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 14);
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 15);
+					}
+					dateEnd = cal.getTime();
+
+					break;
+				case 4:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 14);
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 15);
+					}
+					dateStart = cal.getTime();
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 10);
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 11);
+					}
+					dateEnd = cal.getTime();
+					break;
+				case 5:
+					if (nowMonth > 6) {
+						cal.set(Calendar.YEAR, nowYear - 10);
+					} else {
+						cal.set(Calendar.YEAR, nowYear - 11);
+					}
+					dateStart = cal.getTime();
+
+					break;
+				default:
+					cal.set(Calendar.YEAR, nowYear - 1000);
+					dateStart = cal.getTime();
+					break;
+				}
+			}
+		return new Interval(dateStart, dateEnd);
+	}
+	
+	private class Interval {
+		private java.util.Date dateStart;
+		private java.util.Date dateEnd;
+		
+		public Interval(java.util.Date dateStart, java.util.Date dateEnd) {
+			this.dateStart = dateStart;
+			this.dateEnd = dateEnd;
+		}
+
+		public java.util.Date getDateStart() {
+			return dateStart;
+		}
+
+		public java.util.Date getDateEnd() {
+			return dateEnd;
+		}
 	}
 }

@@ -461,7 +461,7 @@ public class MembersSearchApp  extends JFrame{
 			
 			List<MemberList> membersList = null;
 			if (name != null && name.trim().length() > 0) {
-				membersList = membersService.searchAllMembers(name, true, id_kategorie);
+				membersList = membersService.searchAllMembers(name, id_kategorie);
 			} else {
 					refreshMembersView();
 					return;
@@ -511,7 +511,7 @@ public class MembersSearchApp  extends JFrame{
 	public void refreshMembersView() {
 
 		try {
-			List<MemberList> members = membersService.getAllMemberList(true, id_kategorie);
+			List<MemberList> members = membersService.getAllMemberList(id_kategorie);
 			
 			// create the model and update the "table"
 			MembersListTableModel model = new MembersListTableModel(members);

@@ -2,9 +2,11 @@ package loko.dao;
 
 import java.util.List;
 
+import loko.entity.CshRegNumber;
 import loko.entity.Member;
+import loko.entity.RodneCislo;
+import loko.entity.TrvaleBydliste;
 import loko.value.MemberFull;
-import loko.value.MemberList;
 
 /**
  * Rozhrani pro pøístup k datùm z tabulky clen_seznam.
@@ -16,57 +18,83 @@ import loko.value.MemberList;
 public interface MembersDAO {
 	
 	/**
-	 *  Smazazni zaznamu member z DB
+	 * metoda maže záznam o èlenovy a jeho další udaje jako telefon, mail, trvale
+	 * bydlištì, rodné èíslo, cshreg
+	 * 
 	 * @param id - id entity
 	 */
 	public void deleteMember(int id);
 	
 	/**
+	 * Provede pøidání entit Member, CshRegNumber, RodneCislo,
+	 * 					 TrvaleBydliste do DB
 	 * 
-	 * @param memberFull -  objekt pro pro model v GUI využitý pro uložení editovaných nebo novì zadaných údajù do DB
-	 * @return id nové entity Member
+	 * @param member - Entita Member, která má být uložena do DB
+	 * 
+	 * @param rodneCislo - Entita RodneCislo, která má být uložena do DB
+	 * 
+	 * @param trvaleBydliste - Entita TrvaleBydliste, která má být uložena do DB
+	 * 
+	 * @param cshRegNumber - Entita CshRegNumber, která má být uložena do DB
+	 * 
+	 * @return - vrací id nové entity Member
 	 */
-	public int addMemberFull(MemberFull member);
+	public int addMemberFull(Member member, RodneCislo rodneCislo, 
+														TrvaleBydliste trvaleBydliste, CshRegNumber cshRegNumber);
 	
 	/**
+	 * Aktualizace zaznamu entity Member
 	 * 
 	 * @param member - Entita, kde byli zmìnìny údaje, které mají být nahrany do DB
-	 * @param id - id member na DB
-	 * 
 	 * 
 	 */
-	public void updateMember(Member member, int id);
+	public void updateMember(Member member);
 	
 	/**
+	 * Provede aktualizaci entit Member, CshRegNumber, RodneCislo,
+	 * 					 TrvaleBydliste do DB
 	 * 
-	 * @param memberfull - objekt pro pro model v GUI využitý pro uložení editovaných nebo novì zadaných údajù do DB
-	 * @param id - id member na DB
+	 * 
+	 * @param member - Entita Member, která má být uložena do DB
+	 * 
+	 * @param rodneCislo - Entita RodneCislo, která má být uložena do DB
+	 * 
+	 * @param trvaleBydliste - Entita TrvaleBydliste, která má být uložena do DB
+	 * 
+	 * @param cshRegNumber - Entita CshRegNumber, která má být uložena do DB
+	 * 
 	 */
-	public void updateMemberFull(MemberFull member, int id);
+	public void updateMemberFull(Member member, RodneCislo rodneCislo,
+																TrvaleBydliste trvaleBydliste, CshRegNumber cshRegNumber);
 	
 	/**
 	 * Vrací list tabulky clen seznam z DB
+	 * 
 	 * @return - List naplneny entitami Member z DB
 	 */
 	public List<Member> getAllMember();
 	
 	/**
 	 * Vrací seznam èlenù s kontakty (tabulky Phone a Mail)
+	 * 
+	 * 
+	 * 
 	 * @return - vraci list objektu MemberList využitý pro model GUI
 	 */
-	public List<MemberList> getAllMemberList(boolean active, int kategorie);
+	public List<Member> getAllMemberList(int kategorie);
 	
 	/**
+	 * Vrac9 list entir Member dle kategorie
 	 * 
-	 * @param name - hledaný èast text v sloupcich køesního jména nebo pøíjmení
-	 * @param active - filtr aktivních èlenù
-	 * @param kategorie - filtr vìkové kategorie
-	 * @return - vrací list objektu MemberList pro model GUI
+	 * @param kategorie - filtr dle zvolené kategorie
+	 * 
+	 * @return - vrací list entit member dle kategorie
 	 */
-	public List<MemberList> searchAllMembers(String name, boolean active,int kategorie) ;
+	public List<Member> searchAllMembers(String name,int kategorie) ;
 	
 	/**
 	 * vrací vybranou entitu Member 
+	 * 
 	 * @param id - id entity Member
 	 * @return vraci Member
 	 */

@@ -468,7 +468,7 @@ public class MemberDialog extends JDialog {
 						memberFull.setId_odd_kategorie(id_kategorie_odd);
 						
 						// uložení do DB
-						membersService.updateMember(memberFull, memberFull.getId());
+						membersService.updateMember(memberFull);
 						// zavrit dialogove okno
 						setVisible(false);
 						dispose();

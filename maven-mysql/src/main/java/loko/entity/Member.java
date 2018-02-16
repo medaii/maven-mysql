@@ -54,7 +54,7 @@ public class Member {
 	@OneToMany(mappedBy="member", cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	private List<Phone> phones ;
 	
-	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.EAGER)
 	private RodneCislo rodneCislo;
 	
 	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.LAZY)

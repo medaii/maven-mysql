@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import loko.core.Mail;
-import loko.core.MemberList;
-import loko.core.Phone;
+import loko.entity.Mail;
+import loko.entity.Phone;
+import loko.value.MemberList;
 /**
  * 
  * @author Erik Markoviè

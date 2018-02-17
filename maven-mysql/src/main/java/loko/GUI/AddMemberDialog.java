@@ -13,16 +13,12 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 
-import loko.DAO.DAOFactory;
-import loko.DAO.IFMailsDAO;
-import loko.DAO.IFMembersDAO;
-import loko.DAO.IFPhoneDAO;
-import loko.DAO.MembersDAOImpl;
-import loko.core.Mail;
-import loko.core.MemberFull;
-import loko.core.MemberList;
-import loko.core.Phone;
-import loko.tableModel.MembersListTableModel;
+import loko.dao.DAOFactory;
+import loko.dao.MailsDAO;
+import loko.entity.Mail;
+import loko.entity.Phone;
+import loko.service.MembersService;
+import loko.value.MemberFull;
 
 import java.awt.event.ActionListener;
 import java.sql.Date;
@@ -31,7 +27,6 @@ import java.util.Calendar;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 
-import com.sun.xml.internal.messaging.saaj.util.TeeInputStream;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.JComboBox;
 import javax.swing.JTextPane;
@@ -42,11 +37,9 @@ import javax.swing.JTextPane;
  */
 public class AddMemberDialog extends JDialog {
 
-	private IFMembersDAO membersDAO;
+
+	private static final long serialVersionUID = -2496886616425471958L;
 	private MemberFull memberFull;
-	private MembersSearchApp membersSearchApp;
-	private IFMailsDAO mailsDAO;
-	private IFPhoneDAO phoneDAO;
 	private final String[] role = {"Hráè", "Hráè Bèka", " Hráè-souzenci" , "Èinnovník", "LimitkaD", "LimitkaV", "Rodiè"};
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
@@ -65,16 +58,14 @@ public class AddMemberDialog extends JDialog {
 	private JTextField textFieldTel2;
 	private JDateChooser dateChooser;
 	private JTextField textFieldRegC;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBox;
 
 	/**
-	 * Create the dialog.
+	 * Vytvoøení okna.
 	 */
-	public AddMemberDialog(IFMembersDAO membersDAO,IFMailsDAO mailsDAO, IFPhoneDAO phoneDAO,MembersSearchApp membersSearchApp) {
-		this.membersDAO = membersDAO;
-		this.membersSearchApp = membersSearchApp;
-		this.mailsDAO = mailsDAO;
-		this.phoneDAO = phoneDAO;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public AddMemberDialog(MembersService membersService,MembersSearchApp membersSearchApp) {
 		
 		setBounds(100, 100, 737, 598);
 		getContentPane().setLayout(new BorderLayout());
@@ -119,18 +110,21 @@ public class AddMemberDialog extends JDialog {
 		}
 		{
 			textFieldFirstName = new JTextField();
+			textFieldFirstName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			textFieldFirstName.setBounds(144, 66, 164, 24);
 			contentPanel.add(textFieldFirstName);
 			textFieldFirstName.setColumns(10);
 		}
 		{
 			textFieldLastName = new JTextField();
+			textFieldLastName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			textFieldLastName.setBounds(144, 107, 167, 24);
 			contentPanel.add(textFieldLastName);
 			textFieldLastName.setColumns(10);
 		}
 		{
 			textFieldRC = new JTextField();
+			textFieldRC.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			textFieldRC.setBounds(144, 192, 167, 27);
 			contentPanel.add(textFieldRC);
 			textFieldRC.setColumns(10);
@@ -162,21 +156,25 @@ public class AddMemberDialog extends JDialog {
 		contentPanel.add(lblAdresaMailu);
 		
 		textFieldOdMail1 = new JTextField();
+		textFieldOdMail1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdMail1.setBounds(513, 107, 151, 20);
 		contentPanel.add(textFieldOdMail1);
 		textFieldOdMail1.setColumns(10);
 		
 		textFieldMail1 = new JTextField();
+		textFieldMail1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldMail1.setBounds(513, 150, 151, 20);
 		contentPanel.add(textFieldMail1);
 		textFieldMail1.setColumns(10);
 		
 		textFieldOdMail2 = new JTextField();
+		textFieldOdMail2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdMail2.setBounds(513, 195, 151, 20);
 		contentPanel.add(textFieldOdMail2);
 		textFieldOdMail2.setColumns(10);
 		
 		textFieldMail2 = new JTextField();
+		textFieldMail2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldMail2.setBounds(513, 233, 151, 20);
 		contentPanel.add(textFieldMail2);
 		textFieldMail2.setColumns(10);
@@ -187,37 +185,45 @@ public class AddMemberDialog extends JDialog {
 		contentPanel.add(lblTelefon);
 		
 		JLabel lblVlastnkTel = new JLabel("Vlastn\u00EDk tel.");
+		lblVlastnkTel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblVlastnkTel.setBounds(364, 321, 108, 14);
 		contentPanel.add(lblVlastnkTel);
 		
 		JLabel lblTelefon_1 = new JLabel("Telefon");
+		lblTelefon_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblTelefon_1.setBounds(364, 359, 97, 14);
 		contentPanel.add(lblTelefon_1);
 		
 		JLabel lblVlastnkTel_1 = new JLabel("Vlastn\u00EDk tel.");
+		lblVlastnkTel_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblVlastnkTel_1.setBounds(363, 397, 109, 14);
 		contentPanel.add(lblVlastnkTel_1);
 		
 		JLabel lblTelefon_2 = new JLabel("Telefon");
+		lblTelefon_2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblTelefon_2.setBounds(364, 433, 108, 14);
 		contentPanel.add(lblTelefon_2);
 		
 		textFieldOdTel1 = new JTextField();
+		textFieldOdTel1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdTel1.setBounds(513, 315, 151, 20);
 		contentPanel.add(textFieldOdTel1);
 		textFieldOdTel1.setColumns(10);
 		
 		textFieldTel1 = new JTextField();
+		textFieldTel1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldTel1.setBounds(513, 356, 151, 20);
 		contentPanel.add(textFieldTel1);
 		textFieldTel1.setColumns(10);
 		
 		textFieldOdTel2 = new JTextField();
+		textFieldOdTel2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldOdTel2.setBounds(513, 394, 151, 20);
 		contentPanel.add(textFieldOdTel2);
 		textFieldOdTel2.setColumns(10);
 		
 		textFieldTel2 = new JTextField();
+		textFieldTel2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldTel2.setText("");
 		textFieldTel2.setBounds(513, 430, 151, 20);
 		contentPanel.add(textFieldTel2);
@@ -229,6 +235,7 @@ public class AddMemberDialog extends JDialog {
 		contentPanel.add(lblTrvalBydlit);
 		
 		dateChooser = new JDateChooser();
+		dateChooser.getCalendarButton().setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		dateChooser.setBounds(147, 144, 161, 20);
 		contentPanel.add(dateChooser);
 		
@@ -239,6 +246,7 @@ public class AddMemberDialog extends JDialog {
 		contentPanel.add(lblRegsh);
 		
 		textFieldRegC = new JTextField();
+		textFieldRegC.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		textFieldRegC.setBounds(144, 356, 164, 24);
 		contentPanel.add(textFieldRegC);
 		textFieldRegC.setColumns(10);
@@ -250,6 +258,7 @@ public class AddMemberDialog extends JDialog {
 		
 		
 		comboBox = new JComboBox(role);
+		comboBox.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		comboBox.setBounds(144, 394, 164, 24);
 		contentPanel.add(comboBox);
 		
@@ -272,9 +281,12 @@ public class AddMemberDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				// tlaèitko uložit
 				JButton okButton = new JButton("Ulo\u017Eit");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						// kontrola poviných udajù
 						if (!(textFieldFirstName.getText().isEmpty() || textFieldLastName.getText().isEmpty() || dateChooser.getDate() == null)) {
 							String firstName = textFieldFirstName.getText();
 							String lastName = textFieldLastName.getText();
@@ -297,7 +309,7 @@ public class AddMemberDialog extends JDialog {
 							
 							memberFull = new MemberFull(firstName, lastName, birthDay, note, active, id_odd_kategorie, enterDate,
 							rodneCislo, trvaleBydliste, chfRegistrace);	
-							int id_member = membersDAO.addMemberFull(memberFull);
+							int id_member = membersService.addMemberFull(memberFull);
 							
 							// ulozeni mailu
 							if(!textFieldMail1.getText().isEmpty()) {
@@ -305,16 +317,18 @@ public class AddMemberDialog extends JDialog {
 									textFieldOdMail1.setText("");
 								}
 								Mail mail = new Mail(id_member, textFieldOdMail1.getText(), textFieldMail1.getText());
-								IFMailsDAO mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
+								MailsDAO mailsDAO = DAOFactory.createDAO(MailsDAO.class);
 								mailsDAO.addMail(mail);
+								LOGGER.info("Pøidán nový mail. id member: " + id_member + " mail: " + mail.toString());
 							}
 							if(!textFieldMail2.getText().isEmpty()) {
 								if(textFieldOdMail2.getText().isEmpty()) {
 									textFieldOdMail2.setText("");
 								}
 								Mail mail = new Mail(id_member, textFieldOdMail2.getText(), textFieldMail2.getText());
-								IFMailsDAO mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
+								MailsDAO mailsDAO = DAOFactory.createDAO(MailsDAO.class);
 								mailsDAO.addMail(mail);
+								LOGGER.info("Pøidán nový mail. id member: " + id_member + " mail: " + mail.toString());
 							}
 							// ulozeni telefonu
 							if(!textFieldTel1.getText().isEmpty()) {
@@ -322,23 +336,26 @@ public class AddMemberDialog extends JDialog {
 									textFieldOdTel1.setText("");
 								}
 								Phone phone = new Phone(id_member, textFieldOdTel1.getText(), textFieldTel1.getText());
-								IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
-								phoneDAO.addPhone(phone);
+								
+								membersService.addPhone(phone);
+								LOGGER.info("Pøidán nové telefoní èíslo. id member: " + id_member + " telefon: " + phone.toString());
 							}
+							// kontrola jestli je vyplnený text
 							if(!textFieldTel2.getText().isEmpty()) {
 								if(textFieldOdTel2.getText().isEmpty()) {
 									textFieldOdTel2.setText("");
 								}
 								Phone phone = new Phone(id_member, textFieldOdTel2.getText(), textFieldTel2.getText());
-								IFPhoneDAO phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
-								phoneDAO.addPhone(phone);
+								
+								membersService.addPhone(phone);
+								LOGGER.info("Pøidán nové telefoní èíslo. id member: " + id_member + " telefon: " + phone.toString());
 							}
 							
 							
 							//zavreni okna a otevreni editace
 							setVisible(false);
 							dispose();
-							
+							LOGGER.info("Zavøení okna " + this.toString());
 							// obnovit vypis list
 							membersSearchApp.refreshMembersView();
 							
@@ -347,11 +364,15 @@ public class AddMemberDialog extends JDialog {
 							JOptionPane.showMessageDialog(null, "Uspìšmì pøidáno");
 							// otevreni editace
 													
-							MemberDialog dialog = new MemberDialog(id_member,membersDAO,mailsDAO, phoneDAO, membersSearchApp);
+							MemberDialog dialog = new MemberDialog(id_member,membersService, membersSearchApp);
 							dialog.setVisible(true);
+							LOGGER.info("Uložení a otevøení novéhé okna MemberDialog.");
+							
 							
 						} else {
+								// nezadané povinné údaje
 								JOptionPane.showMessageDialog(null, "nezadane povinne udaje!");
+								LOGGER.info("Pokus uložit záznam bez uvedení povinných údajù " + this.toString());
 						}
 						
 						
@@ -362,10 +383,13 @@ public class AddMemberDialog extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
+				// tlaèitko Cancel
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);
+						LOGGER.info("Návrat bez uložení z " + this.toString());
 					}
 				});
 				cancelButton.setActionCommand("Cancel");

@@ -2,15 +2,15 @@ package loko.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.io.UnsupportedEncodingException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-
-import loko.DAO.UserDAO;
-import loko.core.User;
+import loko.entity.User;
+import loko.service.UserService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,9 +18,10 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
+
 /**
  * 
  * @author Erik Markoviè
@@ -28,80 +29,64 @@ import java.awt.event.ActionEvent;
  */
 public class ChangePassword extends JDialog {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8661708719647586881L;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private final JPanel contentPanel = new JPanel();
 	private JPasswordField passwordOld;
 	private JPasswordField passwordNew1;
 	private JPasswordField passwordNew2;
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			//ChangePassword dialog = new ChangePassword();
-			//dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			//dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
-	 * Create the dialog.
+	 * Otevøení okna pro zmìnu hesla User.
 	 */
-	public ChangePassword(User user, UserDAO userDAO, MembersSearchApp membersSearchApp, boolean isAdmin) {
+	public ChangePassword(User user, UserService userService, MembersSearchApp membersSearchApp,
+			boolean isAdmin) {
 		this.setModal(true);
 
-		
 		setTitle("Zm\u011Bna hesla");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
+
 		JLabel lblUser = new JLabel("User: " + user.getFirstName() + " " + user.getLastName());
 		lblUser.setFont(new Font("Times New Roman", Font.BOLD, 14));
 		lblUser.setBounds(10, 11, 237, 14);
 		contentPanel.add(lblUser);
-		JLabel lblStarHeslo;		
-		if(isAdmin) {
-			lblStarHeslo = new JLabel("");			
-		}
-		else {
-			lblStarHeslo = new JLabel("Star\u00E9 heslo:");			
+		JLabel lblStarHeslo;
+		if (isAdmin) {
+			lblStarHeslo = new JLabel("");
+		} else {
+			lblStarHeslo = new JLabel("Star\u00E9 heslo:");
 		}
 		lblStarHeslo.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblStarHeslo.setBounds(10, 49, 99, 14);
 		contentPanel.add(lblStarHeslo);
 		lblStarHeslo.setEnabled(!isAdmin);
-		
+
 		JLabel lblNovHeslo = new JLabel("Nov\u00E9 heslo:");
 		lblNovHeslo.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblNovHeslo.setBounds(10, 74, 99, 14);
 		contentPanel.add(lblNovHeslo);
-		
+
 		JLabel lblNovHeslo_1 = new JLabel("Nov\u00E9 heslo 2.:");
 		lblNovHeslo_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		lblNovHeslo_1.setBounds(10, 99, 99, 14);
 		contentPanel.add(lblNovHeslo_1);
-		
+
 		passwordOld = new JPasswordField();
+		passwordOld.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		passwordOld.setBounds(119, 46, 128, 17);
 		if (!isAdmin) {
 			contentPanel.add(passwordOld);
 		}
-		
+
 		passwordNew1 = new JPasswordField();
 		passwordNew1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		passwordNew1.setBounds(119, 71, 128, 17);
 		contentPanel.add(passwordNew1);
-		
+
 		passwordNew2 = new JPasswordField();
 		passwordNew2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		passwordNew2.setBounds(119, 96, 128, 17);
@@ -111,47 +96,69 @@ public class ChangePassword extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				// tlaèítko pro zmìnu hesla
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						boolean isValidPassword;
-						if(isAdmin) {
+						boolean isValidPassword = false;
+						// je-li pøihlašený uživatel admin, tak nemusí znát staré heslo a pøeskakuje
+						// validaci
+						if (isAdmin) {
 							isValidPassword = true;
 						}
+						// validace zadaného hesla
 						else {
 							// naètení password
-							String plainTextPassword = new String(passwordOld.getPassword());
-							user.setPassword(plainTextPassword);
-							
-							// Kontrola hesla s heslem zakodovaným v DB
-							// volání DAO pro validaci password
-							isValidPassword = userDAO.authenticate(user);
-						}	
-						//zmìma hesla v DB
-						if(isValidPassword) {
+							try {
+								user.setPassword(new String(passwordOld.getPassword()));
+
+								// Kontrola hesla s heslem zakodovaným v DB
+								// volání DAO pro validaci password
+								isValidPassword = userService.authenticate(new String(passwordOld.getPassword()).getBytes("UTF-8")
+																																	,user.getId());
+							} 
+							catch (UnsupportedEncodingException e1) {
+								// TODO doplnit zapracování vyjímky
+								e1.printStackTrace();
+							}
+
+						}
+						// zmìma hesla v DB
+						// validace probìhala
+						if (isValidPassword) {
 							String newPassword = new String(passwordNew1.getPassword());
 							String newPassword2 = new String(passwordNew2.getPassword());
-							if(newPassword.equals(newPassword2) && !newPassword.equals("")) {
-								LOGGER.setLevel(Level.INFO);
-								if(userDAO.changePassword(user, newPassword) > 0){
+
+							// kontrola zadaní dvakrát stejnì nové heslo
+							if (newPassword.equals(newPassword2) && !newPassword.equals("")) {
+								//LOGGER.setLevel(Level.INFO);
+
+								// kontrola, že bylo uspìšnì uloženo do DB
+								try {
+									userService.changePassword(user, newPassword);
 									LOGGER.info("Zmìmìno heslo u uživatele id:" + user.getId());
 									JOptionPane.showMessageDialog(null, "Heslo zmìnìno.");
 									setVisible(false);
-								}
-								else {
-									LOGGER.info("Nezdaøilo se zmìnit heslo u uživatele id:" + user.getId());
-									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna hesla.");
+								} catch (RuntimeException e2) {
+									LOGGER.warning("Nezdaøilo se zmìnit heslo u uživatele id:" + user.getId() + ". Nastala chyba " 
+																			+ e2.getMessage());
+									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna hesla. Nastala chyba " + e2.getMessage());
 									return;
 								}
 							}
-							else{
+							// chybnì zadané nové heslo
+							else {
 								JOptionPane.showMessageDialog(null, "Potvzení nového hesla se neshoduje s novým heslem.");
 							}
 						}
+
+						// chybnì zadané stavající heslo
 						else {
 							JOptionPane.showMessageDialog(null, "Chybnì zadané heslo.");
+							LOGGER.info("Chybnì zadané stavající heslo. user - " + user.getId());
 							return;
-						}						
+						}
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -160,6 +167,7 @@ public class ChangePassword extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);

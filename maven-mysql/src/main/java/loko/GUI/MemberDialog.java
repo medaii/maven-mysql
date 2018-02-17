@@ -7,41 +7,31 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 
-import loko.DAO.IFMailsDAO;
-import loko.DAO.IFMembersDAO;
-import loko.DAO.IFPhoneDAO;
-import loko.DAO.MembersDAOImpl;
-import loko.core.Mail;
-import loko.core.MailsMember;
-import loko.core.MemberFull;
-import loko.core.Phone;
-import loko.core.PhonesMeber;
+import loko.entity.Mail;
+import loko.entity.Phone;
+import loko.service.MembersService;
 import loko.tableModel.MailsTableModel;
 import loko.tableModel.PhonesTableModel;
+import loko.value.MailsMember;
+import loko.value.MemberFull;
+import loko.value.PhonesMeber;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+
 import javax.swing.JTabbedPane;
 import java.awt.CardLayout;
 
-import com.sun.media.sound.ModelAbstractChannelMixer;
-import com.sun.org.apache.bcel.internal.generic.LOOKUPSWITCH;
 import com.toedter.calendar.JDateChooser;
 
 
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
@@ -51,31 +41,25 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
 /**
  * 
- * @author Dave
+ * @author Erik Markoviè
  *
  *Dialogové okno pro editaci èlena
  */
 public class MemberDialog extends JDialog {
 
+	private static final long serialVersionUID = 8676803454227556101L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldFirstName;
 	private JTextField textFieldLastName;
 	private JDateChooser dateChooser;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	private IFMembersDAO membersDAO;
-	private MembersSearchApp membersSearchApp;
+	private MembersService membersService;
 	private MemberFull memberFull;
 	private PhonesMeber phones;
 	private MailsMember mails;
-	private IFMailsDAO mailsDAO;
-	private IFPhoneDAO phoneDAO;
 	private JTable tableMails;
 	private JTable tablePhone;
 	private int id_member;
@@ -87,25 +71,29 @@ public class MemberDialog extends JDialog {
 	private MailsTableModel modelMail;
 	private PhonesTableModel modelP;
 	//clipce nechce podporovat zobrazeni private JComboBox<String> comboBoxRole;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxRole;
 
 	/**
-	 * Create the dialog.
+	 * Vytvoøení okna MemberDialog.
 	 */
-	public MemberDialog(int id_member, IFMembersDAO membersDAO, IFMailsDAO mailsDAO,IFPhoneDAO phoneDAO, MembersSearchApp membersSearchApp) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public MemberDialog(int id_member,MembersService membersService, MembersSearchApp membersSearchApp) {
 		this.setModal(true);
+		
+		//nastavení názvu okna
 		setTitle("Editace \u010Dlena");
+		
+		// inicializace promìných
+		this.membersService = membersService;		
 		this.id_member = id_member;
-		this.membersDAO = membersDAO;
-		this.mailsDAO = mailsDAO;
-		this.phoneDAO = phoneDAO;
-		this.phones = phoneDAO.getPhonesMember(id_member);
 		
-		this.memberFull = membersDAO.getMemberFull(id_member);
-		this.mails = mailsDAO.getMailsMember(id_member);
-		this.membersSearchApp =  membersSearchApp;
+		this.phones = membersService.getPhonesMember(id_member);
 		
+		this.memberFull = membersService.getMemberFull(id_member);
+		this.mails = membersService.getMailsMember(id_member);		
 		
+		//inicializace okna
 		setBounds(100, 100, 749, 406);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -138,18 +126,21 @@ public class MemberDialog extends JDialog {
 				}
 				
 				textFieldFirstName = new JTextField();
+				textFieldFirstName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				textFieldFirstName.setBounds(139, 11, 177, 25);
 				panel_1.add(textFieldFirstName);
 				textFieldFirstName.setColumns(10);
 				textFieldFirstName.setText(memberFull.getFirstName());
 				
 				textFieldLastName = new JTextField();
+				textFieldLastName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				textFieldLastName.setBounds(139, 42, 177, 25);
 				panel_1.add(textFieldLastName);
 				textFieldLastName.setColumns(10);
 				textFieldLastName.setText(memberFull.getLastName());
 				
 				dateChooser = new JDateChooser();
+				dateChooser.getCalendarButton().setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				dateChooser.setBounds(139, 83, 177, 20);
 				panel_1.add(dateChooser);
 				dateChooser.setDate(memberFull.getBirthDay());
@@ -160,6 +151,7 @@ public class MemberDialog extends JDialog {
 				panel_1.add(lblRodnslo);
 				
 				textFieldRC = new JTextField();
+				textFieldRC.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				textFieldRC.setBounds(139, 115, 177, 20);
 				panel_1.add(textFieldRC);
 				textFieldRC.setColumns(10);
@@ -171,6 +163,7 @@ public class MemberDialog extends JDialog {
 				panel_1.add(lblTrvBydlit);
 				
 				textFieldTrvaleBydliste = new JTextField();
+				textFieldTrvaleBydliste.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				textFieldTrvaleBydliste.setBounds(139, 146, 555, 20);
 				panel_1.add(textFieldTrvaleBydliste);
 				textFieldTrvaleBydliste.setColumns(10);
@@ -182,6 +175,9 @@ public class MemberDialog extends JDialog {
 				panel_1.add(lblRegsh);
 				
 				textFieldCHFReg = new JTextField();
+				textFieldCHFReg.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+				
+				//èíslo registrace mùže být jen èísla...kontrola zadavaní z klavesnice
 				textFieldCHFReg.addKeyListener(new KeyAdapter() {
 					@Override
 					public void keyTyped(KeyEvent e) {
@@ -200,6 +196,7 @@ public class MemberDialog extends JDialog {
 				textFieldCHFReg.setText(memberFull.getChfRegistrace());
 				
 				chckbxAktivni = new JCheckBox("aktivni");
+				chckbxAktivni.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				chckbxAktivni.setBounds(139, 267, 97, 23);
 				panel_1.add(chckbxAktivni);
 				if(memberFull.getActive() > 0) {
@@ -211,6 +208,7 @@ public class MemberDialog extends JDialog {
 					
 				
 				JLabel lblStav = new JLabel("Stav:");
+				lblStav.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				lblStav.setBounds(23, 271, 46, 14);
 				panel_1.add(lblStav);
 				
@@ -226,6 +224,7 @@ public class MemberDialog extends JDialog {
 			
 				//comboBoxRole = new JComboBox<String>(role);
 				comboBoxRole = new JComboBox(role);
+				comboBoxRole.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				
 				comboBoxRole.setBounds(139, 208, 177, 20);
 				panel_1.add(comboBoxRole);
@@ -237,21 +236,29 @@ public class MemberDialog extends JDialog {
 				tabbedPane.addTab("Kontakty", null, kontakty, null);
 				kontakty.setLayout(null);
 				
+				// tlaèítko na vytvoøení nového mailu
 				JButton btnNovMail = new JButton("Nov\u00FD mail");
+				btnNovMail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnNovMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						AddMailDialog dialog = new AddMailDialog(id_member,true, mailsDAO, MemberDialog.this, null);
+						//otevøení nového okna addMailDialog
+						AddMailDialog dialog = new AddMailDialog(id_member,true, membersService, MemberDialog.this, null);
 						dialog.setVisible(true);
+						LOGGER.info("Otevøení okna pro pøidaní mailu");
 					}
 				});
 				btnNovMail.setBounds(10, 262, 89, 23);
 				kontakty.add(btnNovMail);
 				
+				// tlaèítko na vytvoøení nového telefoního èísla
 				JButton btnNovTelefon = new JButton("Nov\u00FD Telefon");
+				btnNovTelefon.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnNovTelefon.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						AddPhoneDialog dialog = new AddPhoneDialog(id_member,true, phoneDAO, MemberDialog.this, null);
+						// otevøení nového okna addPhoneDialog
+						AddPhoneDialog dialog = new AddPhoneDialog(id_member,true, membersService, MemberDialog.this, null);
 						dialog.setVisible(true);
+						LOGGER.info("Otevøení okna pro pøidaní mailu");
 					}
 				});
 				btnNovTelefon.setBounds(352, 262, 114, 23);
@@ -262,20 +269,22 @@ public class MemberDialog extends JDialog {
 				kontakty.add(scrollPane);
 				
 				tableMails = new JTable();
+				tableMails.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				
 
-
-				
 				modelMail = new MailsTableModel(mails.getMails());
 				tableMails.setModel(modelMail);
 				scrollPane.setViewportView(tableMails);
 			
 				
 				JLabel lblMail = new JLabel("Mail:");
+				lblMail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				lblMail.setBounds(10, 11, 46, 14);
 				kontakty.add(lblMail);
 				
+				// tlaèítko pro editaci mailu
 				JButton btnEditMailu = new JButton("Edit mailu");
+				btnEditMailu.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnEditMailu.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// vrat vybraný øádek
@@ -284,19 +293,23 @@ public class MemberDialog extends JDialog {
 						// kontrola, že je vybrany øádek
 						if(row < 0) {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							LOGGER.info("Tlaèítko editace mailu - nebyl vybran øádek.");
 							return;
 						}
+						// naètení dat do objektu Mail a otevøeno okno pro editaci mailu
 						Mail tempMail =  (Mail) tableMails.getValueAt(row, MailsTableModel.OBJECT_COL);
 						
-						AddMailDialog dialog = new AddMailDialog(id_member,false,mailsDAO, MemberDialog.this, tempMail );
+						AddMailDialog dialog = new AddMailDialog(id_member,false,membersService, MemberDialog.this, tempMail );
 						dialog.setVisible(true);
+						LOGGER.info("Otevøení okna pro editaci mailu");						
 					}
 				});
 				btnEditMailu.setBounds(109, 262, 105, 23);
 				kontakty.add(btnEditMailu);
 				
-				JButton btnSmazatMail = new JButton("Smazat mail");
-				btnSmazatMail.setFont(new Font("Times New Roman", Font.PLAIN, 9));
+				// tlaèítko na mazání mailu
+				JButton btnSmazatMail = new JButton("Smazat m.");
+				btnSmazatMail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnSmazatMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -306,20 +319,23 @@ public class MemberDialog extends JDialog {
 						// kontrola, že je vybrany øádek
 						if(row < 0) {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							LOGGER.info("Tlaèítko smazání mailu - nebyl vybran øádek.");
 							return;
 						}
-					//potvrzeni že opravdu chcete smazat
+					//potvrzeni že opravdu chcete smazat						
 						int response = JOptionPane.showConfirmDialog(
 								null, "Opravdu chcete smazat mail?", "Confirm", 
 								JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 						if (response != JOptionPane.YES_OPTION) {
+							LOGGER.info("Zrušení pøíkazu na smazání mailu.");
 							return;
 						}
+						//naètení objektu Mail a smazání z DB
 						Mail tempMail =  (Mail) tableMails.getValueAt(row, MailsTableModel.OBJECT_COL);
 						
 						LOGGER.info("Maže se member id = " + id_member);
 					//smazat zaznam
-						mailsDAO.deleteMail(tempMail.getId());
+						membersService.deleteMail(tempMail.getId());
 					//refresh tabulkz
 						obnovitNahledMail();
 						// show success message
@@ -338,13 +354,14 @@ public class MemberDialog extends JDialog {
 				kontakty.add(scrollPane_1);
 				
 				tablePhone = new JTable();
+				tablePhone.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				modelP = new PhonesTableModel(phones.getPhones());
 				tablePhone.setModel(modelP);
 				scrollPane_1.setViewportView(tablePhone);
 				
-	
-				
+				// tlaèítko editace telefonu
 				JButton btnEditTel = new JButton("Edit tel.");
+				btnEditTel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnEditTel.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 					// vrat vybraný øádek
@@ -353,17 +370,22 @@ public class MemberDialog extends JDialog {
 						// kontrola, že je vybrany øádek
 						if(row < 0) {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							LOGGER.info("Tlaèítko editace telefonu - nebyl vybran øádek.");
 							return;
 						}
+						// vytvoøení objektu Phone a otevøení okna AddPhoneDialog
 						Phone tempPhone =  (Phone) tablePhone.getValueAt(row, PhonesTableModel.OBJECT_COL);
-						AddPhoneDialog dialog = new AddPhoneDialog(id_member,false, phoneDAO, MemberDialog.this, tempPhone);
+						AddPhoneDialog dialog = new AddPhoneDialog(id_member,false, membersService, MemberDialog.this, tempPhone);
 						dialog.setVisible(true);
+						LOGGER.info("Otevøení okna pro editaci telefonu");	
 					}
 				});
 				btnEditTel.setBounds(485, 262, 89, 23);
 				kontakty.add(btnEditTel);
 				
+				// tlaèítko pro smazaní telefonu
 				JButton btnSmazatTel = new JButton("Smazat tel.");
+				btnSmazatTel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnSmazatTel.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// vrat vybraný øádek
@@ -372,6 +394,7 @@ public class MemberDialog extends JDialog {
 						// kontrola, že je vybrany øádek
 						if(row < 0) {
 							JOptionPane.showMessageDialog(null, "Musite vybrat radek.");
+							LOGGER.info("Tlaèítko smazání telefonu - nebyl vybran øádek.");
 							return;
 						}
 						//potvrzeni že opravdu chcete smazat
@@ -379,12 +402,14 @@ public class MemberDialog extends JDialog {
 								null, "Opravdu chcete smazat tento telefon?", "Confirm", 
 								JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 						if (response != JOptionPane.YES_OPTION) {
+							LOGGER.info("Zrušení pøíkazu na smazání telefonu.");
 							return;
 						}
+						// vytvoøení objektu Phone pro smazání telefonu
 						Phone tempPhone =  (Phone) tablePhone.getValueAt(row, PhonesTableModel.OBJECT_COL);
 						
 						//smazat zaznam
-						phoneDAO.deletePhone(tempPhone.getId());
+						membersService.deletePhone(tempPhone.getId());
 						//refresh tabulkz
 						obnovitNahledPhone();
 						// show success message
@@ -396,6 +421,11 @@ public class MemberDialog extends JDialog {
 				});
 				btnSmazatTel.setBounds(585, 262, 106, 23);
 				kontakty.add(btnSmazatTel);
+				
+				JLabel lblTelefon = new JLabel("Telefon:");
+				lblTelefon.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+				lblTelefon.setBounds(352, 11, 46, 14);
+				kontakty.add(lblTelefon);
 			}
 		}
 		{
@@ -403,7 +433,9 @@ public class MemberDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				// uložení a návrat do hlavního okna
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -436,7 +468,7 @@ public class MemberDialog extends JDialog {
 						memberFull.setId_odd_kategorie(id_kategorie_odd);
 						
 						// uložení do DB
-						membersDAO.updateMember(memberFull, memberFull.getId());
+						membersService.updateMember(memberFull);
 						// zavrit dialogove okno
 						setVisible(false);
 						dispose();
@@ -448,7 +480,7 @@ public class MemberDialog extends JDialog {
 							int countRow = modelMail.getRowCount();
 							for (int i = 0; i < countRow; i++) {
 								Mail tempMail = (Mail) modelMail.getValueAt(i, MailsTableModel.OBJECT_COL);
-								mailsDAO.updateMail(tempMail, tempMail.getId());
+								membersService.updateMail(tempMail, tempMail.getId());
 							}
 						}
 						else {
@@ -460,7 +492,7 @@ public class MemberDialog extends JDialog {
 							int countRow = modelP.getRowCount();
 							for (int i = 0; i < countRow; i++) {
 								Phone tempPhone = (Phone) modelP.getValueAt(i, PhonesTableModel.OBJECT_COL);
-								phoneDAO.updatePhone(tempPhone, tempPhone.getId());
+								membersService.updatePhone(tempPhone, tempPhone.getId());
 							}
 							LOGGER.info("Zmìma hodnot Telefonu.");
 						}
@@ -473,6 +505,7 @@ public class MemberDialog extends JDialog {
 						
 					//potvrdit uložení
 						JOptionPane.showMessageDialog(null, "Uspìšmì pøidáno");
+						LOGGER.info("Uspìšnì uloženy zmìny a návrat do hlavního okna.");
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -480,10 +513,13 @@ public class MemberDialog extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
+				// tlaèítko Cancel
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);
+						LOGGER.info("Bez uložení návrat do hlavního okna.");
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
@@ -491,26 +527,33 @@ public class MemberDialog extends JDialog {
 			}
 		}
 	}
+	/**
+	 * obnovení tabulky mail
+	 */
 	public void obnovitNahledMail() {
 		try {
-			this.mails = mailsDAO.getMailsMember(id_member);
+			this.mails = membersService.getMailsMember(id_member);
 			MailsTableModel model = new MailsTableModel(mails.getMails());
 			tableMails.setModel(model);
 			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "chyba" + e);
+			LOGGER.warning("Chyba pøi obnovì tabulky mailù - " + e);
+			e.getLocalizedMessage();
 		}
-
 	}
+	/**
+	 * Obnovení tabulky telefoních èísel
+	 */
 	public void obnovitNahledPhone() {
 		try {
-			this.phones = phoneDAO.getPhonesMember(id_member);
+			this.phones = membersService.getPhonesMember(id_member);
 			PhonesTableModel modelP = new PhonesTableModel(phones.getPhones());
 			tablePhone.setModel(modelP);
 			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "chyba" + e);
+			LOGGER.warning("Chyba pøi obnovì tabulky telefoních èísel - " + e);
 		}
-
 	}
 }

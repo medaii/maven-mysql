@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import loko.core.Mail;
+import loko.entity.Mail;
 /**
  * 
  * @author Erik Markoviè

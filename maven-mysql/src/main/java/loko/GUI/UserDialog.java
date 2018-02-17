@@ -9,8 +9,9 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import loko.DAO.UserDAO;
-import loko.core.User;
+import loko.entity.User;
+import loko.service.UserService;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
+
 /**
  * 
  * @author Erik Markoviè
@@ -36,27 +38,24 @@ public class UserDialog extends JDialog {
 	private JTextField textFieldSurName;
 	private JTextField textFieldMail;
 	private JCheckBox checkBoxAdmin;
-	
-	private User user;
-	
 
+	private User user;
 
 	/**
-	 * Create the dialog.
+	 * Otevøení nového okna vytvoøení nového uživatele nebo editaci.
 	 */
-	public UserDialog(User user, UserDAO userDAO, MembersSearchApp membersSearchApp, boolean isAdmin, boolean addUser) {
+	public UserDialog(User user, UserService userService, MembersSearchApp membersSearchApp, boolean isAdmin,
+			boolean addUser) {
 		this.user = user;
-		if(addUser) {
-			if(!isAdmin) {
+		if (addUser) {
+			if (!isAdmin) {
 				setVisible(false);
 			}
 			setTitle("P\u0159idat nov\u00E9ho u\u017Eivatele");
-		}
-		else {
+		} else {
 			setTitle("Editace user");
 		}
-		
-		
+
 		this.setModal(true);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -116,17 +115,19 @@ public class UserDialog extends JDialog {
 		}
 		{
 			JLabel lblAdmin = new JLabel("Admin");
+			lblAdmin.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			lblAdmin.setBounds(10, 185, 46, 14);
 			contentPanel.add(lblAdmin);
 		}
-		
+
 		checkBoxAdmin = new JCheckBox("");
+		checkBoxAdmin.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		checkBoxAdmin.setBounds(121, 181, 97, 23);
 		contentPanel.add(checkBoxAdmin);
-		
+
 		checkBoxAdmin.setEnabled(isAdmin);
-		
-		if(!addUser){
+
+		if (!addUser) {
 			setAddDialog();
 		}
 		{
@@ -134,25 +135,46 @@ public class UserDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+
+				// vytvoøení nového uživatele
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-					// nadètení z formuláøe  get date from form
+
+						// nadètení z formuláøe get date from form
 						String firstName = textFieldFirstName.getText();
 						String lastName = textFieldSurName.getText();
 						String mail = textFieldMail.getText();
 						boolean admin = checkBoxAdmin.isSelected();
-						if(addUser) {
-							
-						}
-						else {
-								User theUser = new User(user.getId(),lastName, firstName, mail, admin);
-								if(userDAO.updateUser(theUser) > 0) {
-									LOGGER.info("Zmìna udaje uživatele zmìnìna id uživate: " + theUser.getId());
-									}
-								else {
+
+						if (addUser) {
+							if (!(firstName.isEmpty() || firstName == "") || !(lastName.isEmpty() || firstName == "")
+									|| !(mail.isEmpty() || mail == "")) {
+								User theUser = new User(lastName, firstName, mail, admin, "java");
+								if (userService.addUser(theUser) > 0) {
+
+								} else {
+									LOGGER.warning("Chyba pøi uložení objektu do DB user - " + user.toString());
 									JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna údajù.");
-									}
+								}
+							} else {
+
+								JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna údajù, jelikož nejsou vyplnìné všechny udaje.");
+								return;
+							}
+						} else {
+							// uložení zmeny do databáze
+							User theUser = new User(user.getId(), lastName, firstName, mail, admin);
+							try {
+								userService.updateUser(theUser);
+								LOGGER.info("Zmìna udaje uživatele zmìnìna id uživate: " + theUser.getId());
+							}
+							// chyba pøi ukladání zmìn do DB
+							catch (RuntimeException e2) {
+								LOGGER.warning("Chyba pøi uložení objektu do DB user - " + user.toString() + e2.getMessage());
+								JOptionPane.showMessageDialog(null, "Nezdaøila se zmìna údajù.");
+							}
 						}
 						membersSearchApp.refreshUsersView();
 						setVisible(false);
@@ -164,6 +186,7 @@ public class UserDialog extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);
@@ -174,6 +197,7 @@ public class UserDialog extends JDialog {
 			}
 		}
 	}
+
 	private void setAddDialog() {
 		textFieldFirstName.setText(user.getFirstName());
 		textFieldSurName.setText(user.getLastName());

@@ -1,7 +1,6 @@
 package loko.GUI;
 
 import java.awt.EventQueue;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,13 +8,14 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-
-import loko.DAO.*;
-import loko.core.MemberList;
-import loko.core.User;
+import loko.entity.User;
 import loko.loger.LoggerLoko;
+import loko.service.MembersService;
+import loko.service.UserService;
+import loko.service.impl.UserServiceImpl;
 import loko.tableModel.MembersListTableModel;
 import loko.tableModel.UsersTableModel;
+import loko.value.MemberList;
 
 import java.awt.BorderLayout;
 import javax.swing.JTabbedPane;
@@ -37,8 +37,6 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -62,10 +60,11 @@ public class MembersSearchApp  extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 4801718700352877970L;
-	private IFMembersDAO membersDAO;
-	private IFMailsDAO mailsDAO;
-	private IFPhoneDAO phoneDAO;
-	private UserDAO userDAO;
+	
+	// instance na servisní rozhraní
+	private MembersService membersService; 
+	private UserService userService;
+	
 	private JFrame frame;
 	private int userId;
 	private boolean admin;
@@ -74,6 +73,7 @@ public class MembersSearchApp  extends JFrame{
 	private JTextField textFieldSearchName;
 	private JTable tableUser;
 	private JButton btnPidanUivatele;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBox;
 	private int id_kategorie = 0;
 	private final String[] kategorie = {"Všechny", "Muži", "Mládež" , "Dorostenci", "Žáci", "Mini a pøípravka",
@@ -88,7 +88,7 @@ public class MembersSearchApp  extends JFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+					//vytvoøení LOGGER
 					try {
             LoggerLoko.setup();
             LOGGER.setLevel(Level.WARNING);
@@ -97,23 +97,21 @@ public class MembersSearchApp  extends JFrame{
             throw new RuntimeException("Problems s vytvoreni logger souboru.");
 					}
 					
-					IFMembersDAO membersDAO = DAOFactory.createDAO(IFMembersDAO.class);
-					UserDAO userDAO = new UserDAO();
-					
-					// Get users
-					List<User> users = userDAO.getUsers(true, 0);
-
-					// Show login dialog
+					// Výtvoøení okna pro pøihlášení
 					UserLoginDialog dialog = new UserLoginDialog();
-					dialog.populateUsers(users);
-					dialog.setMembersDAO(membersDAO);
-					dialog.setUserDAO(userDAO);
-				
 					
+					//inicializace servisni tøidy a uživatelského listu
+					dialog.setMembersService(new UserServiceImpl());
+					dialog.populateUsers();
+					
+					// zobrazení okna pro pøihlášení
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
+					LOGGER.info("Otevøení okna pro pøihlášení");
 
 				} catch (Exception e) {
+					//Chyba pøi spuštìní vlákna
+					LOGGER.warning("Pøi spuštìni nastala chyba - " + e.toString());					
 					e.printStackTrace();
 				}
 			}
@@ -121,16 +119,15 @@ public class MembersSearchApp  extends JFrame{
 	}
 
 	/**
-	 * Create the application.
+	 * Vytvoøení hlavního okna aplikace po pøihlašení
 	 */
-	public MembersSearchApp(int theUserId, boolean theAdmin, IFMembersDAO theMemberDAO, UserDAO theUserDAO) {
-		
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public MembersSearchApp(MembersService membersService,UserService userService, int theUserId, boolean theAdmin) {
+		this.membersService = membersService;
+		this.userService = userService;
 			userId = theUserId;
 			admin = theAdmin;
-			membersDAO = theMemberDAO;
-			mailsDAO = DAOFactory.createDAO(IFMailsDAO.class);
-			phoneDAO = DAOFactory.createDAO(IFPhoneDAO.class);
-			userDAO = theUserDAO;
+			
 			
 			
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -263,16 +260,18 @@ public class MembersSearchApp  extends JFrame{
 		JPanel panel_3 = new JPanel();
 		membersPanel.add(panel_3, BorderLayout.SOUTH);
 		
+		// tlaèítko pro pøidaní nového èlena
 		JButton btnAddMember = new JButton("P\u0159idat \u010Dlena");
 		btnAddMember.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnAddMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddMemberDialog dialog = new AddMemberDialog(membersDAO,mailsDAO, phoneDAO, MembersSearchApp.this);
+				AddMemberDialog dialog = new AddMemberDialog(membersService, MembersSearchApp.this);
 				dialog.setVisible(true);
 			}
 		});
 		panel_3.add(btnAddMember);
 		
+		// tlaèítko editace èlena
 		JButton btnEditovatlena = new JButton("Editovat \u010Dlena");
 		btnEditovatlena.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnEditovatlena.addActionListener(new ActionListener() {
@@ -291,6 +290,7 @@ public class MembersSearchApp  extends JFrame{
 		});
 		panel_3.add(btnEditovatlena);
 		
+		// tlaèítko smazaní èlena
 		JButton btnSmazatlena = new JButton("Smazat \u010Dlena");
 		btnSmazatlena.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -314,15 +314,16 @@ public class MembersSearchApp  extends JFrame{
 				int id_member = tempmemberList.getId();
 				// smazaní zaznamu
 				String zprava = "id: " + id_member;
-				if(membersDAO.deleteMember(id_member) > 0) {
+				try {
+					membersService.deleteMember(id_member);
 					LOGGER.warning("Smazán záznam èlena id:" + id_member);
 					zprava += " byl smazán.";
 					//refresh tabulky
 					refreshMembersView();
-				}
-				else {
-						LOGGER.warning("záznam nebyl úspìšnì smazán");
-						zprava += " se nepodaøilo smazat";
+				} 
+				catch (RuntimeException eDeleteMember) {
+					LOGGER.warning("záznam nebyl úspìšnì smazán. Nastala chyba " + eDeleteMember);
+					zprava += " se nepodaøilo smazat. Chyba " + eDeleteMember.getMessage();
 				}
 				JOptionPane.showMessageDialog(null,
 						zprava,"Member smazán",
@@ -378,15 +379,17 @@ public class MembersSearchApp  extends JFrame{
 		JPanel panel_1 = new JPanel();
 		User.add(panel_1, BorderLayout.SOUTH);
 		
+		// tlaèítko pøidaní nového uživatele
 		btnPidanUivatele = new JButton("P\u0159idan\u00ED u\u017Eivatele");
 		btnPidanUivatele.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				addUser();
 			}
 		});
 		btnPidanUivatele.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		panel_1.add(btnPidanUivatele);
 		
+		// editace vybraného uživatle
 		JButton btnEditaceUdaj = new JButton("Editace udaj\u016F");
 		btnEditaceUdaj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -416,7 +419,7 @@ public class MembersSearchApp  extends JFrame{
 					return;
 				}
 				User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
-				ChangePassword dialog = new ChangePassword(user, userDAO,MembersSearchApp.this, admin );
+				ChangePassword dialog = new ChangePassword(user, userService,MembersSearchApp.this, admin );
 				dialog.setVisible(true);
 			}
 		});
@@ -433,7 +436,7 @@ public class MembersSearchApp  extends JFrame{
 	public void editaceMember(int row) {
 		MemberList tempmemberList =  (MemberList) tableMembers.getValueAt(row, MembersListTableModel.OBJECT_COL);
 		int id_member = tempmemberList.getId();
-		MemberDialog dialog = new MemberDialog(id_member,membersDAO,mailsDAO, phoneDAO, MembersSearchApp.this);
+		MemberDialog dialog = new MemberDialog(id_member,membersService, MembersSearchApp.this);
 		dialog.setVisible(true);
 	}
 	/**
@@ -463,7 +466,7 @@ public class MembersSearchApp  extends JFrame{
 			
 			List<MemberList> membersList = null;
 			if (name != null && name.trim().length() > 0) {
-				membersList = membersDAO.searchAllMembers(name, true, id_kategorie);
+				membersList = membersService.searchAllMembers(name, id_kategorie);
 			} else {
 					refreshMembersView();
 					return;
@@ -487,7 +490,16 @@ public class MembersSearchApp  extends JFrame{
 	 */
 	private void editUser(int row) {
 		User user = (User) tableUser.getValueAt(row, UsersTableModel.OBJECT_COL);
-		UserDialog dialog = new UserDialog(user, userDAO,MembersSearchApp.this, admin, false );
+		UserDialog dialog = new UserDialog(user, userService,MembersSearchApp.this, admin, false );
+		dialog.setVisible(true);
+	}
+	/**
+	 * Otevøevni dialogu pro vytvoøení nového úètu 
+	 * 
+	 */
+	private void addUser() {
+		User user = new User();
+		UserDialog dialog = new UserDialog(user, userService,MembersSearchApp.this, admin, true );
 		dialog.setVisible(true);
 	}
 	/**
@@ -504,7 +516,7 @@ public class MembersSearchApp  extends JFrame{
 	public void refreshMembersView() {
 
 		try {
-			List<MemberList> members = membersDAO.getAllMemberList(true, id_kategorie);
+			List<MemberList> members = membersService.getAllMemberList(id_kategorie);
 			
 			// create the model and update the "table"
 			MembersListTableModel model = new MembersListTableModel(members);
@@ -521,7 +533,7 @@ public class MembersSearchApp  extends JFrame{
 	public void refreshUsersView() {
 
 		try {
-			List<User> users = userDAO.getUsers(admin, userId);
+			List<User> users = userService.getUsers(admin, userId);
 
 			// Vytvoøení tabulky s uživately
 			UsersTableModel model = new UsersTableModel(users);

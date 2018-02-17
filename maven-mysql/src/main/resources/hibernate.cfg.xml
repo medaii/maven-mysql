@@ -7,16 +7,23 @@
 
 		<!-- JDBC Database connection settings -->
 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="connection.url">jdbc:mysql://uvdb3.active24.cz:3306/lokovrsoerik?useJDBCCompliantTimezoneShift='true'</property>
+		<!--  <property name="connection.url">jdbc:mysql://uvdb3.active24.cz:3306/lokovrsoerik?useJDBCCompliantTimezoneShift='true'</property>
+		 
+		
 		<property name="connection.username">lokovrsoerik</property>
 		<property name="connection.password">J4zNx2BkZM</property>
-
 		<property name="hibernate.connection.CharSet">utf8</property>
 		<property name="hibernate.connection.characterEncoding">utf8</property>
+		-->
+		<property name="connection.url">jdbc:mysql://localhost:3306/loko?useSSL=false</property>
+		<property name="connection.username">hbstudent</property>
+    <property name="connection.password">hbstudent</property>
+    
+
 		<property name="hibernate.connection.useUnicode">true</property>
 
 		<!-- JDBC connection pool settings ... using built-in test pool -->
-		<property name="connection.pool_size">1</property>
+		<property name="connection.pool_size">4</property>
 
 		<!-- Select our SQL dialect -->
 		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
@@ -24,8 +31,12 @@
 		<!-- Echo the SQL to stdout -->
 		<property name="show_sql">true</property>
 
+		<property name="">false</property>
+		
 		<!-- Set the current session context -->
 		<property name="current_session_context_class">thread</property>
+
+
 
 	</session-factory>
 </hibernate-configuration>

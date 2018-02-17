@@ -1,19 +1,26 @@
 package test;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import loko.core.*;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+
+import loko.dao.DAOFactory;
+import loko.dao.UserDAO;
+import loko.dao.jdbc.impl.UserDAOimpl;
+import loko.db.executor.impl.DBSqlExecutor;
+import loko.entity.User;
+
 
 public class studentTest {
-
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public static void main(String[] args) {
 
 		// create session factory
-		try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
+		/*try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
 				.buildSessionFactory();) {
 
 			// create session
@@ -38,6 +45,21 @@ public class studentTest {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+		*/
+		LOGGER.setLevel(Level.WARNING);
+		
+		UserDAO userDAO = (UserDAO)DAOFactory.createDAO(UserDAO.class); 
+		
+		List<User> user = new ArrayList<User>();
+		
+		//pokus.getData("from User", user, User.class);
+		user = userDAO.getUsers(false, 2);
+		System.out.println(user + "\n" + User.class.getSimpleName());
+		userDAO = new UserDAOimpl(DBSqlExecutor.getInstance());
+		
+		user = userDAO.getUsers(false, 2);
+		
+		System.out.println(user + "\n" + User.class.getSimpleName());
 	}
 
 }

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -11,14 +12,14 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-
-
-import loko.DAO.*;
-import loko.core.User;
-
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
+import loko.entity.User;
+import loko.service.UserService;
+import loko.service.impl.MembersServiceImpl;
+
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
@@ -26,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class UserLoginDialog extends JDialog {
 
@@ -33,48 +35,39 @@ public class UserLoginDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = -3075207613660115541L;
-
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private final JPanel contentPanel = new JPanel();
 
-	//private EmployeeDAO employeeDAO;
-	private UserDAO userDAO; // pro testovaní pøidat = new UserDAO();	
-	private IFMembersDAO membersDAO;
+	//service user
+	UserService userService;
+	
 	private JPasswordField passwordField;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxUser;
 	
 	
-	public void setUserDAO(UserDAO theUserDAO) {
-		userDAO = theUserDAO;
+	public void setMembersService(UserService userService) {		
+		this.userService = userService;		
 	}
 	
-	public void setMembersDAO(IFMembersDAO theMemberDAO) {
-		membersDAO = theMemberDAO;
-	}
 
-	public void populateUsers(List<User> users) {
-		// vytvoøí pole a naslednì naplni box
-		comboBoxUser.setModel(new DefaultComboBoxModel(users.toArray(new User[0]))); // vytvoøeni pole s udaji user a do listu pridaní vrácené hodnoty z .toString
-	}
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			UserLoginDialog dialog = new UserLoginDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void populateUsers() {
+		if(userService != null) {
+			// vytvoøí pole a naslednì naplni box
+			List<User> users = userService.getUsers(true, 0);
+			comboBoxUser.setModel(new DefaultComboBoxModel(users.toArray(new User[0]))); // vytvoøeni pole s udaji user a do listu pridaní vrácené hodnoty z .toString
+		}
+		else {
+			throw new RuntimeException("Neni instance na servisní tøidu pro UserDAO.");	
 		}
 	}
 
 	/**
-	 * Create the dialog.
+	 * Vytvoøení okna.
 	 */
+	@SuppressWarnings("rawtypes")
 	public UserLoginDialog() {
-		
 		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -92,28 +85,25 @@ public class UserLoginDialog extends JDialog {
 			panel.setLayout(null);
 			{
 				JLabel lblUivatel = new JLabel("U\u017Eivatel:");
+				lblUivatel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				lblUivatel.setBounds(10, 11, 55, 23);
 				panel.add(lblUivatel);
 			}
 			
 			comboBoxUser = new JComboBox();
+			comboBoxUser.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 			comboBoxUser.setBounds(75, 12, 132, 23);
-			//inicializace listu
-			
-			/*
-			 * pro testovaní vytvoreni seznamu login
-			 */
-			//List<User> themUser = userDAO.getUsers(true, 0);
-			//populateUsers(themUser);
 			
 			panel.add(comboBoxUser);
 			
-			JLabel lblHeslo = new JLabel("Heslo");
-			lblHeslo.setBounds(10, 42, 55, 23);
+			JLabel lblHeslo = new JLabel("Heslo:");
+			lblHeslo.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+			lblHeslo.setBounds(10, 46, 55, 23);
 			panel.add(lblHeslo);
 			
 			passwordField = new JPasswordField();
-			passwordField.setBounds(70, 46, 137, 23);
+			passwordField.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+			passwordField.setBounds(75, 46, 137, 23);
 			panel.add(passwordField);
 		}
 		{
@@ -122,6 +112,7 @@ public class UserLoginDialog extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						performUserLogin();
@@ -133,6 +124,7 @@ public class UserLoginDialog extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						 System.exit(0);
@@ -143,59 +135,62 @@ public class UserLoginDialog extends JDialog {
 			}
 		}
 	}
+	@SuppressWarnings("rawtypes")
 	public JComboBox getUserComboBox() {
 		return comboBoxUser;
 	}
 	
+	/**
+	 * Kontrola hesla pøi pøihlašování uživatele
+	 */
 	private void performUserLogin() {
 		
 		try {
-			// get the user id
+			// Vybrání uživatele
 			if (comboBoxUser.getSelectedIndex() == -1) {						
 				JOptionPane.showMessageDialog(UserLoginDialog.this, "You must select a user.", "Error", JOptionPane.ERROR_MESSAGE);				
 				return;
 			}
 			
-			
-			//Vytvoøení user a naplnìni hodnotami
+			//Vytvoøení user a naplnìni hodnotami select
 			User theUser = (User) comboBoxUser.getSelectedItem();
 			int userId = theUser.getId();
 			boolean admin = theUser.isAdmin();
 			
 			// naètení password
-			String plainTextPassword = new String(passwordField.getPassword());
-			theUser.setPassword(plainTextPassword);
-			
-			
 			// Kontrola hesla s heslem zakodovaným v DB
-			// volání DAO pro validaci password
-			boolean isValidPassword = userDAO.authenticate(theUser);
+			// volání Service pro validaci password user
+			boolean isValidPassword = userService.authenticate(new String(passwordField.getPassword()).getBytes("UTF-8"), userId);
+			
 			if (isValidPassword) {
-				// hide the login window
+				// validace v poøádku, skrytí okna a spuštìní membersearch okna
+				LOGGER.info("Oveøené pøihlašení uživatele " + theUser.getFirstName() + " " + theUser.getLastName());
 				setVisible(false);
 
-				// now show the main app window
-				MembersSearchApp frame = new MembersSearchApp(userId, admin, membersDAO, userDAO);
+				// Neni otevøení okna membersearch (hlavní okno)
+				MembersSearchApp frame = new MembersSearchApp(new MembersServiceImpl(),userService,userId, admin);
 				frame.setLoggedInUserName(theUser.getFirstName(), theUser.getLastName());
 				frame.refreshMembersView();
 				
 				frame.setVisible(true);
+				LOGGER.fine("Spušteno hlavní okno.");
 				
 			}
 			else {
-				// show error message
+				//chybné heslo
+				LOGGER.info("Chybné heslo pøi pøihlašení uživatele " + theUser.getFirstName() + " " + theUser.getLastName());
+				
+				// Vyskoèení okna s informaci, že bylo zadáno nesprávné heslo
 				JOptionPane.showMessageDialog(this, "Invalid login", "Invalid Login",
 						JOptionPane.ERROR_MESSAGE);
-
+				
 				return;			
 			}
 		}
 		catch (Exception exc) {
-			JOptionPane.showMessageDialog(this, "Error during login", "Error",
-					JOptionPane.ERROR_MESSAGE);			
+			JOptionPane.showMessageDialog(this, "Error during login.", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			throw new RuntimeException("Nastala chyba pøi logovaní - " + exc.toString(), exc);
 		}
 	}
 }
-
-
-

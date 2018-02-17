@@ -7,9 +7,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import loko.DAO.DAOFactory;
-import loko.DAO.IFMailsDAO;
-import loko.DAO.MailsDAOImpl;
+import loko.dao.DAOFactory;
+import loko.dao.MailsDAO;
+import loko.dao.jdbc.impl.MailsDAOImpl;
 
 /**
  * JUNIT testy DAOFactory.
@@ -22,7 +22,7 @@ public class DAOFactoryTest {
 	
 	@Test
 	public void testCreateMailDAO() {
-		IFMailsDAO dao = DAOFactory.createDAO(IFMailsDAO.class);
+		MailsDAO dao = DAOFactory.createDAO(MailsDAO.class);
 		assertThat("Nepodarilo se ziskat implementaci MailsDAOImpl", dao, IsInstanceOf.instanceOf(MailsDAOImpl.class) );
 	}
 

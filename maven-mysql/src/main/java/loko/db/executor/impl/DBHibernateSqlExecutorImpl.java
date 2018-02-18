@@ -1,7 +1,5 @@
 package loko.db.executor.impl;
 
-import java.util.logging.Logger;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -24,7 +22,6 @@ import loko.entity.User;
  *
  */
 public class DBHibernateSqlExecutorImpl implements DBHibernateSqlExecutor {
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private SessionFactory factory;
 	private volatile static DBHibernateSqlExecutorImpl instance = null;
 

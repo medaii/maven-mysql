@@ -44,22 +44,11 @@ public class DBHibernateSqlExecutorImpl implements DBHibernateSqlExecutor {
 		return instance;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see loko.db.executor.impl.IFDBHibernateSqlExecutor#getSessionFactory()
-	 */
 	@Override
 	public SessionFactory getSessionFactory() {
 		return this.factory;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see loko.db.executor.impl.IFDBHibernateSqlExecutor#getObject(int,
-	 * java.lang.Class)
-	 */
 	@Override
 	public <T> T getObject(int id, Class<?> trida) {
 
@@ -73,22 +62,16 @@ public class DBHibernateSqlExecutorImpl implements DBHibernateSqlExecutor {
 			@SuppressWarnings("unchecked")
 			T t = (T) session.get(trida, id);
 
-			// commit transaction
+			// vykonání transakce
 			session.getTransaction().commit();
 			return t;
 
 		} catch (Exception e) {
-			LOGGER.warning("Chyba zápisu!");
-			return null;
+			throw new RuntimeException("Chyba naètení entity " + trida + " z databáze.", e);
 		}
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see loko.db.executor.impl.IFDBHibernateSqlExecutor#insertObject(T)
-	 */
 	@Override
 	public <T> int insertObject(T object) {
 
@@ -99,33 +82,27 @@ public class DBHibernateSqlExecutorImpl implements DBHibernateSqlExecutor {
 			// dotaz
 			int id = (int) session.save(object);
 
-			// commit transaction
+			// vykonaní transakce
 			session.getTransaction().commit();
 			return id;
 
 		} catch (Exception e) {
-			LOGGER.warning("Chyba zápisu!");
-			return 0;
+			throw new RuntimeException("Chyba vložení nové entity " + object + " do databáze.", e);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see loko.db.executor.impl.IFDBHibernateSqlExecutor#updateObject(T)
-	 */
 	@Override
 	public <T> void updateObject(T object) {
 
 		// vytvoreni session
 		try (Session session = factory.getCurrentSession();) {
-			// start a transaction
+			// start transakce
 			session.beginTransaction();
 
 			// dotaz
 			session.saveOrUpdate(object);
 
-			// commit transaction
+			// vykonaní transakce
 			session.getTransaction().commit();
 
 		} catch (Exception e) {
@@ -133,12 +110,6 @@ public class DBHibernateSqlExecutorImpl implements DBHibernateSqlExecutor {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see loko.db.executor.impl.IFDBHibernateSqlExecutor#deleteObject(int,
-	 * java.lang.Class)
-	 */
 	@Override
 	public <T> void deleteObject(int id, Class<T> objectClass) {
 
@@ -159,6 +130,7 @@ public class DBHibernateSqlExecutorImpl implements DBHibernateSqlExecutor {
 			throw new RuntimeException("Chyba pøi delete objektu " + objectClass.getClass().getName() + " id: " + id, e);
 		}
 	}
+
 	@Override
 	protected void finalize() throws Throwable {
 		factory.close();

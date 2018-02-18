@@ -8,15 +8,17 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-//import javax.swing.JOptionPane;
+
 
 /**
+ *  Trida pro praci s DB a nebo predání 
  * 
  * @author Erik Markoviè
  *
  */
 public class DBSqlExecutor {
-	private static DBSqlExecutor instance = null;
+	private static volatile DBSqlExecutor instance = null;
+	private static Object mutex = new Object();
 	private DBConnectionSimpleManager dbConnectionSimpleManager;
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
@@ -32,10 +34,16 @@ public class DBSqlExecutor {
 
 	//vrací instanci 
 	public static DBSqlExecutor getInstance() {
-		if (instance == null) {
-			instance = new DBSqlExecutor();
+		DBSqlExecutor result = instance;
+		if (result == null) {
+			synchronized (mutex) {
+				result = instance;
+				if(result == null) {
+					instance = new DBSqlExecutor();
+				}
+			}
 		}		
-		return instance;
+		return result;
 	}
 	
 	/*
@@ -57,17 +65,8 @@ public class DBSqlExecutor {
 			
 			ResultSetMetaData metaData = rs.getMetaData(); // metadata
 			int pocetSloupcu = metaData.getColumnCount(); //pocet sloupcu
+
 			// ukladani do arraylist kazdy radek
-		
-		/*	kod, aby se ulozilo do prvního øádku názvy sloupcù
-		 * String[] c = new String[pocetSloupcu];
-			
-			for(int i = 0;i<pocetSloupcu;i++) {
-				c[i]= metaData.getColumnName(i+1);
-			}			
-			a.add(c);
-			*/
-			
 			while(rs.next()) {
 				String[] b = new String[pocetSloupcu];
 				for(int i = 0;i<pocetSloupcu;i++) {
@@ -77,11 +76,13 @@ public class DBSqlExecutor {
 			}
 		} catch (SQLException e) {
 			LOGGER.warning("Chyba pøi ètení z DB - " + sql +  e);
+			throw new RuntimeException("Chyba pøi ètení z DB - " + sql ,e);
 		}
 	}
-	//smazaní záznamu v DB
+	
 	/**
-	 * dotaz sql pøíkaz
+	 * smazaní záznamu v DB
+	 * 
 	 * id nastavení jedièného parametru
 	 */
 	public void deleteRow(String dotaz, int id) {
@@ -96,10 +97,14 @@ public class DBSqlExecutor {
 			throw new RuntimeException("Chyba pøi delete objektu id - " + id, e);
 		}
 	}
-	//vrací poèet nalezených øádku 
+	
 	/**
-	 * dotaz - sql dotaz
-	 * hodonoty - parametry do dotazu
+	 * vrací poèet nalezených øádku 
+	 * 
+	 *@param dotaz - sql dotaz
+	 *@param hodonoty - parametry do dotazu
+	 *
+	 *@return pocet øádku
 	 */
 	public int getCountRow(String dotaz, String[] hodnoty) {
 			  
@@ -128,12 +133,14 @@ public class DBSqlExecutor {
 					return pocetRadku;  
 			} catch (SQLException e) {
 				LOGGER.warning("Chyba pøi mazání øádku " + e);
-				return -1;
+				throw new RuntimeException("Chyba pøi mazání øádku " + hodnoty,e);
 			}
 			    
 		}
-	// update øádku v DB
+	
 	/**
+	 * update øádku v DB
+	 * 
 	 * dotaz - pøíkaz sql
 	 * hodnoty - parametry sql
 	 */
@@ -154,6 +161,7 @@ public class DBSqlExecutor {
 		  
 	}
 	/**
+	 * Vložení nového øádku do tabulky v DB
 	 * 
 	 * @param dotaz -  pøikaz pøidaní
 	 * @param hodnoty - pøidavane parametry
@@ -177,9 +185,7 @@ public class DBSqlExecutor {
 			LOGGER.info("Vložení øádku " + dotaz + " id: " + id);
 			return id;
 		} catch (SQLException e) {
-			
-			LOGGER.warning("Chyba pøi vkladaní øádku " + e);
-			return -1;
+			throw new RuntimeException("Chyba pøi ukladání nového øádku do tabulky v DB " + hodnoty,e);
 		}
 		  
 	}

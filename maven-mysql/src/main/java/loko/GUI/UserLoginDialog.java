@@ -12,13 +12,16 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
+import loko.config.ApplicationContext;
 import loko.entity.User;
+import loko.service.MembersService;
 import loko.service.UserService;
-import loko.service.impl.MembersServiceImpl;
 
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JPasswordField;
@@ -41,12 +44,14 @@ public class UserLoginDialog extends JDialog {
 	//service user
 	UserService userService;
 	
+	private AnnotationConfigApplicationContext context;
+	
 	private JPasswordField passwordField;
 	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxUser;
 	
 	
-	public void setMembersService(UserService userService) {		
+	public void setUserService(UserService userService) {		
 		this.userService = userService;		
 	}
 	
@@ -68,6 +73,12 @@ public class UserLoginDialog extends JDialog {
 	 */
 	@SuppressWarnings("rawtypes")
 	public UserLoginDialog() {
+		// vytvoøeni kontextu
+		this.context = new AnnotationConfigApplicationContext(ApplicationContext.class);
+		this.userService = context.getBean("userServiceImpl", UserService.class);
+		
+		//naplnìní boxu s jmeny uživatelù
+		this.populateUsers();
 		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -168,7 +179,8 @@ public class UserLoginDialog extends JDialog {
 				setVisible(false);
 
 				// Neni otevøení okna membersearch (hlavní okno)
-				MembersSearchApp frame = new MembersSearchApp(new MembersServiceImpl(),userService,userId, admin);
+				MembersService membersService = context.getBean("membersServiceImpl",MembersService.class);
+				MembersSearchApp frame = new MembersSearchApp(this,membersService,userService,userId, admin);
 				frame.setLoggedInUserName(theUser.getFirstName(), theUser.getLastName());
 				frame.refreshMembersView();
 				
@@ -192,5 +204,8 @@ public class UserLoginDialog extends JDialog {
 					JOptionPane.ERROR_MESSAGE);
 			throw new RuntimeException("Nastala chyba pøi logovaní - " + exc.toString(), exc);
 		}
+	}
+	public void finalize() {
+		context.close();
 	}
 }

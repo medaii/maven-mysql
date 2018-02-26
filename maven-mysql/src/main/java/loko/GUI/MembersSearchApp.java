@@ -12,7 +12,6 @@ import loko.entity.User;
 import loko.loger.LoggerLoko;
 import loko.service.MembersService;
 import loko.service.UserService;
-import loko.service.impl.UserServiceImpl;
 import loko.tableModel.MembersListTableModel;
 import loko.tableModel.UsersTableModel;
 import loko.value.MemberList;
@@ -64,6 +63,9 @@ public class MembersSearchApp  extends JFrame{
 	// instance na servisní rozhraní
 	private MembersService membersService; 
 	private UserService userService;
+	//TODO doplnit funkci odhlašení
+	@SuppressWarnings("unused")
+	private UserLoginDialog userLoginDialog;
 	
 	private JFrame frame;
 	private int userId;
@@ -84,7 +86,7 @@ public class MembersSearchApp  extends JFrame{
 	 * Launch the application.
 	 * Aplikace první spustí logovací aplikaci
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) {	
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -99,16 +101,13 @@ public class MembersSearchApp  extends JFrame{
 					
 					// Výtvoøení okna pro pøihlášení
 					UserLoginDialog dialog = new UserLoginDialog();
-					
-					//inicializace servisni tøidy a uživatelského listu
-					dialog.setMembersService(new UserServiceImpl());
-					dialog.populateUsers();
+
 					
 					// zobrazení okna pro pøihlášení
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 					LOGGER.info("Otevøení okna pro pøihlášení");
-
+					
 				} catch (Exception e) {
 					//Chyba pøi spuštìní vlákna
 					LOGGER.warning("Pøi spuštìni nastala chyba - " + e.toString());					
@@ -122,7 +121,8 @@ public class MembersSearchApp  extends JFrame{
 	 * Vytvoøení hlavního okna aplikace po pøihlašení
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public MembersSearchApp(MembersService membersService,UserService userService, int theUserId, boolean theAdmin) {
+	public MembersSearchApp(UserLoginDialog userLoginDialog,MembersService membersService,UserService userService, int theUserId, boolean theAdmin) {
+		this.userLoginDialog = userLoginDialog;
 		this.membersService = membersService;
 		this.userService = userService;
 			userId = theUserId;

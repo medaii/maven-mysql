@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import loko.dao.UserDAO;
 import loko.entity.User;
@@ -31,26 +32,31 @@ public class UserServiceImpl implements UserService {
 		this.userDAO = userDAO;
 	}
 
+	@Transactional
 	@Override
 	public void updateUser(User theUser) {
 		userDAO.updateUser(theUser);
 	}
-
+	
+	@Transactional
 	@Override
 	public void changePassword(User theUser, String newPassword) {
 		userDAO.changePassword(theUser, newPassword);
 	}
 
+	@Transactional
 	@Override
 	public List<User> getUsers(boolean admin, int userId) {
 		return userDAO.getUsers(admin, userId);
 	}
-
+	
+	@Transactional
 	@Override
 	public boolean authenticate(byte[] password, int id) {
 		return userDAO.authenticate(password, id);
 	}
 
+	@Transactional
 	@Override
 	public int addUser(User theUser) {
 		return userDAO.addUser(theUser);

@@ -55,6 +55,14 @@ public class User{
 		this.admin = admin;
 	}
 	
+	public void setUser(User tempUser) {
+		this.lastName = tempUser.getLastName();
+		this.firstName = tempUser.getFirstName();
+		this.email = tempUser.getEmail();
+		this.admin = tempUser.isAdmin();
+
+	}
+	
 	public int getId() {
 		return id;
 	}

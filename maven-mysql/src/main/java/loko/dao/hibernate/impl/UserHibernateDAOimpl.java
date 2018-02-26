@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import loko.dao.UserDAO;
-import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.User;
 import loko.service.impl.PasswordUtils;
 
@@ -22,22 +22,24 @@ import loko.service.impl.PasswordUtils;
  */
 @Repository
 public class UserHibernateDAOimpl implements UserDAO {
-	private DBHibernateSqlExecutorImpl HSqlExecutor;
+	@Autowired
+	private SessionFactory sessionFactory;
+
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	// konstruktor
 
 	public UserHibernateDAOimpl() {
-		this.HSqlExecutor = DBHibernateSqlExecutorImpl.getInstance();
-	}
-	
-	public UserHibernateDAOimpl(DBHibernateSqlExecutorImpl conn) {
-		HSqlExecutor = conn;
+
 	}
 
 	@Override
 	public void updateUser(User theUser) {
-		HSqlExecutor.updateObject(theUser);
+		// ziskání vybrané hibernate session
+		Session session = sessionFactory.getCurrentSession();
+		// dotaz
+		User user = session.get(User.class, theUser.getId());
+		user.setUser(theUser);
 	}
 
 	@Override
@@ -48,10 +50,11 @@ public class UserHibernateDAOimpl implements UserDAO {
 		// zakodovani hesla
 		String encryptedPassword = PasswordUtils.encryptPassword(plainTextPassword);
 
-		theUser.setPassword(encryptedPassword);
-
-		//uložení do DB
-		updateUser(theUser);
+		// uložení do DB
+		Session session = sessionFactory.getCurrentSession();
+		// dotaz
+		User user = session.get(User.class, theUser.getId());
+		user.setPassword(encryptedPassword);
 	}
 
 	@Override
@@ -59,45 +62,43 @@ public class UserHibernateDAOimpl implements UserDAO {
 		// list ktery naplnime z DB
 		List<User> list = new ArrayList<User>();
 
-		// zavolani instance sessionFactoru
-		SessionFactory factory = HSqlExecutor.getSessionFactory();
+		// vytvoøeni session
+		Session session = sessionFactory.getCurrentSession();
 
-		// vytrvoreni session
-		try (Session session = factory.getCurrentSession();) {
-			// start a transaction
-			session.beginTransaction();
-			// dotaz
-			if (admin) {
-				@SuppressWarnings("unchecked")
-				List<User> list2 = (List<User>)session.createQuery("select i from User i ").list();
-				list = list2;
-			} else {
-				@SuppressWarnings("unchecked")
-				List<User> list2 = session.createQuery("select i from User where id=:id order by lastName").setParameter("id", userId)
-						.list();
-				list = list2;
-			}
-			
-			session.getTransaction().commit();
-
-		} catch (Exception e) {
-			LOGGER.warning("Chyba zápisu!");
+		// dotaz
+		if (admin) {
+			@SuppressWarnings("unchecked")
+			List<User> list2 = (List<User>) session.createQuery("select i from User i ").list();
+			list = list2;
+		} else {
+			@SuppressWarnings("unchecked")
+			List<User> list2 = session.createQuery("select i from User where id=:id order by lastName")
+					.setParameter("id", userId).list();
+			list = list2;
 		}
 		return list;
 	}
 
 	@Override
 	public boolean authenticate(byte[] password, int id) {
-		User user = HSqlExecutor.getObject(id, User.class);
+		// ziskání vybrané hibernate session
+		Session session = sessionFactory.getCurrentSession();
+
+		// dotaz
+		User user = session.get(User.class, id);
+
 		LOGGER.info("Kontrola hesla.");
 		return PasswordUtils.checkPassword(password, user.getPassword());
 	}
 
 	@Override
 	public int addUser(User theUser) {
-		int id = HSqlExecutor.insertObject(theUser);
+		// ziskání vybrané hibernate session
+		Session session = sessionFactory.getCurrentSession();
 
-		return id;
+		// dotaz
+		session.saveOrUpdate(theUser);
+		return theUser.getId();
 	}
 
 }

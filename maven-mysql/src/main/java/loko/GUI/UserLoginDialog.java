@@ -77,8 +77,7 @@ public class UserLoginDialog extends JDialog {
 		this.context = new AnnotationConfigApplicationContext(ApplicationContext.class);
 		this.userService = context.getBean("userServiceImpl", UserService.class);
 		
-		//naplnìní boxu s jmeny uživatelù
-		this.populateUsers();
+
 		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -106,6 +105,8 @@ public class UserLoginDialog extends JDialog {
 			comboBoxUser.setBounds(75, 12, 132, 23);
 			
 			panel.add(comboBoxUser);
+			//naplnìní boxu s jmeny uživatelù
+			this.populateUsers();
 			
 			JLabel lblHeslo = new JLabel("Heslo:");
 			lblHeslo.setFont(new Font("Times New Roman", Font.PLAIN, 12));
@@ -138,6 +139,7 @@ public class UserLoginDialog extends JDialog {
 				cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						 context.close();
 						 System.exit(0);
 					}
 				});
@@ -179,8 +181,8 @@ public class UserLoginDialog extends JDialog {
 				setVisible(false);
 
 				// Neni otevøení okna membersearch (hlavní okno)
-				MembersService membersService = context.getBean("membersServiceImpl",MembersService.class);
-				MembersSearchApp frame = new MembersSearchApp(this,membersService,userService,userId, admin);
+				MembersSearchApp frame = new MembersSearchApp(this,context.getBean("membersServiceImpl",MembersService.class)
+																													,userService,userId, admin);
 				frame.setLoggedInUserName(theUser.getFirstName(), theUser.getLastName());
 				frame.refreshMembersView();
 				

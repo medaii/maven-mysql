@@ -121,7 +121,8 @@ public class MembersSearchApp  extends JFrame{
 	 * Vytvoøení hlavního okna aplikace po pøihlašení
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public MembersSearchApp(UserLoginDialog userLoginDialog,MembersService membersService,UserService userService, int theUserId, boolean theAdmin) {
+	public MembersSearchApp(UserLoginDialog userLoginDialog,MembersService membersService,UserService userService,
+													int theUserId, boolean theAdmin) {
 		this.userLoginDialog = userLoginDialog;
 		this.membersService = membersService;
 		this.userService = userService;

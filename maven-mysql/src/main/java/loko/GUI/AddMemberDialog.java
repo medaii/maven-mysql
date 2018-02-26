@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 
-import loko.dao.MailsDAO;
 import loko.entity.Mail;
 import loko.entity.Phone;
 import loko.service.MembersService;

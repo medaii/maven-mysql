@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import loko.dao.DAOFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
 import loko.dao.MailsDAO;
 import loko.dao.MembersDAO;
 import loko.dao.PhoneDAO;
@@ -28,20 +31,28 @@ import loko.value.PhonesMeber;
  *
  *
  */
+@Service
 public class MembersServiceImpl implements MembersService {
 
 	// instance na DAO dle entit
+	@Autowired
 	private MembersDAO membersDAO;
+	
+	@Autowired
 	private MailsDAO mailsDAO;
+	
+	@Autowired
 	private PhoneDAO phoneDAO;
 
 	// instance se žádají od factory, která posle instanci na DAO pomoci JDBC nebo
 	// Hibernate
-	public MembersServiceImpl() {
-		membersDAO = (MembersDAO) DAOFactory.createDAO(MembersDAO.class);
-		this.mailsDAO = (MailsDAO) DAOFactory.createDAO(MailsDAO.class);
-		this.phoneDAO = (PhoneDAO) DAOFactory.createDAO(PhoneDAO.class);
+	
+	public MembersServiceImpl(MembersDAO membersDAO, MailsDAO mailsDAO, PhoneDAO phoneDAO) {
+		this.membersDAO = membersDAO;
+		this.mailsDAO = mailsDAO;
+		this.phoneDAO = phoneDAO;
 	}
+
 	/*
 	 * metody poskytnute MembersDAO
 	 */

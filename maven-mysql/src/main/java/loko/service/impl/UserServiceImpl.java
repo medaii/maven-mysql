@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import loko.dao.DAOFactory;
 import loko.dao.UserDAO;
 import loko.entity.User;
 import loko.service.UserService;
@@ -27,9 +26,6 @@ public class UserServiceImpl implements UserService {
 
 	// instance se žádají od factory, která posle instanci na DAO pomoci JDBC nebo
 	// Hibernate
-	public UserServiceImpl() {
-		this.userDAO = (UserDAO) DAOFactory.createDAO(UserDAO.class);
-	}
 
 	public UserServiceImpl(UserDAO userDAO) {
 		this.userDAO = userDAO;

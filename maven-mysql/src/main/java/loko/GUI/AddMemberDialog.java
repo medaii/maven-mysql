@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 
-import loko.dao.DAOFactory;
 import loko.dao.MailsDAO;
 import loko.entity.Mail;
 import loko.entity.Phone;
@@ -317,8 +316,7 @@ public class AddMemberDialog extends JDialog {
 									textFieldOdMail1.setText("");
 								}
 								Mail mail = new Mail(id_member, textFieldOdMail1.getText(), textFieldMail1.getText());
-								MailsDAO mailsDAO = DAOFactory.createDAO(MailsDAO.class);
-								mailsDAO.addMail(mail);
+								membersService.addMail(mail);
 								LOGGER.info("Pøidán nový mail. id member: " + id_member + " mail: " + mail.toString());
 							}
 							if(!textFieldMail2.getText().isEmpty()) {
@@ -326,8 +324,7 @@ public class AddMemberDialog extends JDialog {
 									textFieldOdMail2.setText("");
 								}
 								Mail mail = new Mail(id_member, textFieldOdMail2.getText(), textFieldMail2.getText());
-								MailsDAO mailsDAO = DAOFactory.createDAO(MailsDAO.class);
-								mailsDAO.addMail(mail);
+								membersService.addMail(mail);
 								LOGGER.info("Pøidán nový mail. id member: " + id_member + " mail: " + mail.toString());
 							}
 							// ulozeni telefonu

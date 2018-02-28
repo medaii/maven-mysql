@@ -72,7 +72,7 @@ public class UserHibernateDAOimpl implements UserDAO {
 			list = list2;
 		} else {
 			@SuppressWarnings("unchecked")
-			List<User> list2 = session.createQuery("select i from User where id=:id order by lastName")
+			List<User> list2 = session.createQuery("select i from User i where i.id=:id order by i.lastName")
 					.setParameter("id", userId).list();
 			list = list2;
 		}

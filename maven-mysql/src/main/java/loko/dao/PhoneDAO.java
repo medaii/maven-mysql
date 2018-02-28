@@ -37,7 +37,7 @@ public interface PhoneDAO {
 	 * @param id  - id phone na DB
 	 * 
 	 */
-	public void updatePhone(Phone phone, int id) ;
+	public void updatePhone(Phone phone) ;
 
 	/**
 	 * Vytvoøení pøepravky Map<Integer, PhonesMeber>

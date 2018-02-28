@@ -492,7 +492,7 @@ public class MemberDialog extends JDialog {
 							int countRow = modelP.getRowCount();
 							for (int i = 0; i < countRow; i++) {
 								Phone tempPhone = (Phone) modelP.getValueAt(i, PhonesTableModel.OBJECT_COL);
-								membersService.updatePhone(tempPhone, tempPhone.getId());
+								membersService.updatePhone(tempPhone);
 							}
 							LOGGER.info("Zmìma hodnot Telefonu.");
 						}

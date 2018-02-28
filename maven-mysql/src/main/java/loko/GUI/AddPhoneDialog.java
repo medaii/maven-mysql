@@ -124,7 +124,7 @@ private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
 								phone.setPhone(textFieldTelefon.getText());
 							 // kontrola uložení
 								try {
-									membersService.updatePhone(phone, phone.getId());
+									membersService.updatePhone(phone);
 								} 
 								catch (Exception e2) {
 									LOGGER.warning("Chyba zpisu v DB a záznam telefonu nezmìnìn!"+ e2);

@@ -135,7 +135,7 @@ public interface MembersService {
 	 * @param phone - entita,kterou má být nahrazen záznam v DB
 	 * 
 	 */
-	public void updatePhone(Phone phone, int id);
+	public void updatePhone(Phone phone);
 	
 	/**
 	 * Vraceni seznamu telefoních èísel v mapì podle klíèe id Member

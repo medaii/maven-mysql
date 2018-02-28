@@ -1,15 +1,15 @@
 package loko.dao.hibernate.impl;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import loko.dao.PhoneDAO;
-import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.Member;
 import loko.entity.Phone;
 import loko.value.PhonesMeber;
@@ -20,75 +20,70 @@ import loko.value.PhonesMeber;
  * @author Erik Markovic
  *
  */
-
+@Repository
 public class PhonesHibernateDAOImpl implements PhoneDAO {
-	private DBHibernateSqlExecutorImpl dbHibernateSqlExecutor ;
+	@Autowired
+	private SessionFactory sessionFactory;
 
-	public PhonesHibernateDAOImpl(DBHibernateSqlExecutorImpl dbHibernateSqlExecutor) {
-		this.dbHibernateSqlExecutor = dbHibernateSqlExecutor;
+	public PhonesHibernateDAOImpl() {
+
 	}
 
 	@Override
 	public void deletePhone(int id) {
-		dbHibernateSqlExecutor.deleteObject(id, Phone.class);
+		// ziskání vybrané hibernate session
+		Session session = sessionFactory.getCurrentSession();
+
+		// provedení smazání
+		session.delete(session.get(Phone.class, id));
 	}
 
 	@Override
 	public int addPhone(Phone phone) {
-		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
 
-		try (Session session = factory.getCurrentSession();) {
-			// start a transaction
-			session.beginTransaction();
+		try {
+			// ziskání vybrané hibernate session
+			Session session = sessionFactory.getCurrentSession();
+
 			// dotaz
 			// telefon musi byt pridan k entite member
 			Member member = session.get(Member.class, phone.getId_member());
 			member.add(phone);
+
+			// vytvoøení entity
 			int id = (int) session.save(phone);
-			// commit transaction
-			session.getTransaction().commit();
+
 			return id;
 
 		} catch (Exception e) {
-			//TODO pøidat zachycení vyjímky v GUI
 			throw new RuntimeException("Chyba pøi vytvoøení nového zaznamu Phone " + phone, e);
 		}
 	}
 
 	@Override
-	public void updatePhone(Phone phone, int id) {
-		dbHibernateSqlExecutor.updateObject(phone);
+	public void updatePhone(Phone phone) {
+		// ziskání vybrané hibernate session a uložení
+		sessionFactory.getCurrentSession().saveOrUpdate(phone);
 	}
-	
+
 	@Override
 	public Map<Integer, PhonesMeber> getAllPhonesMembers() {
 		Map<Integer, PhonesMeber> map = new HashMap<>();
 
-		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
-		try (Session session = factory.getCurrentSession();) {
-			// start a transaction
-			session.beginTransaction();
+		try {
 			// dotaz
-			
 			@SuppressWarnings("unchecked")
-			List<Member> list = session.createQuery("select i from Member i join fetch i.cshRegNumber "
-																									+ "join fetch i.rodneCislo "
-																									+ "join fetch i.phones "
-																									+ "join fetch i.trvaleBydliste").list();
+			List<Member> list = sessionFactory.getCurrentSession().createQuery("select i from Member i join fetch i.cshRegNumber "
+					+ "join fetch i.rodneCislo " + "join fetch i.phones " + "join fetch i.trvaleBydliste").list();
 			List<Member> members = list;
 			for (Member member : members) {
-				if(!member.getPhones().isEmpty()) {
+				if (!member.getPhones().isEmpty()) {
 					PhonesMeber phones = new PhonesMeber(member.getId());
 					phones.setPhones(member.getPhones());
 					map.put(member.getId(), phones);
 				}
 			}
-			
-			// commit transaction
-			session.getTransaction().commit();
-
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Chyba pøi vyètení telefoního seznamu daného èlena z DB", e);
 		}
 		return map;
@@ -96,26 +91,11 @@ public class PhonesHibernateDAOImpl implements PhoneDAO {
 
 	@Override
 	public PhonesMeber getPhonesMember(int id_member) {
-
-		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
 		PhonesMeber phonesMember = new PhonesMeber(id_member);
-
-		try (Session session = factory.getCurrentSession();) {
-
-			// Zacatek tranzakce
-			session.beginTransaction();
-
-			// dotaz
-			Member member = session.get(Member.class, id_member);
-			List<Phone> phones = member.getPhones();
-
-			phonesMember.setPhones(phones);
-
-			// commit tranzakce
-			session.getTransaction().commit();
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
+		try {
+			Member member = sessionFactory.getCurrentSession().get(Member.class, id_member);
+			phonesMember.setPhones(member.getPhones());
+		} catch (Exception e) {
 			throw new RuntimeException("Chyba pri spojeni member s phone");
 		}
 		return phonesMember;
@@ -123,8 +103,7 @@ public class PhonesHibernateDAOImpl implements PhoneDAO {
 
 	@Override
 	public Phone getPhone(int id) {
-		Phone phone = (Phone) dbHibernateSqlExecutor.getObject(id, Phone.class);
-		return phone;
+		return sessionFactory.getCurrentSession().get(Phone.class, id);
 	}
 
 }

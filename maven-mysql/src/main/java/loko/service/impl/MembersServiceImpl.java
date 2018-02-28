@@ -209,32 +209,37 @@ public class MembersServiceImpl implements MembersService {
 	 * Metody poskytující PhoneDAO
 	 */
 
+	@Transactional
 	@Override
 	public void deletePhone(int id) {
 		phoneDAO.deletePhone(id);
 	}
 
+	@Transactional
 	@Override
 	public int addPhone(Phone phone) {
 		return phoneDAO.addPhone(phone);
 	}
 
+	@Transactional
 	@Override
-	public void updatePhone(Phone phone, int id) {
-		// TODO vyøešit nadbiteènost parametru id
-		phoneDAO.updatePhone(phone, id);
+	public void updatePhone(Phone phone) {
+		phoneDAO.updatePhone(phone);
 	}
 
+	@Transactional
 	@Override
 	public Map<Integer, PhonesMeber> getAllPhonesMembers() {
 		return phoneDAO.getAllPhonesMembers();
 	}
 
+	@Transactional
 	@Override
 	public PhonesMeber getPhonesMember(int id_member) {
 		return phoneDAO.getPhonesMember(id_member);
 	}
 
+	@Transactional
 	@Override
 	public Phone getPhone(int id) {
 		return phoneDAO.getPhone(id);

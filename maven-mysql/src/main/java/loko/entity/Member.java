@@ -57,10 +57,10 @@ public class Member {
 	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.EAGER)
 	private RodneCislo rodneCislo;
 	
-	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.EAGER)
 	private CshRegNumber cshRegNumber;
 	
-	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToOne(mappedBy="member", cascade= CascadeType.ALL,fetch=FetchType.EAGER)
 	private TrvaleBydliste trvaleBydliste;
 	
 	public Member() {

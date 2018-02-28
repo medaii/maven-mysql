@@ -6,7 +6,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import loko.dao.MailsDAO;
 import loko.dao.MembersDAO;
@@ -57,11 +58,13 @@ public class MembersServiceImpl implements MembersService {
 	 * metody poskytnute MembersDAO
 	 */
 
+	@Transactional
 	@Override
 	public void deleteMember(int id) {
 		membersDAO.deleteMember(id);
 	}
 
+	@Transactional
 	@Override
 	public int addMemberFull(MemberFull memberFull) {
 		// vytvoøení z pøepravky MemberFull entitu Member
@@ -78,12 +81,13 @@ public class MembersServiceImpl implements MembersService {
 
 		return membersDAO.addMemberFull(member, rodneCislo, trvaleBydliste, cshRegNumber);
 	}
-
+	@Transactional
 	@Override
 	public void updateMember(Member member) {
 		membersDAO.updateMember(member);
 	}
-
+	
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public void updateMember(MemberFull memberFull) {
 		// vytvoøení z pøepravky MemberFull entitu Member
@@ -103,11 +107,13 @@ public class MembersServiceImpl implements MembersService {
 		membersDAO.updateMemberFull(member, rodneCislo, trvaleBydliste, cshRegNumber);
 	}
 
+	@Transactional
 	@Override
 	public List<Member> getAllMember() {
 		return membersDAO.getAllMember();
 	}
-
+	
+	@Transactional
 	@Override
 	public List<MemberList> getAllMemberList(int kategorie) {
 		List<MemberList> list = new ArrayList<>();
@@ -146,6 +152,7 @@ public class MembersServiceImpl implements MembersService {
 		return list;
 	}
 
+	@Transactional
 	@Override
 	public List<MemberList> searchAllMembers(String name, int kategorie) {
 		List<MemberList> list = new ArrayList<>();
@@ -186,11 +193,13 @@ public class MembersServiceImpl implements MembersService {
 
 	}
 
+	@Transactional
 	@Override
 	public Member getMember(int id) {
 		return membersDAO.getMember(id);
 	}
 
+	@Transactional
 	@Override
 	public MemberFull getMemberFull(int id) {
 		return membersDAO.getMemberFull(id);

@@ -247,31 +247,37 @@ public class MembersServiceImpl implements MembersService {
 
 	// Metody poskytující MailDAO
 
+	@Transactional
 	@Override
 	public void deleteMail(int id) {
 		mailsDAO.deleteMail(id);
 	}
 
+	@Transactional
 	@Override
 	public int addMail(Mail mail) {
 		return mailsDAO.addMail(mail);
 	}
 
+	@Transactional
 	@Override
-	public void updateMail(Mail mail, int id) {
-		mailsDAO.updateMail(mail, id);
+	public void updateMail(Mail mail) {
+		mailsDAO.updateMail(mail);
 	}
 
+	@Transactional
 	@Override
 	public Map<Integer, MailsMember> getAllMailMembers() {
 		return mailsDAO.getAllMailMembers();
 	}
 
+	@Transactional
 	@Override
 	public MailsMember getMailsMember(int id_member) {
 		return mailsDAO.getMailsMember(id_member);
 	}
 
+	@Transactional
 	@Override
 	public Mail getMail(int id) {
 		return mailsDAO.getMail(id);

@@ -40,7 +40,7 @@ public interface MailsDAO {
 	 * @param id  - id mailu v DB
 	 *
 	 */
-	void updateMail(Mail mail, int id);
+	void updateMail(Mail mail);
 	
 	/**
 	 * vytvoreni mapy mailù dle klíèe id member

@@ -480,7 +480,7 @@ public class MemberDialog extends JDialog {
 							int countRow = modelMail.getRowCount();
 							for (int i = 0; i < countRow; i++) {
 								Mail tempMail = (Mail) modelMail.getValueAt(i, MailsTableModel.OBJECT_COL);
-								membersService.updateMail(tempMail, tempMail.getId());
+								membersService.updateMail(tempMail);
 							}
 						}
 						else {

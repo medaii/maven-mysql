@@ -3,13 +3,13 @@ package loko.dao.hibernate.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import loko.dao.MailsDAO;
-import loko.db.executor.impl.DBHibernateSqlExecutorImpl;
 import loko.entity.Mail;
 import loko.entity.Member;
 import loko.value.MailsMember;
@@ -20,63 +20,56 @@ import loko.value.MailsMember;
  * @author Erik Markoviè
  *
  */
+@Repository
 public class MailsHibernateDAOImpl implements MailsDAO {
-	private DBHibernateSqlExecutorImpl dbHibernateSqlExecutor;
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	@Autowired
+	private SessionFactory sessionFactory;
 
 	// konstruktor
-	public MailsHibernateDAOImpl(DBHibernateSqlExecutorImpl dbHibernateSqlExecutor) {
-		this.dbHibernateSqlExecutor = dbHibernateSqlExecutor;
+	public MailsHibernateDAOImpl() {
+	
 	}
 
 	@Override
 	public void deleteMail(int id) {
-		dbHibernateSqlExecutor.deleteObject(id, Mail.class);
+		// ziskání vybrané hibernate session provedeni smazani
+		sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Mail.class, id));
 	}
 
 	@Override
 	public int addMail(Mail mail) {
-		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
-
-		try (Session session = factory.getCurrentSession();) {
-			// start a transaction
-			session.beginTransaction();
+		try {
+			// ziskání vybrané hibernate session
+			Session session = sessionFactory.getCurrentSession();
 
 			// dotaz
 			Member member = session.get(Member.class, mail.getId_member());
 			member.add(mail);
-			int id = (int) session.save(mail);
 
-			// Vykonani transakce
-			session.getTransaction().commit();
-			return id;
-
+			return (int) session.save(mail);
 		} catch (Exception e) {
-			// TODO dodìlat zachycení v GUI
 			throw new RuntimeException("Chyba pøi ukladání mailu do DB - " + mail, e);
 		}
 	}
 
 	@Override
-	public void updateMail(Mail mail, int id) {
-		dbHibernateSqlExecutor.updateObject(mail);
+	public void updateMail(Mail mail) {
+		// ziskání vybrané hibernate session a ulozeni objektu
+		sessionFactory.getCurrentSession().saveOrUpdate(mail);
 	}
 
 	@Override
 	public Map<Integer, MailsMember> getAllMailMembers() {
 		Map<Integer, MailsMember> map = new HashMap<>();
 
-		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
-		try (Session session = factory.getCurrentSession();) {
+		try {
 
-			// start a transaction
-			session.beginTransaction();
-
-			// dotaz
-
+			// ziskání vybrané hibernate session a provedení dotazu
 			@SuppressWarnings("unchecked")
-			List<Member> list = session.createQuery("select i from Member i join fetch i.cshRegNumber "
-					+ "join fetch i.rodneCislo " + "join fetch i.mails " + "join fetch i.trvaleBydliste").list();
+			List<Member> list = sessionFactory.getCurrentSession()
+					.createQuery("select i from Member i join fetch i.cshRegNumber " + "join fetch i.rodneCislo "
+							+ "join fetch i.mails " + "join fetch i.trvaleBydliste")
+					.list();
 			List<Member> members = list;
 			for (Member member : members) {
 				if (!member.getMails().isEmpty()) {
@@ -85,35 +78,24 @@ public class MailsHibernateDAOImpl implements MailsDAO {
 					map.put(member.getId(), mails);
 				}
 			}
-
-			// vykonani tranzakce
-			session.getTransaction().commit();
-
 		} catch (Exception e) {
-			LOGGER.warning("Chyba zápisu!");
+			throw new RuntimeException("Chyba pøi vyètení z DB listu Members s jejimi maili.", e);
 		}
 		return map;
 	}
 
 	@Override
 	public MailsMember getMailsMember(int id_member) {
-		SessionFactory factory = dbHibernateSqlExecutor.getSessionFactory();
 		MailsMember mailsMember = new MailsMember(id_member);
 
-		try (Session session = factory.getCurrentSession();) {
+		try {
 
-			// Zacatek tranzakce
-			session.beginTransaction();
-
-			// dotaz
-			Member member = session.get(Member.class, id_member);
-			List<Mail> mails = member.getMails();
+			// ziskání vybrané hibernate sessiona a provedení dotazu, který vrací member a z
+			// nìj vyètení listu mailu
+			List<Mail> mails = sessionFactory.getCurrentSession().get(Member.class, id_member).getMails();
 
 			// List<Phone> phones2 = phones.stream().collect(toList());
 			mailsMember.setMails(mails);
-
-			// commit tranzakce
-			session.getTransaction().commit();
 		} catch (Exception e) {
 			throw new RuntimeException("Chyba pri spojeni member s mail", e);
 		}
@@ -122,7 +104,8 @@ public class MailsHibernateDAOImpl implements MailsDAO {
 
 	@Override
 	public Mail getMail(int id) {
-		return (Mail) dbHibernateSqlExecutor.getObject(id, Mail.class);
+		// ziskání vybrané hibernate session a dotaz na entitu dle id
+		return sessionFactory.getCurrentSession().get(Mail.class, id);
 	}
 
 }

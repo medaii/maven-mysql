@@ -183,7 +183,7 @@ public interface MembersService {
 	 * 
 	 * @param id - id Mail
 	 */
-	public void updateMail(Mail mail, int id);
+	public void updateMail(Mail mail);
 
 	/**
 	 * Vraceni seznamu mailù v mapì podle klíèe id Member
